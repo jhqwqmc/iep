@@ -78,6 +78,24 @@ class Generator {
     private val heading = Vector(1, 0, 0)
 
     /**
+     * Adds a player to the generator.
+     * @param player The player to add.
+     */
+    fun add(player: ElytraPlayer) {
+        players.add(player)
+
+        player.teleport(playerSpawn)
+    }
+
+    /**
+     * Removes a player from the generator.
+     * @param player The player to remove.
+     */
+    fun remove(player: ElytraPlayer) {
+        players.remove(player)
+    }
+
+    /**
      * Initializes all the stuff.
      * @param playerSpawn The spawn location of the player.
      * @param blockSpawn The spawn location of the first block.
@@ -106,7 +124,7 @@ class Generator {
      */
     private fun updateBoard(score: Int) {
         val timeMs = Instant.now().minusMillis(start.toEpochMilli())
-        val time = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(timeMs)
+        val time = DateTimeFormatter.ofPattern("HH:mm:ss").format(timeMs)
         players.forEach { it.updateBoard(score, time) }
     }
 

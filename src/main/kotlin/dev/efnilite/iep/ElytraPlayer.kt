@@ -11,15 +11,20 @@ import org.bukkit.util.Vector
 /**
  * Class for wrapping players.
  */
-class ElytraPlayer(val player: Player) {
-
-    private val board = FastBoard(player)
+class ElytraPlayer(private val player: Player) {
 
     /**
      * The player's location.
      */
     val location
         get() = player.location.toVector()
+
+    /**
+     * The player's previous location.
+     */
+    val previousLocation = player.location.toVector()
+
+    private val board = FastBoard(player)
 
     fun teleport(vector: Vector) {
         player.teleportAsync(vector.toLocation(World.world))
@@ -36,6 +41,11 @@ class ElytraPlayer(val player: Player) {
             Component.text(""),
             Component.text("server.ip")
                 .color(TextColor.color(0x707070)))
+    }
+
+    fun setup() {
+        player.clearActivePotionEffects()
+        player.inventory.clear()
     }
 
 }
