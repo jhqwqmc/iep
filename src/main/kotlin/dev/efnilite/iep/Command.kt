@@ -9,6 +9,8 @@ import org.bukkit.entity.Player
 class Command : ViCommand() {
 
     override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        if (args.isEmpty()) return false
+
         when (args[0]) {
             "play" -> {
                 val player = ElytraPlayer(sender as Player)
@@ -19,6 +21,8 @@ class Command : ViCommand() {
 
                 Divider.add(generator)
 
+                generator.start(Divider.toLocation(generator))
+
                 generator.add(player)
             }
         }
@@ -27,6 +31,6 @@ class Command : ViCommand() {
     }
 
     override fun tabComplete(sender: CommandSender, args: Array<out String>): List<String> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 }

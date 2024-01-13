@@ -11,6 +11,7 @@ import org.bukkit.block.Block
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.time.Instant
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 private class Island(vector: Vector, schematic: Schematic) {
@@ -76,7 +77,7 @@ class Generator {
      * @param vector The vector to spawn the island at.
      */
     fun start(vector: Vector) {
-        this.island = Island(vector, Schematics.getSchematic(IEP.instance, "spawn-island"))
+        island = Island(vector, Schematics.getSchematic(IEP.instance, "spawn-island"))
 
         rings[0] = Ring(heading, island.blockSpawn, 0)
         generate()
@@ -84,10 +85,10 @@ class Generator {
         task = Task.create(IEP.instance)
             .repeat(1)
             .execute {
-                if (players.isEmpty()) {
-                    task.cancel()
-                    return@execute
-                }
+//                if (players.isEmpty()) {
+//                    task.cancel()
+//                    return@execute
+//                }
 
                 tick()
             }
@@ -99,7 +100,10 @@ class Generator {
      */
     private fun updateBoard(score: Int) {
         val timeMs = Instant.now().minusMillis(start.toEpochMilli())
-        val time = DateTimeFormatter.ofPattern("HH:mm:ss:SSS").format(timeMs)
+        val time = DateTimeFormatter.ofPattern("HH:mm:ss:SSS")
+            .withZone(ZoneOffset.UTC)
+            .format(timeMs)
+
         players.forEach { it.updateBoard(score, time) }
     }
 
@@ -125,10 +129,10 @@ class Generator {
             return
         }
 
-        if (ring.center.distance(pos) > 100) {
-            reset()
-            return
-        }
+//        if (ring.center.distance(pos) > 100) {
+//            reset()
+//            return
+//        }
     }
 
     /**
@@ -141,7 +145,9 @@ class Generator {
 
         val next = ring.center.clone().add(heading.clone().multiply(30))
 
-        val nextRing = Ring(heading, next, ring.radius)
+        println(next)
+
+        val nextRing = Ring(heading, next, 5)
         rings[idx + 1] = nextRing
 
         nextRing.blocks.forEach { it.toLocation(World.world).block.type = Material.RED_CONCRETE }

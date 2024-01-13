@@ -16,6 +16,10 @@ class IEP : ViPlugin() {
     override fun enable() {
         instance = this
 
+        registerCommand("iep", Command())
+
+        saveResource("schematics/spawn-island", false)
+
         World.create()
         Menu.init(this)
 

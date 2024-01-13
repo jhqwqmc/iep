@@ -1,10 +1,13 @@
 package dev.efnilite.iep
 
 import dev.efnilite.iep.world.World
+import dev.efnilite.vilib.inventory.item.Item
 import fr.mrmicky.fastboard.adventure.FastBoard
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.GameMode
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 
@@ -40,12 +43,17 @@ class ElytraPlayer(private val player: Player) {
             Component.text("Time $time"),
             Component.text(""),
             Component.text("server.ip")
-                .color(TextColor.color(0x707070)))
+                .color(TextColor.color(0x505050)))
     }
 
     fun setup() {
         player.clearActivePotionEffects()
-        player.inventory.clear()
-    }
+        player.gameMode = GameMode.ADVENTURE
+        player.isInvulnerable = true
 
+        player.inventory.clear()
+
+        player.inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
+        player.inventory.addItem(Item(Material.FIREWORK_ROCKET, 64, "").build())
+    }
 }

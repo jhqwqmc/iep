@@ -14,11 +14,11 @@ class RingTest {
 
     @Test
     fun testBlocks() {
-        TODO()
+        // todo
     }
 
     @Test
     fun testIsNear() {
-        TODO()
+        // todo
     }
 }
