@@ -2,6 +2,7 @@ package dev.efnilite.iep.generator
 
 import org.bukkit.util.Vector
 import org.jetbrains.annotations.Contract
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -25,18 +26,19 @@ data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
         }
 
         val blocks = mutableListOf<Vector>()
-        val centerZ = center.z.toInt()
-        val centerY = center.y.toInt()
+        val centerX = center.x + 0.5
+        val centerY = center.y + 0.5
+        val centerZ = center.z + 0.5
 
         val accuracy = 60
         var t = 0.0
         repeat(accuracy) {
             t += 2 * Math.PI / accuracy
 
-            val z = (centerZ + radius * cos(t)).toInt()
-            val y = (centerY + radius * sin(t)).toInt()
+            val y = (centerY + radius * sin(t))
+            val z = (centerZ + radius * cos(t))
 
-            blocks.add(Vector(center.x.toInt(), y, center.z.toInt() + z))
+            blocks.add(Vector(centerX, y, z))
         }
 
         return blocks
@@ -49,12 +51,9 @@ data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
      */
     @Contract(pure=true)
     fun isNear(vector: Vector): Boolean {
-//        val x = if (heading.x == 0.0) Pair(center.x, vector.x) else Pair(center.z, vector.z)
-//        val dx = abs(x.first - x.second)
-//        val dy = abs(center.y - vector.y)
-//
-//        return dy <= radius - 1 && dx <= 2
+        val dx = abs(center.x - vector.x)
+        val dy = abs(center.y - vector.y)
 
-        return center.distance(vector) <= radius
+        return dy <= radius - 1 && dx <= 2
     }
 }

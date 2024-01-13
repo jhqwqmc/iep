@@ -1,5 +1,7 @@
 package dev.efnilite.iep
 
+import dev.efnilite.iep.generator.Generator
+import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.inventory.item.Item
 import fr.mrmicky.fastboard.adventure.FastBoard
@@ -29,6 +31,10 @@ class ElytraPlayer(private val player: Player) {
 
     private val board = FastBoard(player)
 
+    fun getGenerator(): Generator {
+        return Divider.generators.first { it.players.contains(this) }
+    }
+
     fun teleport(vector: Vector) {
         player.teleportAsync(vector.toLocation(World.world))
     }
@@ -55,5 +61,12 @@ class ElytraPlayer(private val player: Player) {
 
         player.inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
         player.inventory.addItem(Item(Material.FIREWORK_ROCKET, 64, "").build())
+    }
+
+    companion object {
+
+        fun Player.asElytraPlayer(): ElytraPlayer? {
+            return Divider.generators.flatMap { it.players }.firstOrNull { it.player == this }
+        }
     }
 }

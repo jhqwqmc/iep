@@ -2,12 +2,14 @@ package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Task
 import org.bukkit.Material
 import org.bukkit.block.Block
+import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.time.Instant
@@ -45,7 +47,7 @@ private class Island(vector: Vector, schematic: Schematic) {
 
 class Generator {
 
-    private val players = mutableListOf<ElytraPlayer>()
+    val players = mutableListOf<ElytraPlayer>()
     private val rings = mutableMapOf<Int, Ring>()
 
     private var start: Instant = Instant.now()
@@ -83,6 +85,7 @@ class Generator {
         generate()
 
         task = Task.create(IEP.instance)
+            .delay(20)
             .repeat(1)
             .execute {
 //                if (players.isEmpty()) {
@@ -150,6 +153,7 @@ class Generator {
         val nextRing = Ring(heading, next, 5)
         rings[idx + 1] = nextRing
 
+        nextRing.center.toLocation(World.world).block.type = Material.GREEN_CONCRETE
         nextRing.blocks.forEach { it.toLocation(World.world).block.type = Material.RED_CONCRETE }
     }
 
@@ -161,5 +165,26 @@ class Generator {
 
         rings.forEach { (_, ring) -> ring.blocks.forEach { it.toLocation(World.world).block.type = Material.AIR } }
         rings.clear()
+    }
+
+    companion object {
+
+        /**
+         * Creates a new generator.
+         * @param player The player to create the generator for.
+         */
+        fun create(player: Player) {
+            val elytraPlayer = ElytraPlayer(player)
+
+            elytraPlayer.setup()
+
+            val generator = Generator()
+
+            Divider.add(generator)
+
+            generator.start(Divider.toLocation(generator))
+
+            generator.add(elytraPlayer)
+        }
     }
 }

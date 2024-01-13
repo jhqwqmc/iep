@@ -16,6 +16,7 @@ class IEP : ViPlugin() {
     override fun enable() {
         instance = this
 
+        registerListener(Events())
         registerCommand("iep", Command())
 
         saveResource("schematics/spawn-island", false)

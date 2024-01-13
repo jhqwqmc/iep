@@ -13,17 +13,7 @@ class Command : ViCommand() {
 
         when (args[0]) {
             "play" -> {
-                val player = ElytraPlayer(sender as Player)
-
-                player.setup()
-
-                val generator = Generator()
-
-                Divider.add(generator)
-
-                generator.start(Divider.toLocation(generator))
-
-                generator.add(player)
+                Generator.create(sender as Player)
             }
         }
 
