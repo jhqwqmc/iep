@@ -33,9 +33,9 @@ object Divider {
     }
 
     /**
-     * Returns the center location of the generator.
-     * @param generator The generator to get the location of.
-     * @return The center location of the generator.
+     * Returns the center position of the generator.
+     * @param generator The generator to get the position of.
+     * @return The center position of the generator.
      */
     fun toLocation(generator: Generator): Vector {
         val idx = sections[generator]!!

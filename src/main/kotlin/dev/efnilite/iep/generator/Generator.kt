@@ -3,66 +3,42 @@ package dev.efnilite.iep.generator
 import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.world.World
+import dev.efnilite.vilib.schematic.Schematic
+import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Task
 import org.bukkit.Material
+import org.bukkit.block.Block
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
-import org.jetbrains.annotations.Contract
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
 
-private data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
+private class Island(vector: Vector, schematic: Schematic) {
+
+    val blocks: List<Block> = schematic.paste(vector.toLocation(World.world))
+    val playerSpawn: Vector
+    val blockSpawn: Vector
 
     init {
-        assert(radius >= 0)
-        assert(heading.isNormalized)
-    }
+        assert(blocks.isNotEmpty())
 
-    val blocks = getBlocks()
+        blocks.first { it.type == Material.DIAMOND_BLOCK }.let {
+            playerSpawn = it.location.toVector()
 
-    /**
-     * Returns a list of vectors in a circle around [center] with radius [radius].
-     * @return A list of vectors in a circle.
-     */
-    @Contract(pure = true)
-    fun getBlocks(): List<Vector> {
-        if (radius == 0) {
-            return emptyList()
+            it.type = Material.AIR
         }
+        blocks.first { it.type == Material.EMERALD_BLOCK }.let {
+            blockSpawn = it.location.toVector()
 
-        val blocks = mutableListOf<Vector>()
-        val centerX = if (heading.x == 0.0) center.x.toInt() else center.z.toInt()
-        val centerY = center.y.toInt()
-
-        val accuracy = 30
-        var t = 0.0
-        repeat(accuracy) {
-            t += 2 * Math.PI / accuracy
-
-            val x = (centerX + radius * cos(t)).toInt()
-            val y = (centerY + radius * sin(t)).toInt()
-
-            blocks.add(Vector(if (heading.z == 0.0) x else 0, y, if (heading.x == 0.0) x else 0))
+            it.type = Material.AIR
         }
-
-        return blocks
     }
 
     /**
-     * Returns whether the given vector is near the ring's center.
-     * @param vector The vector to check.
-     * @return Whether the given vector is near the ring's center.
+     * Clears the island.
      */
-    @Contract(pure=true)
-    fun isNear(vector: Vector): Boolean {
-        val x = if (heading.x == 0.0) Pair(center.x, vector.x) else Pair(center.z, vector.z)
-        val dx = abs(x.first - x.second)
-        val dy = abs(center.y - vector.y)
-
-        return dy <= radius - 1 && dx <= 2
+    fun clear() {
+        blocks.forEach { it.type = Material.AIR }
     }
 }
 
@@ -74,7 +50,7 @@ class Generator {
     private var start: Instant = Instant.now()
     private lateinit var task: BukkitTask
 
-    private lateinit var playerSpawn: Vector
+    private lateinit var island: Island
     private val heading = Vector(1, 0, 0)
 
     /**
@@ -84,7 +60,7 @@ class Generator {
     fun add(player: ElytraPlayer) {
         players.add(player)
 
-        player.teleport(playerSpawn)
+        player.teleport(island.playerSpawn)
     }
 
     /**
@@ -97,13 +73,12 @@ class Generator {
 
     /**
      * Initializes all the stuff.
-     * @param playerSpawn The spawn location of the player.
-     * @param blockSpawn The spawn location of the first block.
+     * @param vector The vector to spawn the island at.
      */
-    fun start(playerSpawn: Vector, blockSpawn: Vector) {
-        this.playerSpawn = playerSpawn
+    fun start(vector: Vector) {
+        this.island = Island(vector, Schematics.getSchematic(IEP.instance, "spawn-island"))
 
-        rings[0] = Ring(heading, blockSpawn, 0)
+        rings[0] = Ring(heading, island.blockSpawn, 0)
         generate()
 
         task = Task.create(IEP.instance)
@@ -124,7 +99,7 @@ class Generator {
      */
     private fun updateBoard(score: Int) {
         val timeMs = Instant.now().minusMillis(start.toEpochMilli())
-        val time = DateTimeFormatter.ofPattern("HH:mm:ss").format(timeMs)
+        val time = DateTimeFormatter.ofPattern("HH:mm:ss:SSS").format(timeMs)
         players.forEach { it.updateBoard(score, time) }
     }
 
@@ -136,7 +111,7 @@ class Generator {
         val idx = latest.key
         val ring = latest.value
 
-        val pos = players[0].location
+        val pos = players[0].position
 
         updateBoard(idx - 1)
 
@@ -176,7 +151,7 @@ class Generator {
      * Resets the players and rings.
      */
     private fun reset() {
-        players.forEach { it.teleport(playerSpawn) }
+        players.forEach { it.teleport(island.playerSpawn) }
 
         rings.forEach { (_, ring) -> ring.blocks.forEach { it.toLocation(World.world).block.type = Material.AIR } }
         rings.clear()

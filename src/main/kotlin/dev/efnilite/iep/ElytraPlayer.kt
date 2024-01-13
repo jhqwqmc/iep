@@ -14,15 +14,15 @@ import org.bukkit.util.Vector
 class ElytraPlayer(private val player: Player) {
 
     /**
-     * The player's location.
+     * The player's position.
      */
-    val location
+    val position
         get() = player.location.toVector()
 
     /**
-     * The player's previous location.
+     * The player's previous position.
      */
-    val previousLocation = player.location.toVector()
+    val previousPosition = player.location.toVector()
 
     private val board = FastBoard(player)
 
