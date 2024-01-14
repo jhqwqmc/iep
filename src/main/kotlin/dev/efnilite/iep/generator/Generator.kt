@@ -56,14 +56,14 @@ class Generator {
     private lateinit var island: Island
     private val heading = Vector(1, 0, 0)
 
+    private val director = RingDirector()
+
     /**
      * Adds a player to the generator.
      * @param player The player to add.
      */
     fun add(player: ElytraPlayer) {
         players.add(player)
-
-        player.teleport(island.playerSpawn)
     }
 
     /**
@@ -72,6 +72,12 @@ class Generator {
      */
     fun remove(player: ElytraPlayer) {
         players.remove(player)
+
+        if (players.isEmpty()) {
+            task.cancel()
+
+            reset()
+        }
     }
 
     /**
@@ -81,20 +87,14 @@ class Generator {
     fun start(vector: Vector) {
         island = Island(vector, Schematics.getSchematic(IEP.instance, "spawn-island"))
 
+        players.forEach { it.teleport(island.playerSpawn) }
+
         rings[0] = Ring(heading, island.blockSpawn, 0)
         generate()
 
         task = Task.create(IEP.instance)
-            .delay(20)
             .repeat(1)
-            .execute {
-//                if (players.isEmpty()) {
-//                    task.cancel()
-//                    return@execute
-//                }
-
-                tick()
-            }
+            .execute(::tick)
             .run()
     }
 
@@ -132,10 +132,10 @@ class Generator {
             return
         }
 
-//        if (ring.center.distance(pos) > 100) {
-//            reset()
-//            return
-//        }
+        if (ring.isOutOfBounds(pos)) {
+            reset()
+            return
+        }
     }
 
     /**
@@ -146,9 +146,7 @@ class Generator {
         val idx = latest.key
         val ring = latest.value
 
-        val next = ring.center.clone().add(heading.clone().multiply(30))
-
-        println(next)
+        val next = ring.center.clone().add(director.next())
 
         val nextRing = Ring(heading, next, 5)
         rings[idx + 1] = nextRing
@@ -165,6 +163,9 @@ class Generator {
 
         rings.forEach { (_, ring) -> ring.blocks.forEach { it.toLocation(World.world).block.type = Material.AIR } }
         rings.clear()
+
+        rings[0] = Ring(heading, island.blockSpawn, 0)
+        generate()
     }
 
     companion object {
@@ -182,9 +183,9 @@ class Generator {
 
             Divider.add(generator)
 
-            generator.start(Divider.toLocation(generator))
-
             generator.add(elytraPlayer)
+
+            generator.start(Divider.toLocation(generator))
         }
     }
 }

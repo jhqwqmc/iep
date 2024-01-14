@@ -13,8 +13,8 @@ class RingDirector(private val random: Random = ThreadLocalRandom.current()) {
      */
     @Contract(pure = true)
     fun next(): Vector {
-        val dx = next(40, 5)
-        val dy = next(0, 5)
+        val dx = next(30, 5)
+        val dy = next(0, 10)
         val dz = next(0, 10)
 
         return Vector(dx, dy, dz)

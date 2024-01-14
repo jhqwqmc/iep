@@ -4,6 +4,7 @@ import org.bukkit.util.Vector
 import org.jetbrains.annotations.Contract
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.floor
 import kotlin.math.sin
 
 data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
@@ -26,19 +27,20 @@ data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
         }
 
         val blocks = mutableListOf<Vector>()
-        val centerX = center.x + 0.5
-        val centerY = center.y + 0.5
-        val centerZ = center.z + 0.5
+        val centerX = floor(center.x) + 0.5
+        val centerY = floor(center.y) + 0.5
+        val centerZ = floor(center.z) + 0.5
 
         val accuracy = 60
-        var t = 0.0
-        repeat(accuracy) {
-            t += 2 * Math.PI / accuracy
 
+        var t = 0.0
+        while (t <= 2 * Math.PI) {
             val y = (centerY + radius * sin(t))
             val z = (centerZ + radius * cos(t))
 
             blocks.add(Vector(centerX, y, z))
+
+            t += accuracy
         }
 
         return blocks
@@ -53,7 +55,22 @@ data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
     fun isNear(vector: Vector): Boolean {
         val dx = abs(center.x - vector.x)
         val dy = abs(center.y - vector.y)
+        val dz = abs(center.z - vector.z)
+        val r = radius - 1
 
-        return dy <= radius - 1 && dx <= 2
+        return dy * dy + dz * dz <= r * r && dx <= 1.5
+    }
+
+    /**
+     * Returns whether the given vector is out of bounds.
+     * @param vector The vector to check.
+     * @return Whether the given vector is out of bounds.
+     */
+    @Contract(pure=true)
+    fun isOutOfBounds(vector: Vector): Boolean {
+        val dy = abs(center.y - vector.y)
+        val dz = abs(center.z - vector.z)
+
+        return dz > 100 || dy > 100
     }
 }

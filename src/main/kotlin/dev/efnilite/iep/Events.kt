@@ -2,6 +2,7 @@ package dev.efnilite.iep
 
 import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.generator.Generator
+import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.event.EventWatcher
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerChangedWorldEvent
@@ -21,6 +22,8 @@ class Events : EventWatcher {
     fun change(event: PlayerChangedWorldEvent) {
         val player = event.player.asElytraPlayer() ?: return
 
+        if (event.player.world == World.world) return
+
         player.getGenerator().remove(player)
     }
 
@@ -28,6 +31,4 @@ class Events : EventWatcher {
     fun join(event: PlayerJoinEvent) {
         Generator.create(event.player)
     }
-
-
 }
