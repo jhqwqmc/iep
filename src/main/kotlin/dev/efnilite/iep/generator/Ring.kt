@@ -31,7 +31,7 @@ data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
         val centerY = floor(center.y) + 0.5
         val centerZ = floor(center.z) + 0.5
 
-        val accuracy = 60
+        val accuracy = 2 * Math.PI / 60
 
         var t = 0.0
         while (t <= 2 * Math.PI) {

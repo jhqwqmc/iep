@@ -1,7 +1,8 @@
 package dev.efnilite.iep.generator
 
-import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.player.ElytraPlayer
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
@@ -177,7 +178,7 @@ class Generator {
         fun create(player: Player) {
             val elytraPlayer = ElytraPlayer(player)
 
-            elytraPlayer.setup()
+            elytraPlayer.join()
 
             val generator = Generator()
 
@@ -186,6 +187,20 @@ class Generator {
             generator.add(elytraPlayer)
 
             generator.start(Divider.toLocation(generator))
+        }
+
+        /**
+         * Removes a player from the generator.
+         * @param player The player to remove.
+         */
+        fun remove(player: Player) {
+            val elytraPlayer = player.asElytraPlayer() ?: return
+
+            val generator = elytraPlayer.getGenerator()
+
+            generator.remove(elytraPlayer)
+
+            elytraPlayer.leave()
         }
     }
 }

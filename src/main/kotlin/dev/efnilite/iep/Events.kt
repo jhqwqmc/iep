@@ -1,6 +1,6 @@
 package dev.efnilite.iep
 
-import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.event.EventWatcher
@@ -29,6 +29,8 @@ class Events : EventWatcher {
 
     @EventHandler
     fun join(event: PlayerJoinEvent) {
-        Generator.create(event.player)
+        if (Config.CONFIG.getBoolean("join-on-join")) {
+            Generator.create(event.player)
+        }
     }
 }
