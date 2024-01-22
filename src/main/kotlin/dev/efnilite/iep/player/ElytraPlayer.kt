@@ -36,7 +36,7 @@ private data class PreviousData(private val player: Player) {
             inventory.clear()
 
             inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
-            inventory.addItem(Item(Material.FIREWORK_ROCKET, 64, "").build())
+            inventory.addItem(Item(Material.FIREWORK_ROCKET, 1, "").build())
         }
     }
 
@@ -59,7 +59,7 @@ private data class PreviousData(private val player: Player) {
 /**
  * Class for wrapping players.
  */
-class ElytraPlayer(private val player: Player) {
+class ElytraPlayer(val player: Player) {
 
     /**
      * The player's position.
@@ -106,7 +106,11 @@ class ElytraPlayer(private val player: Player) {
     /**
      * Resets the data of the player.
      */
-    fun leave() = data.leave()
+    fun leave() {
+        data.leave()
+
+        board.delete()
+    }
 
     companion object {
 

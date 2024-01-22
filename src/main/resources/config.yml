@@ -1,3 +1,18 @@
+# -= Styles =-
+styles:
+  random:
+    red: ["red_wool", "red_concrete"]
+  incremental:
+    red: ["red_wool", "red_concrete"]
+
 # -= Join on join =-
 # If true, players that join the server will join the parkour.
 join-on-join: true
+
+# -= Time format =-
+# H = hours, m = minutes, s = seconds, S = milliseconds
+time-format: "mm:ss:SSS"
+
+# -= Firework respawn time =-
+# The time in seconds it takes for a firework to respawn after use.
+firework-respawn-time: 15

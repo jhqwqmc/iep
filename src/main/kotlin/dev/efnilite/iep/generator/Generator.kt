@@ -1,8 +1,11 @@
 package dev.efnilite.iep.generator
 
+import dev.efnilite.iep.Config
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.style.RandomStyle
+import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
@@ -51,6 +54,7 @@ class Generator {
     val players = mutableListOf<ElytraPlayer>()
     private val rings = mutableMapOf<Int, Ring>()
 
+    private var style: Style = RandomStyle(listOf(Material.RED_WOOL.createBlockData()))
     private var start: Instant = Instant.now()
     private lateinit var task: BukkitTask
 
@@ -78,6 +82,8 @@ class Generator {
             task.cancel()
 
             reset()
+
+            island.clear()
         }
     }
 
@@ -104,7 +110,7 @@ class Generator {
      */
     private fun updateBoard(score: Int) {
         val timeMs = Instant.now().minusMillis(start.toEpochMilli())
-        val time = DateTimeFormatter.ofPattern("HH:mm:ss:SSS")
+        val time = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
             .withZone(ZoneOffset.UTC)
             .format(timeMs)
 
@@ -152,8 +158,7 @@ class Generator {
         val nextRing = Ring(heading, next, 5)
         rings[idx + 1] = nextRing
 
-        nextRing.center.toLocation(World.world).block.type = Material.GREEN_CONCRETE
-        nextRing.blocks.forEach { it.toLocation(World.world).block.type = Material.RED_CONCRETE }
+        nextRing.blocks.forEach { it.toLocation(World.world).block.blockData = style.next() }
     }
 
     /**
