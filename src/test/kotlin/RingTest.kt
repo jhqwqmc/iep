@@ -14,7 +14,7 @@ class RingTest {
 
     @Test
     fun testBlocks() {
-        // todo
+        println(ring.blocks)
     }
 
     @Test

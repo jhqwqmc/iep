@@ -1,12 +1,12 @@
 package dev.efnilite.iep.style
 
-import org.bukkit.block.data.BlockData
+import org.bukkit.Material
 
 interface Style {
 
     /**
      * Returns the next block data.
      */
-    fun next(): BlockData
+    fun next(): Material
 
 }

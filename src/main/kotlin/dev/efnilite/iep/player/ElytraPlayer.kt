@@ -90,7 +90,7 @@ class ElytraPlayer(val player: Player) {
             deserialize("<#b30000><bold>Score</bold> <gray>$score"),
             deserialize("<#b30000><bold>Time</bold> <gray>$time"),
             deserialize(""),
-            deserialize("<505050>server.ip")
+            deserialize("<#505050>server.ip")
         )
     }
 

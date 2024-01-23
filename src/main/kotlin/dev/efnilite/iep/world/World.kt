@@ -19,7 +19,7 @@ object World {
      * Creates the world.
      */
     fun create() {
-        world = WorldCreator("ztd")
+        world = WorldCreator("iep")
             .generator("minecraft:air")
             .generateStructures(false)
             .biomeProvider("minecraft:plains")
@@ -54,7 +54,7 @@ object World {
      * Deletes the parkour world.
      */
     fun delete() {
-        val file = File("ztd")
+        val file = File("iep")
 
         if (!file.exists()) {
             return
@@ -66,7 +66,7 @@ object World {
         try {
             FileUtils.deleteDirectory(file)
         } catch (ex: IOException) {
-            IEP.instance.logging.stack("Error while trying to reset ztd world", ex)
+            IEP.instance.logging.stack("Error while trying to reset iep world", ex)
         }
     }
 }

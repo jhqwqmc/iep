@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.inventory.ItemStack
 
 class Events : EventWatcher {
 
@@ -48,7 +49,7 @@ class Events : EventWatcher {
 
         Task.create(IEP.instance)
             .delay(Config.CONFIG.getInt("firework-respawn-time") { it >= 0 } * 20)
-            .execute { player.player.inventory.addItem(event.item!!) }
+            .execute { player.player.inventory.addItem(ItemStack(Material.FIREWORK_ROCKET)) }
             .run()
     }
 }

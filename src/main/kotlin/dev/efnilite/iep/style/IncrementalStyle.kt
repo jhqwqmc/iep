@@ -1,15 +1,15 @@
 package dev.efnilite.iep.style
 
-import org.bukkit.block.data.BlockData
+import org.bukkit.Material
 
 /**
  * Represents a style where each block is selected incrementally.
  */
-data class IncrementalStyle(val data: List<BlockData>) : Style {
+data class IncrementalStyle(val data: List<Material>) : Style {
 
     private var idx = 0
 
-    override fun next(): BlockData {
+    override fun next(): Material {
         val next = data[idx]
 
         idx++

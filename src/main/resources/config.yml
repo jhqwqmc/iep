@@ -15,4 +15,4 @@ time-format: "mm:ss:SSS"
 
 # -= Firework respawn time =-
 # The time in seconds it takes for a firework to respawn after use.
-firework-respawn-time: 15
+firework-respawn-time: 5

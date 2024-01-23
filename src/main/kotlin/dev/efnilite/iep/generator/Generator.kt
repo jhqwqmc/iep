@@ -54,7 +54,7 @@ class Generator {
     val players = mutableListOf<ElytraPlayer>()
     private val rings = mutableMapOf<Int, Ring>()
 
-    private var style: Style = RandomStyle(listOf(Material.RED_WOOL.createBlockData()))
+    private var style: Style = RandomStyle(listOf(Material.RED_WOOL, Material.RED_CONCRETE, Material.RED_NETHER_BRICKS))
     private var start: Instant = Instant.now()
     private lateinit var task: BukkitTask
 
@@ -153,12 +153,12 @@ class Generator {
         val idx = latest.key
         val ring = latest.value
 
-        val next = ring.center.clone().add(director.next())
+        val next = ring.center.clone().add(director.nextOffset())
 
-        val nextRing = Ring(heading, next, 5)
+        val nextRing = Ring(heading, next, director.nextRadius())
         rings[idx + 1] = nextRing
 
-        nextRing.blocks.forEach { it.toLocation(World.world).block.blockData = style.next() }
+        nextRing.blocks.forEach { it.toLocation(World.world).block.type = style.next() }
     }
 
     /**
