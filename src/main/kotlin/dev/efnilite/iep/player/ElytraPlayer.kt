@@ -67,6 +67,9 @@ class ElytraPlayer(val player: Player) {
     val position
         get() = player.location.toVector()
 
+    val name = player.name
+    val uuid = player.uniqueId
+
     /**
      * The player's previous position.
      */

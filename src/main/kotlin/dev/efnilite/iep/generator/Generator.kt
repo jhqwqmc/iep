@@ -2,6 +2,7 @@ package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.Config
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.style.RandomStyle
@@ -62,6 +63,8 @@ class Generator {
     private val heading = Vector(1, 0, 0)
 
     private val director = RingDirector()
+
+    private val leaderboard = IEP.getLeaderboard("default")
 
     /**
      * Adds a player to the generator.
@@ -130,6 +133,14 @@ class Generator {
         updateBoard(idx - 1)
 
         if (ring.isNear(pos)) {
+            for (player in players) {
+                leaderboard.update(player.uuid, Score(
+                    name = player.name,
+                    score = idx - 1,
+                    time = Instant.now().minusMillis(start.toEpochMilli()).toEpochMilli(),
+                    difficulty = 0.0))
+            }
+
             generate()
 
             if (idx - 1 == 0) {

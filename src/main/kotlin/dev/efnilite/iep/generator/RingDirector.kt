@@ -24,7 +24,7 @@ class RingDirector(private val random: Random = ThreadLocalRandom.current()) {
      * Returns a random radius.
      */
     @Contract(pure = true)
-    fun nextRadius() = nextOffset(5, 1)
+    fun nextRadius() = random.nextInt(4, 5 + 1)
 
     /**
      * Returns a random normally distributed value.

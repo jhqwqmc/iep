@@ -1,9 +1,9 @@
 # -= Styles =-
 styles:
   random:
-    red: ["red_wool", "red_concrete"]
+    red: ["red_wool", "red_concrete", "red_terracotta", "red_stained_glass"]
   incremental:
-    red: ["red_wool", "red_concrete"]
+    red: ["red_wool", "red_concrete", "red_terracotta", "red_stained_glass"]
 
 # -= Join on join =-
 # If true, players that join the server will join the parkour.
