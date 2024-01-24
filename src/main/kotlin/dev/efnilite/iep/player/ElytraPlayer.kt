@@ -36,6 +36,7 @@ private data class PreviousData(private val player: Player) {
             inventory.clear()
 
             inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
+            inventory.chestplate = Item(Material.STRING, "<white>Settings").unbreakable().build()
             inventory.addItem(Item(Material.FIREWORK_ROCKET, 1, "").build())
         }
     }

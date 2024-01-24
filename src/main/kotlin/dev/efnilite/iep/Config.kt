@@ -44,11 +44,13 @@ enum class Config(file: String) {
     /**
      * Returns a string list from the file.
      */
-    fun getStringList(path: String, bounds: (List<String>) -> Boolean): List<String> {
+    fun getStringList(path: String, bounds: (List<String>) -> Boolean = { true }): List<String> {
         val value = config.getStringList(path)
 
         require(bounds.invoke(value))
 
         return value
     }
+
+    fun getPaths(path: String): Set<String> = config.getConfigurationSection(path)!!.getKeys(false)
 }

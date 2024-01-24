@@ -5,7 +5,7 @@ import org.bukkit.Material
 /**
  * Represents a style where each block is selected incrementally.
  */
-data class IncrementalStyle(val data: List<Material>) : Style {
+data class IncrementalStyle(val name: String, val data: List<Material>) : Style {
 
     private var idx = 0
 
@@ -19,4 +19,6 @@ data class IncrementalStyle(val data: List<Material>) : Style {
 
         return next
     }
+
+    override fun name() = name
 }

@@ -9,4 +9,9 @@ interface Style {
      */
     fun next(): Material
 
+    /**
+     * Returns the name of the style.
+     */
+    fun name(): String
+
 }

@@ -55,7 +55,7 @@ class Generator {
     val players = mutableListOf<ElytraPlayer>()
     private val rings = mutableMapOf<Int, Ring>()
 
-    private var style: Style = RandomStyle(listOf(Material.RED_WOOL, Material.RED_CONCRETE, Material.RED_NETHER_BRICKS))
+    var style = IEP.getStyles()[0]
     private var start: Instant = Instant.now()
     private lateinit var task: BukkitTask
 

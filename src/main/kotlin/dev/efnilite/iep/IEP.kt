@@ -1,6 +1,8 @@
 package dev.efnilite.iep
 
 import dev.efnilite.iep.leaderboard.Leaderboard
+import dev.efnilite.iep.style.RandomStyle
+import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.ViPlugin
 import dev.efnilite.vilib.inventory.Menu
@@ -8,6 +10,7 @@ import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Logging
 import dev.efnilite.vilib.util.Task
 import dev.efnilite.vilib.util.elevator.GitElevator
+import org.bukkit.Material
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -32,6 +35,9 @@ class IEP : ViPlugin() {
 
         register(Leaderboard("default"))
 
+        registerStyle("styles.random")
+        registerStyle("styles.incremental")
+
         Task.create(this)
             .async()
             .repeat(3 * 60 * 20)
@@ -41,6 +47,20 @@ class IEP : ViPlugin() {
                 }
             }
             .run()
+    }
+
+    private fun registerStyle(path: String) {
+        Config.CONFIG.getPaths(path).forEach { name ->
+            register(RandomStyle(name, Config.CONFIG.getStringList("$path.$name")
+                .map {
+                    try {
+                        return@map Material.getMaterial(it.uppercase())!!
+                    } catch (ex: NullPointerException) {
+                        logging.error("Invalid material in style $path.$name: $it")
+                        return@map Material.STONE
+                    }
+                }))
+        }
     }
 
     override fun disable() {
@@ -58,5 +78,13 @@ class IEP : ViPlugin() {
         fun register(leaderboard: Leaderboard) = leaderboards.add(leaderboard)
 
         fun getLeaderboard(name: String) = leaderboards.first { it.name == name }
+
+        private val styles: MutableList<Style> = mutableListOf()
+
+        fun register(style: Style) = styles.add(style)
+
+        fun getStyle(name: String) = styles.first { it.name() == name }
+
+        fun getStyles() = styles.toList()
     }
 }

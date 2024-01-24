@@ -15,6 +15,7 @@ data class Leaderboard(val name: String) {
     private val file = File(IEP.instance.dataFolder, "leaderboards/$name.json")
 
     init {
+        file.parentFile.mkdirs()
         file.createNewFile()
 
         read()
@@ -27,7 +28,7 @@ data class Leaderboard(val name: String) {
         Task.create(IEP.instance)
             .async()
             .execute {
-                val map = ViPlugin.getGson().fromJson(file.reader(), Map::class.java)
+                val map = ViPlugin.getGson().fromJson(file.reader(), Map::class.java) ?: return@execute
 
                 for ((uuid, score) in map) {
                     data[UUID.fromString(uuid.toString())] = ViPlugin.getGson()
