@@ -62,12 +62,14 @@ data class Ring(val heading: Vector, val center: Vector, val radius: Int) {
      */
     @Contract(pure=true)
     fun isNear(vector: Vector): Boolean {
-        val dx = abs(center.x - vector.x)
-        val dy = abs(center.y - vector.y)
-        val dz = abs(center.z - vector.z)
-        val r = radius - 1
+//        val dx = abs(center.x - vector.x)
+//        val dy = abs(center.y - vector.y)
+//        val dz = abs(center.z - vector.z)
+//        val r = radius - 1
+//
+//        return dy * dy + dz * dz <= r * r && dx <= 2
 
-        return dy * dy + dz * dz <= r * r && dx <= 2
+        return center.distance(vector) <= 50
     }
 
     /**

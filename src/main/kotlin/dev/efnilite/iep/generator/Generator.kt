@@ -98,7 +98,7 @@ class Generator {
         players.forEach { it.teleport(island.playerSpawn) }
 
         rings[0] = Ring(heading, island.blockSpawn, 0)
-        repeat(250) { generate() }
+        generate()
 
         task = Task.create(IEP.instance)
             .repeat(1)
