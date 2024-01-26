@@ -14,7 +14,7 @@ class RingTest {
 
     @Test
     fun testBlocks() {
-        println(ring.blocks)
+
     }
 
     @Test

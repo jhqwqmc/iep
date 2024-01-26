@@ -43,10 +43,10 @@ object Divider {
         val head = spiralAt(idx)
 
         val x = head.first
-        val y = 150.0
+        val y = 250.0
         val z = head.second
 
-        return Vector(x * 10000.0, y, z * 10000.0)
+        return Vector(x * 20000.0, y, z * 20000.0)
     }
 
     /**

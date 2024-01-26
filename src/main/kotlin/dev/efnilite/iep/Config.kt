@@ -9,7 +9,7 @@ enum class Config(file: String) {
     private val config: YamlConfiguration
 
     init {
-        IEP.instance.saveResource(file, false)
+        IEP.instance.saveFile(file)
 
         config = YamlConfiguration.loadConfiguration(IEP.instance.dataFolder.resolve(file))
     }

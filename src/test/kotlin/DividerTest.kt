@@ -45,9 +45,9 @@ class DividerTest {
 //        Divider.add(generator3)
 //        Divider.add(generator4)
 //
-//        assertEquals(Vector(0, 150, 0), Divider.toLocation(generator1))
-//        assertEquals(Vector(10000, 150, 0), Divider.toLocation(generator2))
-//        assertEquals(Vector(10000, 150, 10000), Divider.toLocation(generator3))
-//        assertEquals(Vector(0, 150, 10000), Divider.toLocation(generator4))
+//        assertEquals(Vector(0, 300, 0), Divider.toLocation(generator1))
+//        assertEquals(Vector(10000, 300, 0), Divider.toLocation(generator2))
+//        assertEquals(Vector(10000, 300, 10000), Divider.toLocation(generator3))
+//        assertEquals(Vector(0, 300, 10000), Divider.toLocation(generator4))
     }
 }

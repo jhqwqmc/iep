@@ -5,8 +5,6 @@ import dev.efnilite.iep.IEP
 import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
-import dev.efnilite.iep.style.RandomStyle
-import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
@@ -100,7 +98,7 @@ class Generator {
         players.forEach { it.teleport(island.playerSpawn) }
 
         rings[0] = Ring(heading, island.blockSpawn, 0)
-        generate()
+        repeat(250) { generate() }
 
         task = Task.create(IEP.instance)
             .repeat(1)

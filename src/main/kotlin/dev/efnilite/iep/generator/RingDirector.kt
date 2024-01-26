@@ -13,9 +13,9 @@ class RingDirector(private val random: Random = ThreadLocalRandom.current()) {
      */
     @Contract(pure = true)
     fun nextOffset(): Vector {
-        val dx = nextOffset(30, 5)
-        val dy = nextOffset(0, 10)
-        val dz = nextOffset(0, 10)
+        val dx = nextOffset(5.0, 0.0)
+        val dy = nextOffset(-0.5, 0.5)
+        val dz = nextOffset(0.0, 0.5)
 
         return Vector(dx, dy, dz)
     }
@@ -24,15 +24,15 @@ class RingDirector(private val random: Random = ThreadLocalRandom.current()) {
      * Returns a random radius.
      */
     @Contract(pure = true)
-    fun nextRadius() = random.nextInt(4, 5 + 1)
+    fun nextRadius() = 4
 
     /**
      * Returns a random normally distributed value.
      */
     @Contract(pure = true)
-    private fun nextOffset(mean: Int, sd: Int): Int {
-        val distribution = ((mean - 2 * sd)..(mean + 2 * sd))
-            .associateWith { Probs.normalpdf(mean.toDouble(), sd.toDouble(), it.toDouble()) }
+    private fun nextOffset(mean: Double, sd: Double): Int {
+        val distribution = ((mean - 2 * sd).toInt()..(mean + 2 * sd).toInt())
+            .associateWith { Probs.normalpdf(mean, sd, it.toDouble()) }
 
         return Probs.random(distribution, random)
     }

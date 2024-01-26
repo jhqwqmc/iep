@@ -4,9 +4,31 @@ import dev.efnilite.iep.IEP
 import net.kyori.adventure.util.TriState
 import org.bukkit.*
 import org.bukkit.World
+import org.bukkit.block.Biome
+import org.bukkit.generator.BiomeProvider
+import org.bukkit.generator.ChunkGenerator
+import org.bukkit.generator.WorldInfo
 import org.codehaus.plexus.util.FileUtils
 import java.io.File
 import java.io.IOException
+
+private class EmptyChunkGenerator : ChunkGenerator() {
+
+    override fun shouldGenerateCaves() = false
+    override fun shouldGenerateDecorations() = false
+    override fun shouldGenerateMobs() = false
+    override fun shouldGenerateStructures() = false
+    override fun shouldGenerateSurface() = false
+    override fun shouldGenerateNoise() = false
+
+}
+
+private class EmptyBiomeGenerator : BiomeProvider() {
+
+    override fun getBiome(p0: WorldInfo, p1: Int, p2: Int, p3: Int): Biome = Biome.PLAINS
+    override fun getBiomes(p0: WorldInfo): MutableList<Biome> = mutableListOf(Biome.PLAINS)
+
+}
 
 /**
  * Class for handling Parkour world generation/deletion, etc.
@@ -20,10 +42,10 @@ object World {
      */
     fun create() {
         world = WorldCreator("iep")
-            .generator("minecraft:air")
+            .generator(EmptyChunkGenerator())
             .generateStructures(false)
-            .biomeProvider("minecraft:plains")
-            .type(WorldType.FLAT)
+            .biomeProvider(EmptyBiomeGenerator())
+            .type(WorldType.NORMAL)
             .keepSpawnLoaded(TriState.FALSE)
             .createWorld()!!
 

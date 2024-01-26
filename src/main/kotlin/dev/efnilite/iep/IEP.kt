@@ -11,6 +11,7 @@ import dev.efnilite.vilib.util.Logging
 import dev.efnilite.vilib.util.Task
 import dev.efnilite.vilib.util.elevator.GitElevator
 import org.bukkit.Material
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -24,13 +25,13 @@ class IEP : ViPlugin() {
         registerListener(Events())
         registerCommand("iep", Command())
 
-        saveResource("schematics/spawn-island", false)
+        saveFile("schematics/spawn-island")
 
         World.create()
         Menu.init(this)
 
         Schematics.addFromFiles(this,
-            *Files.list(Path.of(dataFolder.toString(), "/schematics"))
+            *Files.list(Path.of(dataFolder.toString(), "schematics"))
                 .map { it.toFile() }.toList().toTypedArray())
 
         register(Leaderboard("default"))
@@ -47,6 +48,14 @@ class IEP : ViPlugin() {
                 }
             }
             .run()
+    }
+
+    fun saveFile(path: String) {
+        val file = File(dataFolder.toString(), path)
+
+        if (!file.exists()) {
+            saveResource(path, false)
+        }
     }
 
     private fun registerStyle(path: String) {
