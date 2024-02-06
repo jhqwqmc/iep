@@ -84,6 +84,6 @@ data class Leaderboard(val name: String) {
     }
 
     companion object {
-        private val EMPTY = Score("?", 0, 0, 0.0)
+        private val EMPTY = Score("?", 0, 0, 0)
     }
 }

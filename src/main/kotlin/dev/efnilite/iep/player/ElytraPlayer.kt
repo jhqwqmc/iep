@@ -10,6 +10,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.util.Vector
@@ -83,16 +84,17 @@ class ElytraPlayer(val player: Player) {
     }
 
     fun teleport(vector: Vector) {
-        player.teleportAsync(vector.toLocation(World.world))
+        player.teleportAsync(vector.toLocation(World.world), PlayerTeleportEvent.TeleportCause.PLUGIN)
     }
 
-    fun updateBoard(score: Int, time: String) {
-        board.updateTitle(deserialize("<gradient:#ff0000:#800000>Infinite Elytra Parkour</gradient>"))
+    fun updateBoard(score: Int, time: String, seed: Int) {
+        board.updateTitle(deserialize("<gradient:#ff0000:#800000><bold>IEP</gradient>"))
 
         board.updateLines(
             deserialize(""),
             deserialize("<#b30000><bold>Score</bold> <gray>$score"),
             deserialize("<#b30000><bold>Time</bold> <gray>$time"),
+            deserialize("<#b30000><bold>Seed</bold> <gray>$seed"),
             deserialize(""),
             deserialize("<#505050>server.ip")
         )

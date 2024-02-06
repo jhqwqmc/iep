@@ -9,6 +9,7 @@ import dev.efnilite.vilib.util.Task
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -46,17 +47,10 @@ class Events : EventWatcher {
     }
 
     @EventHandler
-    fun rightRocket(event: PlayerInteractEvent) {
+    fun rightRocket(event: BlockPlaceEvent) {
         val player = event.player.asElytraPlayer() ?: return
 
-        if (event.action != Action.RIGHT_CLICK_AIR || event.hand != EquipmentSlot.HAND) return
-
-        if (event.item?.type != Material.FIREWORK_ROCKET) return
-
-        Task.create(IEP.instance)
-            .delay(Config.CONFIG.getInt("firework-respawn-time") { it >= 0 } * 20)
-            .execute { player.player.inventory.addItem(ItemStack(Material.FIREWORK_ROCKET)) }
-            .run()
+        event.isCancelled = true
     }
 
     @EventHandler

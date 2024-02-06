@@ -4,18 +4,17 @@ import dev.efnilite.vilib.util.Probs
 import org.bukkit.util.Vector
 import org.jetbrains.annotations.Contract
 import java.util.*
-import java.util.concurrent.ThreadLocalRandom
 
-class RingDirector(private val random: Random = ThreadLocalRandom.current()) {
+class KnotDirector(private val random: Random) {
 
     /**
      * Returns a random vector.
      */
     @Contract(pure = true)
     fun nextOffset(): Vector {
-        val dx = nextOffset(30, 5)
-        val dy = nextOffset(-1, 3)
-        val dz = nextOffset(0, 5)
+        val dx = nextOffset(75, 15)
+        val dy = nextOffset(-15, 3)
+        val dz = nextOffset(0, 35)
 
         return Vector(dx, dy, dz)
     }
@@ -24,7 +23,7 @@ class RingDirector(private val random: Random = ThreadLocalRandom.current()) {
      * Returns a random radius.
      */
     @Contract(pure = true)
-    fun nextRadius() = 4
+    fun nextRadius() = 5
 
     /**
      * Returns a random normally distributed value.

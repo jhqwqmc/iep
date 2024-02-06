@@ -5,6 +5,7 @@ import dev.efnilite.iep.IEP
 import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
@@ -18,6 +19,10 @@ import org.bukkit.util.Vector
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
+import kotlin.math.abs
+import kotlin.math.max
 
 private class Island(vector: Vector, schematic: Schematic) {
 
@@ -51,16 +56,17 @@ private class Island(vector: Vector, schematic: Schematic) {
 class Generator {
 
     val players = mutableListOf<ElytraPlayer>()
-    private val rings = mutableMapOf<Int, Ring>()
+    private val sections = mutableMapOf<Int, Section>()
 
     var style = IEP.getStyles()[0]
-    private var start: Instant = Instant.now()
+    private var start: Instant? = Instant.now()
     private lateinit var task: BukkitTask
 
     private lateinit var island: Island
     private val heading = Vector(1, 0, 0)
 
-    private val director = RingDirector()
+    private var seed: Int = abs(ThreadLocalRandom.current().nextInt())
+    private var random = Random()
 
     private val leaderboard = IEP.getLeaderboard("default")
 
@@ -82,7 +88,7 @@ class Generator {
         if (players.isEmpty()) {
             task.cancel()
 
-            reset()
+            reset(false)
 
             island.clear()
         }
@@ -95,10 +101,7 @@ class Generator {
     fun start(vector: Vector) {
         island = Island(vector, Schematics.getSchematic(IEP.instance, "spawn-island"))
 
-        players.forEach { it.teleport(island.playerSpawn) }
-
-        rings[0] = Ring(heading, island.blockSpawn, 0)
-        generate()
+        reset()
 
         task = Task.create(IEP.instance)
             .repeat(1)
@@ -109,77 +112,104 @@ class Generator {
     /**
      * Updates all players' scoreboards.
      */
-    private fun updateBoard(score: Int) {
-        val timeMs = Instant.now().minusMillis(start.toEpochMilli())
-        val time = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
+    private fun updateBoard(score: Int, time: Instant) {
+        val formattedTime = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
             .withZone(ZoneOffset.UTC)
-            .format(timeMs)
+            .format(time)
 
-        players.forEach { it.updateBoard(score, time) }
+        players.forEach { it.updateBoard(score, formattedTime, seed) }
     }
 
     /**
      * Ticks the generator.
      */
     private fun tick() {
-        val latest = rings.maxBy { it.key }
-        val idx = latest.key
-        val ring = latest.value
+        val section = sections.maxBy { it.key }.value
 
         val pos = players[0].position
+        val score = max(0, (pos.x - island.blockSpawn.x).toInt())
+        val time = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
-        updateBoard(idx - 1)
+        updateBoard(score, time)
 
-        if (ring.isNear(pos)) {
+        if (start == null && score > 0) {
+            start = Instant.now()
+        }
+
+        if (section.isNear(pos)) {
             for (player in players) {
-                leaderboard.update(player.uuid, Score(
-                    name = player.name,
-                    score = idx - 1,
-                    time = Instant.now().minusMillis(start.toEpochMilli()).toEpochMilli(),
-                    difficulty = 0.0))
+                leaderboard.update(
+                    player.uuid, Score(
+                        name = player.name,
+                        score = score,
+                        time = time.toEpochMilli(),
+                        seed = seed
+                    )
+                )
             }
 
             generate()
 
-            if (idx - 1 == 0) {
-                start = Instant.now()
-            }
-
             return
         }
 
-        if (ring.isOutOfBounds(pos)) {
+        if (score > 5 && !players[0].player.isGliding) {
             reset()
             return
         }
     }
 
     /**
-     * Generates the next ring.
+     * Generates the next knot.
      */
     private fun generate() {
-        val latest = rings.maxBy { it.key }
+        if (sections.isEmpty()) {
+            val section = Section(island.blockSpawn, random)
+
+            sections[0] = section
+
+            section.generate(style)
+
+            return
+        }
+
+        val latest = sections.maxBy { it.key }
         val idx = latest.key
-        val ring = latest.value
+        val section = latest.value
 
-        val next = ring.center.clone().add(director.nextOffset())
+        val new = Section(section.end, random)
 
-        val nextRing = Ring(heading, next, director.nextRadius())
-        rings[idx + 1] = nextRing
+        sections[idx + 1] = new
 
-        nextRing.blocks.forEach { it.toLocation(World.world).block.type = style.next() }
+        new.generate(style)
     }
 
     /**
-     * Resets the players and rings.
+     * Resets the players and knots.
      */
-    private fun reset() {
+    private fun reset(regenerate: Boolean = true) {
         players.forEach { it.teleport(island.playerSpawn) }
 
-        rings.forEach { (_, ring) -> ring.blocks.forEach { it.toLocation(World.world).block.type = Material.AIR } }
-        rings.clear()
+        seed = abs(ThreadLocalRandom.current().nextInt())
+        random = Random(seed.toLong())
+        start = null
 
-        rings[0] = Ring(heading, island.blockSpawn, 0)
+        // todo cache blocks
+        sections.values.forEach {
+            AsyncSectionBuilder(
+                it.points,
+                object : Style {
+                    override fun next() = Material.AIR
+                    override fun name() = "air"
+                },
+                World.world
+            ).run()
+        }
+
+        sections.clear()
+
+        if (!regenerate) return
+
         generate()
     }
 
