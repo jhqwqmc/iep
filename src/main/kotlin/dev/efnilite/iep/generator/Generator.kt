@@ -21,7 +21,6 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.math.abs
 import kotlin.math.max
 
 private class Island(vector: Vector, schematic: Schematic) {
@@ -65,7 +64,7 @@ class Generator {
     private lateinit var island: Island
     private val heading = Vector(1, 0, 0)
 
-    private var seed: Int = abs(ThreadLocalRandom.current().nextInt())
+    private var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
     private var random = Random()
 
     private val leaderboard = IEP.getLeaderboard("default")
@@ -126,7 +125,8 @@ class Generator {
     private fun tick() {
         val section = sections.maxBy { it.key }.value
 
-        val pos = players[0].position
+        val player = players[0]
+        val pos = player.position
         val score = max(0, (pos.x - island.blockSpawn.x).toInt())
         val time = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
@@ -137,10 +137,10 @@ class Generator {
         }
 
         if (section.isNear(pos)) {
-            for (player in players) {
+            players.forEach {
                 leaderboard.update(
-                    player.uuid, Score(
-                        name = player.name,
+                    it.uuid, Score(
+                        name = it.name,
                         score = score,
                         time = time.toEpochMilli(),
                         seed = seed
@@ -153,7 +153,17 @@ class Generator {
             return
         }
 
-        if (score > 5 && !players[0].player.isGliding) {
+        // todo doesn't work
+        if (section.isNear(pos) && section.end.y < 50) {
+            val velocity = player.player.velocity
+
+            player.teleport(player.position.add(Vector(0, 300, 0)))
+
+            player.player.velocity = velocity
+            return
+        }
+
+        if (score > 5 && !player.player.isGliding) {
             reset()
             return
         }
@@ -176,8 +186,13 @@ class Generator {
         val latest = sections.maxBy { it.key }
         val idx = latest.key
         val section = latest.value
+        val end = section.end
 
-        val new = Section(section.end, random)
+        if (end.y < 50) {
+            end.y = 300.0
+        }
+
+        val new = Section(end, random)
 
         sections[idx + 1] = new
 
@@ -190,7 +205,7 @@ class Generator {
     private fun reset(regenerate: Boolean = true) {
         players.forEach { it.teleport(island.playerSpawn) }
 
-        seed = abs(ThreadLocalRandom.current().nextInt())
+        seed = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
         random = Random(seed.toLong())
         start = null
 
@@ -214,6 +229,8 @@ class Generator {
     }
 
     companion object {
+
+        const val SEED_BOUND = 1_000_000
 
         /**
          * Creates a new generator.

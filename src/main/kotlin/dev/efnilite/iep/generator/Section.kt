@@ -28,7 +28,7 @@ class Section(private val start: Vector, random: Random) {
     /**
      * Returns whether the given vector is near the section.
      */
-    fun isNear(vector: Vector) = knots.dropLast(2).last().distance(vector) < 10
+    fun isNear(vector: Vector) = knots[2].distance(vector) < 10
 
     /**
      * Generates the section's points.

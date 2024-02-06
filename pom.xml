@@ -136,7 +136,7 @@
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>vilib</artifactId>
-            <version>bbeddc3203</version>
+            <version>eb3ac91e14</version>
             <scope>compile</scope>
         </dependency>
 
