@@ -5,7 +5,6 @@ import dev.efnilite.iep.IEP
 import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
-import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
@@ -54,7 +53,7 @@ private class Island(vector: Vector, schematic: Schematic) {
 
 class Generator {
 
-    lateinit var settings: Settings
+    var settings: Settings = Settings(IEP.getStyles().random(), 5)
         private set
 
     val players = mutableListOf<ElytraPlayer>()
@@ -121,52 +120,70 @@ class Generator {
         players.forEach { it.updateBoard(score, formattedTime, seed) }
     }
 
+    fun getScore() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
+
+    fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
+
+    private var resetUp = false
+
     /**
      * Ticks the generator.
      */
     private fun tick() {
-        val section = sections.maxBy { it.key }.value
+        val idx = sections.keys.max()
+        val section = sections[idx]!!
 
         val player = players[0]
         val pos = player.position
-        val score = max(0, (pos.x - island.blockSpawn.x).toInt())
-        val time = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
+        val score = getScore()
 
-        updateBoard(score, time)
+        updateBoard(score, getTime())
 
         if (start == null && score > 0) {
             start = Instant.now()
         }
 
-        if (section.isNear(pos)) {
-            players.forEach {
-                leaderboard.update(
-                    it.uuid, Score(
-                        name = it.name,
-                        score = score,
-                        time = time.toEpochMilli(),
-                        seed = seed
-                    )
-                )
-            }
-
-            generate()
-
-            return
-        }
-
-        // todo doesn't work
-        if (section.isNear(pos) && section.end.y < 50) {
-            val velocity = player.player.velocity
-
-            player.teleport(player.position.add(Vector(0, 300, 0)))
-
-            player.player.velocity = velocity
-            return
-        }
-
         if (score > 5 && !player.player.isGliding) {
             reset()
+            return
+        }
+
+        if (section.isNear(pos, 0) && section.end.y < 25) {
+            val cloned = section.clone(Vector(0, 200, 0))
+
+            sections[idx + 1] = cloned
+
+            cloned.generate(settings)
+
+            resetUp = true
+
+            return
+        }
+
+        if (resetUp) {
+            val previous = sections[idx - 1]!!
+
+            if (!previous.isNear(pos)) {
+                return
+            }
+
+            val velocity = player.player.velocity
+
+            player.player.teleportAsync(player.player.location.add(0.0, 200.0, 0.0))
+
+            Task.create(IEP.instance)
+                .delay(1)
+                .execute { player.player.velocity = velocity }
+                .run()
+
+            resetUp = false
+
+            return
+        }
+
+        if (section.isNear(pos)) {
+            generate()
+
             return
         }
     }
@@ -180,48 +197,49 @@ class Generator {
 
             sections[0] = section
 
-            section.generate(settings.style)
+            section.generate(settings)
 
             return
         }
 
         val latest = sections.maxBy { it.key }
         val idx = latest.key
-        val section = latest.value
-        val end = section.end
+        val previous = latest.value
+        val end = previous.end
 
-        if (end.y < 50) {
-            end.y = 300.0
-        }
+        val section = Section(end, random)
 
-        val new = Section(end, random)
+        sections[idx + 1] = section
 
-        sections[idx + 1] = new
-
-        new.generate(settings.style)
+        section.generate(settings)
     }
 
     /**
      * Resets the players and knots.
      */
     private fun reset(regenerate: Boolean = true) {
+        players.forEach {
+            leaderboard.update(
+                it.uuid, Score(
+                    name = it.name,
+                    score = getScore(),
+                    time = getTime().toEpochMilli(),
+                    seed = seed
+                )
+            )
+        }
+
+
         players.forEach { it.teleport(island.playerSpawn) }
 
         seed = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
         random = Random(seed.toLong())
         start = null
+        resetUp = false
 
-        // todo cache blocks
-        sections.values.forEach {
-            AsyncSectionBuilder(
-                it.points,
-                object : Style {
-                    override fun next() = Material.AIR
-                    override fun name() = "air"
-                },
-                World.world
-            ).run()
-        }
+        AsyncBuilder(sections.values
+            .flatMap { it.blocks }
+            .associateWith { Material.AIR })
 
         sections.clear()
 
@@ -239,7 +257,7 @@ class Generator {
 
     companion object {
 
-        const val SEED_BOUND = 1_000_000
+        private const val SEED_BOUND = 1_000_000
 
         /**
          * Creates a new generator.

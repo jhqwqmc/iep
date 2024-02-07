@@ -1,8 +1,5 @@
-import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.world.Divider
-import org.bukkit.util.Vector
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class DividerTest {

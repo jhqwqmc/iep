@@ -56,7 +56,12 @@ data class Leaderboard(val name: String) {
     fun update(uuid: UUID, score: Score) {
         val existing = data.getOrDefault(uuid, EMPTY)
 
-        if (existing.score > score.score && score.time > existing.time) return
+        if (existing.score > score.score) {
+            return
+        }
+        if (existing.score == score.score && existing.time < score.time) {
+            return
+        }
 
         data[uuid] = score
     }

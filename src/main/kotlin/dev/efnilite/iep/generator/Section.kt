@@ -1,42 +1,86 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.generator.Section.Companion.KNOTS
-import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.World
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
+import org.bukkit.Material
+import org.bukkit.block.Block
 import org.bukkit.util.Vector
 import java.util.*
+import kotlin.math.floor
 
 /**
  * Represents a section of the total parkour of size [KNOTS].
- *
- * @param start The start position of the section.
- * @param random The random instance to use.
  */
-class Section(private val start: Vector, random: Random) {
+class Section {
 
-    private val director = KnotDirector(random)
-    private val interpolator = SplineInterpolator()
-    private val knots = generateKnots()
-    val points = generatePoints()
+    private val director: KnotDirector
+    private val interpolator: SplineInterpolator
+    private val knots: List<Vector>
+    private val points: List<Vector>
+
+    /**
+     * The beginning position of the section.
+     */
+    val beginning
+        get() = knots.first()
 
     /**
      * The end position of the section.
      */
-    val end = points.last()
+    val end
+        get() = knots.last()
+
+    /**
+     * The blocks that make up the rings of the section.
+     */
+    val blocks = mutableListOf<Block>()
+
+    /**
+     * Constructs a section with the given start position and random.
+     * @param start The start position of the section.
+     * @param random The random to use for the section.
+     */
+    constructor(start: Vector, random: Random) {
+        director = KnotDirector(random)
+        interpolator = SplineInterpolator()
+        knots = generateKnots(start)
+        points = generatePoints()
+    }
+
+    private constructor(section: Section, offset: Vector) {
+        director = section.director
+        interpolator = section.interpolator
+        knots = section.knots.map { it.clone().add(offset) }
+        points = section.points.map { it.clone().add(offset) }
+    }
 
     /**
      * Returns whether the given vector is near the section.
      */
-    fun isNear(vector: Vector) = knots[2].distance(vector) < 10
+    fun isNear(vector: Vector, idx: Int = 2) = knots[idx].distance(vector) < 10
+
+    /**
+     * Clones the section with the given offset.
+     */
+    fun clone(offset: Vector) = Section(this, offset)
 
     /**
      * Generates the section's points.
      */
-    fun generate(style: Style) {
+    fun generate(settings: Settings) {
         val world = World.world
 
-        AsyncSectionBuilder(points, style, world).run()
+        val map = points.flatMap { getCircle(it, settings.radius) }
+            .map { it.toLocation(world).block }
+            .associateWith { settings.style.next() }
+
+        AsyncBuilder(map = map,
+            onComplete = { blocks.addAll(it) })
+    }
+
+    fun clear() {
+        AsyncBuilder(blocks.associateWith { Material.AIR })
     }
 
     private fun generatePoints(): List<Vector> {
@@ -68,7 +112,7 @@ class Section(private val start: Vector, random: Random) {
         return points
     }
 
-    private fun generateKnots(): List<Vector> {
+    private fun generateKnots(start: Vector): List<Vector> {
         val knots = mutableListOf(start)
 
         repeat(KNOTS - 1) { knots.add(knots.last().clone().add(director.nextOffset())) }
@@ -76,9 +120,40 @@ class Section(private val start: Vector, random: Random) {
         return knots
     }
 
+    private fun getCircle(center: Vector, radius: Int): List<Vector> {
+        val blocks = mutableListOf<Vector>()
+        val centerX = floor(center.x) + 0.5
+        val centerY = floor(center.y) + 0.5
+        val centerZ = floor(center.z) + 0.5
+
+        var y = radius
+        var z = 0
+        var d = 3 - 2 * radius
+
+        while (z <= y) {
+            blocks.add(Vector(centerX, centerY + y, centerZ + z))
+            blocks.add(Vector(centerX, centerY + y, centerZ - z))
+            blocks.add(Vector(centerX, centerY - y, centerZ + z))
+            blocks.add(Vector(centerX, centerY - y, centerZ - z))
+            blocks.add(Vector(centerX, centerY + z, centerZ + y))
+            blocks.add(Vector(centerX, centerY + z, centerZ - y))
+            blocks.add(Vector(centerX, centerY - z, centerZ + y))
+            blocks.add(Vector(centerX, centerY - z, centerZ - y))
+
+            if (d < 0) {
+                d += 4 * z + 6
+            } else {
+                d += 4 * (z - y) + 10
+                y--
+            }
+            z++
+        }
+
+        return blocks
+    }
+
     companion object {
-        const val RADIUS = 5
-        const val KNOTS = 5
-        const val EXTRA_POINTS_OFFSET = 1
+        private const val KNOTS = 5
+        private const val EXTRA_POINTS_OFFSET = 1
     }
 }

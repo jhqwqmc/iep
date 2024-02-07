@@ -20,12 +20,6 @@ class KnotDirector(private val random: Random) {
     }
 
     /**
-     * Returns a random radius.
-     */
-    @Contract(pure = true)
-    fun nextRadius() = 5
-
-    /**
      * Returns a random normally distributed value.
      */
     @Contract(pure = true)
