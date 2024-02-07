@@ -19,7 +19,8 @@ object LeaderboardMenu {
 
         for (leaderboard in IEP.getLeaderboards()) {
             menu.item(menu.items.size + 9, Item(Material.GOLD_BLOCK, "<white><bold>${leaderboard.name}")
-                .click({ SingleLeaderboardMenu.open(player, leaderboard) }))
+                .click({ SingleLeaderboardMenu.open(player, leaderboard) })
+            )
         }
 
         menu.open(player.player)
@@ -30,20 +31,22 @@ private object SingleLeaderboardMenu {
 
     fun open(player: ElytraPlayer, leaderboard: Leaderboard) {
         val menu = PagedMenu(3, "<white>${leaderboard.name}")
-            .displayRows(1, 2)
+            .displayRows(0, 1)
 
         for ((idx, score) in leaderboard.getAllScores().withIndex()) {
-            with(score) {
-                menu.addToDisplay(listOf(Item(Material.PLAYER_HEAD, "<white><bold>#${idx + 1} - $name")
-                    .lore("<dark_gray>Score <white>$score",
-                        "<dark_gray>Time <white>$time",
-                        "<dark_gray>Seed <white>$seed")))
-            }
+            menu.addToDisplay(
+                listOf(
+                    Item(Material.PLAYER_HEAD, "<white><bold>#${idx + 1} - ${score.name}")
+                        .lore("<dark_gray>Score <white>${score.score}",
+                            "<dark_gray>Time <white>${score.time}",
+                            "<dark_gray>Seed <white>${score.seed}")
+                )
+            )
         }
 
-        menu.prevPage(19, Item(Material.RED_DYE, "<white>Previous"))
-            .nextPage(27, Item(Material.GREEN_DYE, "<white>Next"))
-            .item(22, Item(Material.ARROW, "<white>Go back"))
+        menu.prevPage(19, Item(Material.RED_DYE, "<white>Previous").click({ menu.page(-1) }))
+            .nextPage(27, Item(Material.GREEN_DYE, "<white>Next").click({ menu.page(1) }))
+            .item(22, Item(Material.ARROW, "<white><bold>Go back").click({ SettingsMenu.open(player) }))
             .open(player.player)
     }
 }
