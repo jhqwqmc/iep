@@ -83,6 +83,8 @@ data class Leaderboard(val name: String) {
         return scores[rank]
     }
 
+    fun getAllScores() = data.values.sortedByDescending { it.score }
+
     companion object {
         private val EMPTY = Score("?", 0, 0, 0)
     }

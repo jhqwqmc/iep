@@ -55,6 +55,7 @@ private class Island(vector: Vector, schematic: Schematic) {
 class Generator {
 
     lateinit var settings: Settings
+        private set
 
     val players = mutableListOf<ElytraPlayer>()
     private val sections = mutableMapOf<Int, Section>()
@@ -227,6 +228,13 @@ class Generator {
         if (!regenerate) return
 
         generate()
+    }
+
+    /**
+     * Allows for easy setting of the current [Settings] instance.
+     */
+    fun set(mapper: (Settings) -> Settings) {
+        settings = mapper.invoke(settings)
     }
 
     companion object {

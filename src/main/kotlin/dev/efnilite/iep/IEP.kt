@@ -88,6 +88,8 @@ class IEP : ViPlugin() {
 
         fun getLeaderboard(name: String) = leaderboards.first { it.name == name }
 
+        fun getLeaderboards() = leaderboards.toList()
+
         private val styles: MutableList<Style> = mutableListOf()
 
         fun register(style: Style) = styles.add(style)
