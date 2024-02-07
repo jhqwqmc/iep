@@ -54,10 +54,11 @@ private class Island(vector: Vector, schematic: Schematic) {
 
 class Generator {
 
+    lateinit var settings: Settings
+
     val players = mutableListOf<ElytraPlayer>()
     private val sections = mutableMapOf<Int, Section>()
 
-    var style = IEP.getStyles()[0]
     private var start: Instant? = Instant.now()
     private lateinit var task: BukkitTask
 
@@ -178,7 +179,7 @@ class Generator {
 
             sections[0] = section
 
-            section.generate(style)
+            section.generate(settings.style)
 
             return
         }
@@ -196,7 +197,7 @@ class Generator {
 
         sections[idx + 1] = new
 
-        new.generate(style)
+        new.generate(settings.style)
     }
 
     /**

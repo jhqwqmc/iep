@@ -1,6 +1,7 @@
 package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.style.Style
 import dev.efnilite.vilib.inventory.Menu
@@ -15,6 +16,7 @@ object StylesMenu {
 
         for ((idx, style) in styles.withIndex()) {
             menu.item(idx, Item(style.next(), "<#4d0000><bold>${style.name()}")
+                .lore("<dark_gray>Type ${style.name().lowercase()}")
                 .click({ setStyle(player, style) }))
         }
 
@@ -25,7 +27,9 @@ object StylesMenu {
     }
 
     private fun setStyle(player: ElytraPlayer, style: Style) {
-        player.getGenerator().style = style
+        val settings = player.getGenerator().settings
+
+        player.getGenerator().settings = Settings(style, settings.radius)
 
         player.player.closeInventory()
     }
