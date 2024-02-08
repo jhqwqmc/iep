@@ -17,11 +17,11 @@ object StylesMenu {
         for ((idx, style) in styles.withIndex()) {
             menu.item(idx, Item(style.next(), "<white><bold>${style.name()}")
                 .lore("<dark_gray>Type <white>${style.name().lowercase()}")
-                .click({ generator.set { settings -> Settings(style, settings.radius) } }))
+                .click({ generator.set { settings -> Settings(settings, style = style) } }))
         }
 
         menu.item(21, Item(styles.random().next(), "<white><bold>Random")
-            .click({ generator.set { settings -> Settings(styles.random(), settings.radius) } }))
+            .click({ generator.set { settings -> Settings(settings, style = styles.random()) } }))
             .item(23, Item(Material.ARROW, "<white><bold>Go back").click({ SettingsMenu.open(player) }))
             .open(player.player)
     }

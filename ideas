@@ -1,0 +1,8 @@
+modes:
+- speedrun: set seed score > 1000
+- minimum speed: 5 blocks/s
+- stay close to the edges: < 2
+- sudden obstacle
+- predictable obstacle
+    - hole in filled in wall
+    - random pillars

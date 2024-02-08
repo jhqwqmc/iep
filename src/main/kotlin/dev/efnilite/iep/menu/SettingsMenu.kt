@@ -24,22 +24,22 @@ object SettingsMenu {
                 .initial(generator.settings.radius - 3)
                 .add(3, Item(Material.GREEN_DYE, "<#2eb82e><bold>Radius 6")
                 ) {
-                    generator.set { settings -> Settings(settings.style, 6) }
+                    generator.set { settings -> Settings(settings, radius = 6) }
                     return@add true
                 }
                 .add(2, Item(Material.YELLOW_DYE, "<#ffff00><bold>Radius 5")
                 ) {
-                    generator.set { settings -> Settings(settings.style, 5) }
+                    generator.set { settings -> Settings(settings, radius = 5) }
                     return@add true
                 }
                 .add(1, Item(Material.ORANGE_DYE, "<#e68a00><bold>Radius 4")
                 ) {
-                    generator.set { settings -> Settings(settings.style, 4) }
+                    generator.set { settings -> Settings(settings, radius = 4) }
                     return@add true
                 }
                 .add(0, Item(Material.RED_DYE, "<#cc3300><bold>Radius 3")
                 ) {
-                    generator.set { settings -> Settings(settings.style, 3) }
+                    generator.set { settings -> Settings(settings, radius = 3) }
                     return@add true
                 }
         )

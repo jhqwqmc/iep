@@ -53,10 +53,6 @@ private class Island(vector: Vector, schematic: Schematic) {
 
 class Generator {
 
-    var settings: Settings = Settings(IEP.getStyles().random(), 5)
-        private set
-
-    val players = mutableListOf<ElytraPlayer>()
     private val sections = mutableMapOf<Int, Section>()
 
     private var start: Instant? = Instant.now()
@@ -69,6 +65,10 @@ class Generator {
     private var random = Random()
 
     private val leaderboard = IEP.getLeaderboard("default")
+
+    val players = mutableListOf<ElytraPlayer>()
+    var settings: Settings = Settings(IEP.getStyles().random(), 5, seed)
+        private set
 
     /**
      * Adds a player to the generator.
