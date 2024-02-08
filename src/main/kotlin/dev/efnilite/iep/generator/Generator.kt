@@ -55,7 +55,7 @@ class Generator {
 
     private val sections = mutableMapOf<Int, Section>()
 
-    private var start: Instant? = Instant.now()
+    private var start: Instant? = null
     private lateinit var task: BukkitTask
 
     private lateinit var island: Island
@@ -186,6 +186,16 @@ class Generator {
 
             return
         }
+
+        if (sections.size > 2) {
+            val last = sections.minBy { it.key }
+            val lastIdx = last.key
+            val lastSection = last.value
+
+            lastSection.clear()
+
+            sections.remove(lastIdx)
+        }
     }
 
     /**
@@ -229,19 +239,19 @@ class Generator {
             )
         }
 
-
-        players.forEach { it.teleport(island.playerSpawn) }
-
         seed = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
         random = Random(seed.toLong())
         start = null
         resetUp = false
 
-        AsyncBuilder(sections.values
-            .flatMap { it.blocks }
-            .associateWith { Material.AIR })
+        sections.forEach { it.value.clear() }
 
         sections.clear()
+
+        val spawn = island.playerSpawn.toLocation(World.world)
+        spawn.yaw = -90f
+
+        players.forEach { it.teleport(spawn) }
 
         if (!regenerate) return
 

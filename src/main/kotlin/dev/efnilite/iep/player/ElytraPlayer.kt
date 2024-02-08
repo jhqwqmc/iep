@@ -8,6 +8,7 @@ import fr.mrmicky.fastboard.adventure.FastBoard
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
@@ -83,7 +84,11 @@ class ElytraPlayer(val player: Player) {
     }
 
     fun teleport(vector: Vector) {
-        player.teleportAsync(vector.toLocation(World.world), PlayerTeleportEvent.TeleportCause.PLUGIN)
+        player.teleportAsync(vector.toLocation(World.world))
+    }
+
+    fun teleport(location: Location) {
+        player.teleportAsync(location)
     }
 
     fun updateBoard(score: Int, time: String, seed: Int) {
