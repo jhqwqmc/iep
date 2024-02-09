@@ -16,7 +16,7 @@ object SettingsMenu {
             .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
         val generator = player.getGenerator()
 
-        menu.item(9, Item(IEP.getStyles().random().next(), "<gradient:#8c0000:#e60000><bold>Style")
+        menu.item(9, Item(IEP.getStyles().random().next(), "<#8c0000><bold>Style")
             .click({ StylesMenu.open(player) }))
 
         menu.item(
@@ -44,7 +44,11 @@ object SettingsMenu {
                 }
         )
 
-        menu.item(11, Item(Material.SPRUCE_HANGING_SIGN, "<white><bold>Leaderboards")
+        menu.item(11, Item(Material.TORCHFLOWER_SEEDS, "<#00538a><bold>Seed")
+            .lore("<dark_gray>Currently <white>${generator.settings.seed}", "",
+                "<dark_gray>To change this seed, use <white>/iep seed <seed>."))
+
+        menu.item(23, Item(Material.SPRUCE_HANGING_SIGN, "<white><bold>Leaderboards")
             .click({ LeaderboardMenu.open(player) }))
 
         menu.open(player.player)

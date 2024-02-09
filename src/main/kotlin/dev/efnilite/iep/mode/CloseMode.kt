@@ -16,5 +16,6 @@ object CloseMode : Mode {
 
     override fun create(player: Player) = Generator.create(player, leaderboard, PointType.FLAT) { CloseGenerator() }
 
-    override fun getItem(locale: String) = Item(Material.PINK_PETALS, "<#fa9abc><bold>Close")
+    override fun getItem(locale: String): Item = Item(Material.PINK_PETALS, "<#fa9abc><bold>Close")
+        .lore("<gray>Stay close to the blocks.")
 }

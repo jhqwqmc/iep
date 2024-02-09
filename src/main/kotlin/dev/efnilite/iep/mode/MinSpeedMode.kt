@@ -16,5 +16,6 @@ object MinSpeedMode : Mode {
 
     override fun create(player: Player) = Generator.create(player, leaderboard, PointType.CIRCLE) { MinSpeedGenerator() }
 
-    override fun getItem(locale: String) = Item(Material.SPLASH_POTION, "<#cc3399><bold>Min Speed")
+    override fun getItem(locale: String): Item = Item(Material.SPLASH_POTION, "<#cc3399><bold>Min Speed")
+        .lore("<gray>Once you've reached the minimum speed,", "<gray>going slower will reset you.")
 }
