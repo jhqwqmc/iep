@@ -1,8 +1,8 @@
 package dev.efnilite.iep.menu
 
+import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.leaderboard.Leaderboard
-import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.PagedMenu
 import dev.efnilite.vilib.inventory.animation.RandomAnimation
@@ -17,9 +17,9 @@ object LeaderboardMenu {
             .animation(RandomAnimation())
             .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
 
-        for (leaderboard in IEP.getLeaderboards()) {
-            menu.item(menu.items.size + 9, Item(Material.GOLD_BLOCK, "<white><bold>${leaderboard.name}")
-                .click({ SingleLeaderboardMenu.open(player, leaderboard) })
+        for (mode in IEP.getModes()) {
+            menu.item(menu.items.size + 9, mode.getItem("")
+                .click({ SingleLeaderboardMenu.open(player, mode.leaderboard) })
             )
         }
 

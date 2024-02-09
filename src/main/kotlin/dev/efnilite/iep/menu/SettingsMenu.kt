@@ -1,8 +1,8 @@
 package dev.efnilite.iep.menu
 
+import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
-import dev.efnilite.iep.generator.Settings
-import dev.efnilite.iep.player.ElytraPlayer
+import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.Item
 import dev.efnilite.vilib.inventory.item.SliderItem
@@ -16,11 +16,14 @@ object SettingsMenu {
             .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
         val generator = player.getGenerator()
 
-        menu.item(9, Item(IEP.getStyles().random().next(), "<gradient:#8c0000:#e60000><bold>Style")
+        menu.item(9, Item(Material.BARREL, "<white><bold>Play")
+            .click({ PlayMenu.open(player.player) }))
+
+        menu.item(10, Item(IEP.getStyles().random().next(), "<gradient:#8c0000:#e60000><bold>Style")
             .click({ StylesMenu.open(player) }))
 
         menu.item(
-            10, SliderItem()
+            11, SliderItem()
                 .initial(generator.settings.radius - 3)
                 .add(3, Item(Material.GREEN_DYE, "<#2eb82e><bold>Radius 6")
                 ) {
@@ -44,7 +47,7 @@ object SettingsMenu {
                 }
         )
 
-        menu.item(11, Item(Material.WRITABLE_BOOK, "<white><bold>Leaderboards")
+        menu.item(12, Item(Material.WRITABLE_BOOK, "<white><bold>Leaderboards")
             .click({ LeaderboardMenu.open(player) }))
 
         menu.open(player.player)
