@@ -1,20 +1,20 @@
 package dev.efnilite.iep.mode
 
+import dev.efnilite.iep.generator.CloseGenerator
 import dev.efnilite.iep.generator.Generator
-import dev.efnilite.iep.generator.MinSpeedGenerator
 import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.item.Item
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-object MinSpeedMode : Mode {
+object CloseMode : Mode {
 
-    override val name = "minspeed"
+    override val name = "close"
 
     override val leaderboard = Leaderboard(name)
 
-    override fun create(player: Player) = Generator.create(player, PointType.CIRCLE) { MinSpeedGenerator() }
+    override fun create(player: Player) = Generator.create(player, PointType.FLAT) { CloseGenerator() }
 
-    override fun getItem(locale: String) = Item(Material.TORCHFLOWER, "<white><bold>Min Speed")
+    override fun getItem(locale: String) = Item(Material.PAPER, "<white><bold>Close")
 }

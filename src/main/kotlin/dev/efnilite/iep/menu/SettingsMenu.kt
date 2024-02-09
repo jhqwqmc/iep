@@ -11,7 +11,7 @@ import org.bukkit.Material
 object SettingsMenu {
 
     fun open(player: ElytraPlayer) {
-        val menu = Menu(3, "<white>Settings")
+        val menu = Menu(3, "Settings")
             .distributeRowsEvenly()
             .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
         val generator = player.getGenerator()
@@ -47,7 +47,7 @@ object SettingsMenu {
                 }
         )
 
-        menu.item(12, Item(Material.WRITABLE_BOOK, "<white><bold>Leaderboards")
+        menu.item(12, Item(Material.SPRUCE_HANGING_SIGN, "<white><bold>Leaderboards")
             .click({ LeaderboardMenu.open(player) }))
 
         menu.open(player.player)

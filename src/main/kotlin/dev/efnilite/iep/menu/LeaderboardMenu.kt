@@ -12,7 +12,7 @@ import org.bukkit.Material
 object LeaderboardMenu {
 
     fun open(player: ElytraPlayer) {
-        val menu = Menu(3, "<white>Leaderboards")
+        val menu = Menu(3, "Leaderboards")
             .distributeRowsEvenly()
             .animation(RandomAnimation())
             .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
@@ -30,7 +30,7 @@ object LeaderboardMenu {
 private object SingleLeaderboardMenu {
 
     fun open(player: ElytraPlayer, leaderboard: Leaderboard) {
-        val menu = PagedMenu(3, "<white>${leaderboard.name}")
+        val menu = PagedMenu(3, leaderboard.name)
             .displayRows(0, 1)
 
         for ((idx, score) in leaderboard.getAllScores().withIndex()) {

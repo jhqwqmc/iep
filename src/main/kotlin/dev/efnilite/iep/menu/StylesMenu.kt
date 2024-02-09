@@ -1,8 +1,8 @@
 package dev.efnilite.iep.menu
 
+import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.util.Settings
-import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.Item
 import org.bukkit.Material
@@ -10,7 +10,7 @@ import org.bukkit.Material
 object StylesMenu {
 
     fun open(player: ElytraPlayer) {
-        val menu = Menu(3, "<white>Styles")
+        val menu = Menu(3, "Styles")
         val styles = IEP.getStyles()
         val generator = player.getGenerator()
 

@@ -7,7 +7,6 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.util.Vector
 import java.util.*
-import kotlin.math.floor
 
 /**
  * Represents a section of the total parkour of size [KNOTS].
@@ -56,9 +55,14 @@ class Section {
     }
 
     /**
-     * Returns whether the given vector is near the section.
+     * Returns whether the given vector is near a section knot.
      */
-    fun isNear(vector: Vector, idx: Int = 2) = knots[idx].distance(vector) < 10
+    fun isNearKnot(vector: Vector, idx: Int, distance: Int = 6) = knots[idx].distance(vector) < distance
+
+    /**
+     * Returns whether the given vector is near a section point.
+     */
+    fun isNearPoint(vector: Vector, idx: Int, distance: Int = 6) = points[idx].distance(vector) < distance
 
     /**
      * Clones the section with the given offset.
@@ -68,10 +72,10 @@ class Section {
     /**
      * Generates the section's points.
      */
-    fun generate(settings: Settings) {
+    fun generate(settings: Settings, pointType: PointType) {
         val world = World.world
 
-        val map = points.flatMap { getCircle(it, settings.radius) }
+        val map = points.flatMap { pointType.getPoints(it, settings.radius) }
             .map { it.toLocation(world).block }
             .associateWith { settings.style.next() }
 
@@ -118,38 +122,6 @@ class Section {
         repeat(KNOTS - 1) { knots.add(knots.last().clone().add(director.nextOffset())) }
 
         return knots
-    }
-
-    private fun getCircle(center: Vector, radius: Int): List<Vector> {
-        val blocks = mutableListOf<Vector>()
-        val centerX = floor(center.x) + 0.5
-        val centerY = floor(center.y) + 0.5
-        val centerZ = floor(center.z) + 0.5
-
-        var y = radius
-        var z = 0
-        var d = 3 - 2 * radius
-
-        while (z <= y) {
-            blocks.add(Vector(centerX, centerY + y, centerZ + z))
-            blocks.add(Vector(centerX, centerY + y, centerZ - z))
-            blocks.add(Vector(centerX, centerY - y, centerZ + z))
-            blocks.add(Vector(centerX, centerY - y, centerZ - z))
-            blocks.add(Vector(centerX, centerY + z, centerZ + y))
-            blocks.add(Vector(centerX, centerY + z, centerZ - y))
-            blocks.add(Vector(centerX, centerY - z, centerZ + y))
-            blocks.add(Vector(centerX, centerY - z, centerZ - y))
-
-            if (d < 0) {
-                d += 4 * z + 6
-            } else {
-                d += 4 * (z - y) + 10
-                y--
-            }
-            z++
-        }
-
-        return blocks
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package dev.efnilite.iep
 
+import dev.efnilite.iep.mode.CloseMode
 import dev.efnilite.iep.mode.DefaultMode
 import dev.efnilite.iep.mode.MinSpeedMode
 import dev.efnilite.iep.mode.Mode
@@ -41,6 +42,7 @@ class IEP : ViPlugin() {
 
         registerMode(DefaultMode)
         registerMode(MinSpeedMode)
+        registerMode(CloseMode)
 
         Task.create(this)
             .async()
@@ -98,5 +100,9 @@ class IEP : ViPlugin() {
         fun getStyle(name: String) = styles.first { it.name() == name }
 
         fun getStyles() = styles.toList()
+
+        fun String.toTitleCase(): String {
+            return this.split(" ").joinToString(" ") { it.uppercase() }
+        }
     }
 }

@@ -4,16 +4,15 @@ import dev.efnilite.iep.Config
 import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.generator.util.Island
+import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.generator.util.Section
 import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
-import dev.efnilite.vilib.schematic.Schematic
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Task
-import org.bukkit.Material
-import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
@@ -24,43 +23,15 @@ import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
 
-private class Island(vector: Vector, schematic: Schematic) {
-
-    val blocks: List<Block> = schematic.paste(vector.toLocation(World.world))
-    val playerSpawn: Vector
-    val blockSpawn: Vector
-
-    init {
-        assert(blocks.isNotEmpty())
-
-        blocks.first { it.type == Material.DIAMOND_BLOCK }.let {
-            playerSpawn = it.location.toVector()
-
-            it.type = Material.AIR
-        }
-        blocks.first { it.type == Material.EMERALD_BLOCK }.let {
-            blockSpawn = it.location.toVector()
-
-            it.type = Material.AIR
-        }
-    }
-
-    /**
-     * Clears the island.
-     */
-    fun clear() {
-        blocks.forEach { it.type = Material.AIR }
-    }
-}
-
 open class Generator {
 
-    private val sections = mutableMapOf<Int, Section>()
+    protected val sections = mutableMapOf<Int, Section>()
 
     private var start: Instant? = null
+    private var pointType: PointType = PointType.CIRCLE
     private lateinit var task: BukkitTask
 
-    private lateinit var island: Island
+    protected lateinit var island: Island
     private val heading = Vector(1, 0, 0)
 
     private var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
@@ -100,10 +71,11 @@ open class Generator {
 
     /**
      * Initializes all the stuff.
-     * @param vector The vector to spawn the island at.
+     * @param start The vector to spawn the island at.
      */
-    fun start(vector: Vector) {
-        island = Island(vector, Schematics.getSchematic(IEP.instance, "spawn-island"))
+    fun start(start: Vector, type: PointType) {
+        island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
+        pointType = type
 
         reset()
 
@@ -124,9 +96,11 @@ open class Generator {
         players.forEach { it.updateBoard(score, formattedTime, seed) }
     }
 
-    open fun getScore() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
+    open val score
+        get() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
 
-    fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
+    val time
+        get() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
     private var resetUp = false
 
@@ -139,9 +113,9 @@ open class Generator {
 
         val player = players[0]
         val pos = player.position
-        val score = getScore()
+        val score = score
 
-        updateBoard(score, getTime())
+        updateBoard(score, time)
 
         if (start == null && score > 0) {
             start = Instant.now()
@@ -152,12 +126,12 @@ open class Generator {
             return
         }
 
-        if (section.isNear(pos, 0) && section.end.y < 25) {
+        if (section.isNearKnot(pos, 0) && section.end.y < 25) {
             val cloned = section.clone(Vector(0, 200, 0))
 
             sections[idx + 1] = cloned
 
-            cloned.generate(settings)
+            cloned.generate(settings, pointType)
 
             resetUp = true
 
@@ -167,7 +141,7 @@ open class Generator {
         if (resetUp) {
             val previous = sections[idx - 1]!!
 
-            if (!previous.isNear(pos)) {
+            if (!previous.isNearKnot(pos, 2)) {
                 return
             }
 
@@ -176,7 +150,7 @@ open class Generator {
             return
         }
 
-        if (section.isNear(pos)) {
+        if (section.isNearKnot(pos, 2)) {
             generate()
 
             return
@@ -198,11 +172,11 @@ open class Generator {
      */
     protected open fun generate() {
         if (sections.isEmpty()) {
-            val section = Section(island.blockSpawn, random)
+            val section = Section(island.blockSpawn.clone().add(Vector(0, pointType.heightOffset, 0)), random)
 
             sections[0] = section
 
-            section.generate(settings)
+            section.generate(settings, pointType)
 
             return
         }
@@ -216,7 +190,7 @@ open class Generator {
 
         sections[idx + 1] = section
 
-        section.generate(settings)
+        section.generate(settings, pointType)
     }
 
     /**
@@ -227,8 +201,8 @@ open class Generator {
             leaderboard.update(
                 it.uuid, Score(
                     name = it.name,
-                    score = getScore(),
-                    time = getTime().toEpochMilli(),
+                    score = score,
+                    time = time.toEpochMilli(),
                     seed = seed
                 )
             )
@@ -282,7 +256,7 @@ open class Generator {
          * Creates a new generator.
          * @param player The player to create the generator for.
          */
-        fun create(player: Player, gen: () -> Generator) {
+        fun create(player: Player, pointType: PointType, gen: () -> Generator) {
             remove(player)
 
             val elytraPlayer = ElytraPlayer(player)
@@ -295,7 +269,7 @@ open class Generator {
 
             generator.add(elytraPlayer)
 
-            generator.start(Divider.toLocation(generator))
+            generator.start(Divider.toLocation(generator), pointType)
         }
 
         /**

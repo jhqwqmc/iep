@@ -9,6 +9,13 @@ class MinSpeedGenerator : Generator() {
     private var maxSpeedSoFar = 0.0
     private var ticksTooSlow = 0
 
+    override val score: Int
+        get() {
+            if (startX == 0) return 0
+
+            return max(0, (players[0].position.x - startX).toInt())
+        }
+
     override fun tick() {
         super.tick()
 
@@ -44,12 +51,6 @@ class MinSpeedGenerator : Generator() {
         super.resetHeight()
 
         ticksTooSlow = 0
-    }
-
-    override fun getScore(): Int {
-        if (startX == 0) return 0
-
-        return max(0, (players[0].position.x - startX).toInt())
     }
 
     private fun getProgressBar(speed: Double): String {
