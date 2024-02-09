@@ -1,4 +1,4 @@
-package dev.efnilite.iep.generator
+package dev.efnilite.iep.generator.util
 
 import dev.efnilite.iep.style.Style
 

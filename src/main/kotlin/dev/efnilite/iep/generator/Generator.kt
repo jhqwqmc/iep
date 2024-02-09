@@ -1,10 +1,12 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.Config
+import dev.efnilite.iep.ElytraPlayer
+import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.generator.util.Section
+import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.leaderboard.Score
-import dev.efnilite.iep.player.ElytraPlayer
-import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
@@ -51,7 +53,7 @@ private class Island(vector: Vector, schematic: Schematic) {
     }
 }
 
-class Generator {
+open class Generator {
 
     private val sections = mutableMapOf<Int, Section>()
 
@@ -64,7 +66,7 @@ class Generator {
     private var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
     private var random = Random()
 
-    private val leaderboard = IEP.getLeaderboard("default")
+    private val leaderboard = IEP.getMode("default").leaderboard
 
     val players = mutableListOf<ElytraPlayer>()
     var settings: Settings = Settings(IEP.getStyles().random(), 5, seed)
@@ -91,6 +93,8 @@ class Generator {
             reset(false)
 
             island.clear()
+
+            Divider.remove(this)
         }
     }
 
@@ -120,7 +124,7 @@ class Generator {
         players.forEach { it.updateBoard(score, formattedTime, seed) }
     }
 
-    fun getScore() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
+    open fun getScore() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
 
     fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
@@ -129,7 +133,7 @@ class Generator {
     /**
      * Ticks the generator.
      */
-    private fun tick() {
+    protected open fun tick() {
         val idx = sections.keys.max()
         val section = sections[idx]!!
 
@@ -167,16 +171,7 @@ class Generator {
                 return
             }
 
-            val velocity = player.player.velocity
-
-            player.player.teleportAsync(player.player.location.add(0.0, 200.0, 0.0))
-
-            Task.create(IEP.instance)
-                .delay(1)
-                .execute { player.player.velocity = velocity }
-                .run()
-
-            resetUp = false
+            resetHeight()
 
             return
         }
@@ -201,7 +196,7 @@ class Generator {
     /**
      * Generates the next knot.
      */
-    private fun generate() {
+    protected open fun generate() {
         if (sections.isEmpty()) {
             val section = Section(island.blockSpawn, random)
 
@@ -227,7 +222,7 @@ class Generator {
     /**
      * Resets the players and knots.
      */
-    private fun reset(regenerate: Boolean = true) {
+    protected open fun reset(regenerate: Boolean = true) {
         players.forEach {
             leaderboard.update(
                 it.uuid, Score(
@@ -258,6 +253,20 @@ class Generator {
         generate()
     }
 
+    protected open fun resetHeight() {
+        val player = players[0]
+        val velocity = player.player.velocity
+
+        player.player.teleportAsync(player.player.location.add(0.0, 200.0, 0.0))
+
+        Task.create(IEP.instance)
+            .delay(2)
+            .execute { player.player.velocity = velocity }
+            .run()
+
+        resetUp = false
+    }
+
     /**
      * Allows for easy setting of the current [Settings] instance.
      */
@@ -273,12 +282,14 @@ class Generator {
          * Creates a new generator.
          * @param player The player to create the generator for.
          */
-        fun create(player: Player) {
+        fun create(player: Player, gen: () -> Generator) {
+            remove(player)
+
             val elytraPlayer = ElytraPlayer(player)
 
             elytraPlayer.join()
 
-            val generator = Generator()
+            val generator = gen.invoke()
 
             Divider.add(generator)
 

@@ -1,18 +1,16 @@
 package dev.efnilite.iep
 
-import dev.efnilite.iep.generator.Generator
+import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.menu.SettingsMenu
-import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.mode.DefaultMode
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.event.EventWatcher
-import dev.efnilite.vilib.util.Task
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.EquipmentSlot
-import org.bukkit.inventory.ItemStack
 
 class Events : EventWatcher {
 
@@ -42,7 +40,7 @@ class Events : EventWatcher {
     @EventHandler
     fun join(event: PlayerJoinEvent) {
         if (Config.CONFIG.getBoolean("join-on-join")) {
-            Generator.create(event.player)
+            DefaultMode.create(event.player)
         }
     }
 

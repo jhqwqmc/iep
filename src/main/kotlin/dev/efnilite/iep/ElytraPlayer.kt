@@ -1,4 +1,4 @@
-package dev.efnilite.iep.player
+package dev.efnilite.iep
 
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.world.Divider
@@ -11,7 +11,6 @@ import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.util.Vector
@@ -89,6 +88,14 @@ class ElytraPlayer(val player: Player) {
 
     fun teleport(location: Location) {
         player.teleportAsync(location)
+    }
+
+    fun send(message: String) {
+        player.sendMessage(deserialize(message))
+    }
+
+    fun sendActionBar(message: String) {
+        player.sendActionBar(deserialize(message))
     }
 
     fun updateBoard(score: Int, time: String, seed: Int) {

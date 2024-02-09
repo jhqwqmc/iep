@@ -1,6 +1,6 @@
-package dev.efnilite.iep.generator
+package dev.efnilite.iep.generator.util
 
-import dev.efnilite.iep.generator.Section.Companion.KNOTS
+import dev.efnilite.iep.generator.util.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.bukkit.Material
