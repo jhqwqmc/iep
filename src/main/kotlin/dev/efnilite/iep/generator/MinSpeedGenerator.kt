@@ -47,8 +47,8 @@ class MinSpeedGenerator : Generator() {
         startX = 0
     }
 
-    override fun resetHeight() {
-        super.resetHeight()
+    override fun resetPlayerHeight() {
+        super.resetPlayerHeight()
 
         ticksTooSlow = 0
     }

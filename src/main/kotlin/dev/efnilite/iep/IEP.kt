@@ -4,6 +4,7 @@ import dev.efnilite.iep.mode.CloseMode
 import dev.efnilite.iep.mode.DefaultMode
 import dev.efnilite.iep.mode.MinSpeedMode
 import dev.efnilite.iep.mode.Mode
+import dev.efnilite.iep.style.IncrementalStyle
 import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.World
@@ -37,8 +38,8 @@ class IEP : ViPlugin() {
             *Files.list(Path.of(dataFolder.toString(), "schematics"))
                 .map { it.toFile() }.toList().toTypedArray())
 
-        registerStyle("styles.random")
-        registerStyle("styles.incremental")
+        registerStyle("styles.random") { name, data -> RandomStyle(name, data) }
+        registerStyle("styles.incremental") { name, data -> IncrementalStyle(name, data) }
 
         registerMode(DefaultMode)
         registerMode(MinSpeedMode)
@@ -59,10 +60,10 @@ class IEP : ViPlugin() {
         }
     }
 
-    private fun registerStyle(path: String) {
+    private fun registerStyle(path: String, fn: (name: String, data: List<Material>) -> Style) {
         Config.CONFIG.getPaths(path).forEach { name ->
             registerStyle(
-                RandomStyle(name, Config.CONFIG.getStringList("$path.$name")
+                fn.invoke(name, Config.CONFIG.getStringList("$path.$name")
                 .map {
                     try {
                         return@map Material.getMaterial(it.uppercase())!!

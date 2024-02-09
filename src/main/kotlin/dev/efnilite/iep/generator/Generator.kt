@@ -8,6 +8,7 @@ import dev.efnilite.iep.generator.util.Island
 import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.generator.util.Section
 import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
@@ -32,12 +33,11 @@ open class Generator {
     private lateinit var task: BukkitTask
 
     protected lateinit var island: Island
-    private val heading = Vector(1, 0, 0)
 
     private var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
     private var random = Random()
 
-    private val leaderboard = IEP.getMode("default").leaderboard
+    private lateinit var leaderboard: Leaderboard
 
     val players = mutableListOf<ElytraPlayer>()
     var settings: Settings = Settings(IEP.getStyles().random(), 5, seed)
@@ -73,7 +73,8 @@ open class Generator {
      * Initializes all the stuff.
      * @param start The vector to spawn the island at.
      */
-    fun start(start: Vector, type: PointType) {
+    fun start(ld: Leaderboard, start: Vector, type: PointType) {
+        leaderboard = ld
         island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
         pointType = type
 
@@ -145,7 +146,7 @@ open class Generator {
                 return
             }
 
-            resetHeight()
+            resetPlayerHeight()
 
             return
         }
@@ -227,7 +228,7 @@ open class Generator {
         generate()
     }
 
-    protected open fun resetHeight() {
+    protected open fun resetPlayerHeight() {
         val player = players[0]
         val velocity = player.player.velocity
 
@@ -256,7 +257,7 @@ open class Generator {
          * Creates a new generator.
          * @param player The player to create the generator for.
          */
-        fun create(player: Player, pointType: PointType, gen: () -> Generator) {
+        fun create(player: Player, leaderboard: Leaderboard, pointType: PointType, gen: () -> Generator) {
             remove(player)
 
             val elytraPlayer = ElytraPlayer(player)
@@ -269,7 +270,7 @@ open class Generator {
 
             generator.add(elytraPlayer)
 
-            generator.start(Divider.toLocation(generator), pointType)
+            generator.start(leaderboard, Divider.toLocation(generator), pointType)
         }
 
         /**

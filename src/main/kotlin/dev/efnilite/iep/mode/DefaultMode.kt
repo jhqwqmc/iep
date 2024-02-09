@@ -13,7 +13,7 @@ object DefaultMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun create(player: Player) = Generator.create(player, PointType.CIRCLE) { Generator() }
+    override fun create(player: Player) = Generator.create(player, leaderboard, PointType.CIRCLE) { Generator() }
 
     override fun getItem(locale: String) = Item(Material.BARREL, "<white><bold>Default")
 }

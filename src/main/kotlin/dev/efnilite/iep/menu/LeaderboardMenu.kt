@@ -15,7 +15,6 @@ object LeaderboardMenu {
         val menu = Menu(3, "Leaderboards")
             .distributeRowsEvenly()
             .animation(RandomAnimation())
-            .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
 
         for (mode in IEP.getModes()) {
             menu.item(menu.items.size + 9, mode.getItem("")

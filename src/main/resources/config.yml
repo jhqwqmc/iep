@@ -1,12 +1,23 @@
 # -= Styles =-
 styles:
   random:
-    red: ["red_wool", "red_concrete", "red_terracotta", "red_stained_glass"]
+    glass: ["white_stained_glass"]
+    bamboo: ["bamboo_block", "stripped_bamboo_block", "bamboo_planks", "bamboo_mosaic", "bamboo_stairs", "bamboo_mosaic_stairs",
+            "bamboo_slab", "bamboo_mosaic_slab", "bamboo_fence"]
+    spruce: ["spruce_wood", "stripped_spruce_wood", "spruce_planks", "spruce_slab", "spruce_stairs", "spruce_fence"]
+    cherry: ["cherry_wood", "stripped_cherry_wood", "cherry_planks", "cherry_slab", "cherry_stairs", "cherry_fence"]
+    crimson: ["crimson_hyphae", "stripped_crimson_hyphae", "crimson_planks", "crimson_slab", "crimson_stairs", "crimson_fence"]
   incremental:
-    red: ["red_wool", "red_concrete", "red_terracotta", "red_stained_glass"]
+    leaves: ["oak_leaves", "spruce_leaves", "birch_leaves", "jungle_leaves", "acacia_leaves", "dark_oak_leaves", "azalea_leaves",
+      "flowering_azalea_leaves", "cherry_leaves", "mangrove_leaves"]
 
 # -= Mode settings =-
 mode-settings:
+  close:
+    # -= Radius =-
+    # The radius of the allowed area around the center
+    radius: 4
+
   min-speed:
     # -= The min speed =-
     # The min speed in m/s

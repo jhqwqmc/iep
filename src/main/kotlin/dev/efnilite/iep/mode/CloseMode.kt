@@ -14,7 +14,7 @@ object CloseMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun create(player: Player) = Generator.create(player, PointType.FLAT) { CloseGenerator() }
+    override fun create(player: Player) = Generator.create(player, leaderboard, PointType.FLAT) { CloseGenerator() }
 
-    override fun getItem(locale: String) = Item(Material.PAPER, "<white><bold>Close")
+    override fun getItem(locale: String) = Item(Material.PINK_PETALS, "<#fa9abc><bold>Close")
 }

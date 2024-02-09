@@ -14,7 +14,7 @@ object MinSpeedMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun create(player: Player) = Generator.create(player, PointType.CIRCLE) { MinSpeedGenerator() }
+    override fun create(player: Player) = Generator.create(player, leaderboard, PointType.CIRCLE) { MinSpeedGenerator() }
 
-    override fun getItem(locale: String) = Item(Material.TORCHFLOWER, "<white><bold>Min Speed")
+    override fun getItem(locale: String) = Item(Material.SPLASH_POTION, "<#cc3399><bold>Min Speed")
 }

@@ -13,6 +13,9 @@ import java.util.*
  */
 class Section {
 
+    // TODO yikes!
+    private var builder: AsyncBuilder? = null
+
     private val director: KnotDirector
     private val interpolator: SplineInterpolator
     private val knots: List<Vector>
@@ -79,11 +82,12 @@ class Section {
             .map { it.toLocation(world).block }
             .associateWith { settings.style.next() }
 
-        AsyncBuilder(map = map,
-            onComplete = { blocks.addAll(it) })
+        builder = AsyncBuilder(map) { blocks.add(it) }
     }
 
     fun clear() {
+        builder?.cancel()
+
         AsyncBuilder(blocks.associateWith { Material.AIR })
     }
 

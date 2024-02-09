@@ -1,5 +1,7 @@
 package dev.efnilite.iep.generator
 
+import dev.efnilite.iep.Config
+
 class CloseGenerator : Generator() {
 
     override fun tick() {
@@ -15,10 +17,14 @@ class CloseGenerator : Generator() {
             return
         }
 
-        val isNear = section.isNearPoint(pos, progressInSection, 4)
+        val isNear = section.isNearPoint(pos, progressInSection, RADIUS)
 
         if (score > 25 && !isNear) {
             reset()
         }
+    }
+
+    companion object {
+        val RADIUS = Config.CONFIG.getInt("mode-settings.close.radius")
     }
 }

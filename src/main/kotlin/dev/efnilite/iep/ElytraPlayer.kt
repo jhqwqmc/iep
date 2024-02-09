@@ -1,8 +1,9 @@
 package dev.efnilite.iep
 
-import dev.efnilite.iep.generator.Generator
+import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
+import dev.efnilite.vilib.ViPlugin
 import dev.efnilite.vilib.inventory.item.Item
 import fr.mrmicky.fastboard.adventure.FastBoard
 import net.kyori.adventure.text.Component
@@ -37,7 +38,8 @@ private data class PreviousData(private val player: Player) {
             inventory.clear()
 
             inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
-            inventory.addItem(Item(Material.STRING, "<white>Settings").build())
+            inventory.addItem(Item(Material.SUGAR_CANE, "<#2fb900><bold>Play").build())
+            inventory.addItem(Item(Material.COMPARATOR, "<#c10000><bold>Settings").build())
         }
     }
 
@@ -78,26 +80,63 @@ class ElytraPlayer(val player: Player) {
 
     private val board = FastBoard(player)
 
-    fun getGenerator(): Generator {
-        return Divider.generators.first { it.players.contains(this) }
+    /**
+     * Joins the player to the generator.
+     */
+    fun join() = data.join()
+
+    /**
+     * Resets the data of the player.
+     */
+    fun leave() {
+        data.leave()
+
+        board.delete()
     }
 
+    /**
+     * Returns the generator the player is in.
+     */
+    fun getGenerator() = Divider.generators.first { it.players.contains(this) }
+
+    /**
+     * Teleports the player.
+     * @param vector The vector to teleport to.
+     */
     fun teleport(vector: Vector) {
         player.teleportAsync(vector.toLocation(World.world))
     }
 
+    /**
+     * Teleports the player.
+     * @param location The location to teleport to.
+     */
     fun teleport(location: Location) {
         player.teleportAsync(location)
     }
 
+    /**
+     * Sends a message to the player.
+     * @param message The message to send.
+     */
     fun send(message: String) {
         player.sendMessage(deserialize(message))
     }
 
+    /**
+     * Sends an action bar message to the player.
+     * @param message The message to send.
+     */
     fun sendActionBar(message: String) {
         player.sendActionBar(deserialize(message))
     }
 
+    /**
+     * Updates the player's board.
+     * @param score The score to display.
+     * @param time The time to display.
+     * @param seed The seed to display.
+     */
     fun updateBoard(score: Int, time: String, seed: Int) {
         board.updateTitle(deserialize("<gradient:#ff0000:#800000><bold>IEP</gradient>"))
 
@@ -111,22 +150,12 @@ class ElytraPlayer(val player: Player) {
         )
     }
 
-    private fun deserialize(string: String): Component {
-        return MiniMessage.miniMessage().deserialize(string)
+    fun save(settings: Settings) {
+        ViPlugin.getGson().toJson(settings)
     }
 
-    /**
-     * Joins the player to the generator.
-     */
-    fun join() = data.join()
-
-    /**
-     * Resets the data of the player.
-     */
-    fun leave() {
-        data.leave()
-
-        board.delete()
+    private fun deserialize(string: String): Component {
+        return MiniMessage.miniMessage().deserialize(string)
     }
 
     companion object {

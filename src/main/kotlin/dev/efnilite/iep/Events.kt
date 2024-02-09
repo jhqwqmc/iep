@@ -1,6 +1,7 @@
 package dev.efnilite.iep
 
 import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
 import dev.efnilite.iep.mode.DefaultMode
 import dev.efnilite.iep.world.World
@@ -57,8 +58,11 @@ class Events : EventWatcher {
 
         if (event.action != Action.RIGHT_CLICK_AIR || event.hand != EquipmentSlot.HAND) return
 
-        if (event.item?.type != Material.STRING) return
-
-        SettingsMenu.open(player)
+        if (event.item?.type == Material.SUGAR_CANE) {
+            PlayMenu.open(player.player)
+        }
+        if (event.item?.type == Material.COMPARATOR) {
+            SettingsMenu.open(player)
+        }
     }
 }
