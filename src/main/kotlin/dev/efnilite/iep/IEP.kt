@@ -1,6 +1,8 @@
 package dev.efnilite.iep
 
-import dev.efnilite.iep.leaderboard.Leaderboard
+import dev.efnilite.iep.mode.DefaultMode
+import dev.efnilite.iep.mode.MinSpeedMode
+import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.World
@@ -34,19 +36,16 @@ class IEP : ViPlugin() {
             *Files.list(Path.of(dataFolder.toString(), "schematics"))
                 .map { it.toFile() }.toList().toTypedArray())
 
-        register(Leaderboard("default"))
-
         registerStyle("styles.random")
         registerStyle("styles.incremental")
+
+        registerMode(DefaultMode)
+        registerMode(MinSpeedMode)
 
         Task.create(this)
             .async()
             .repeat(3 * 60 * 20)
-            .execute {
-                for (leaderboard in leaderboards) {
-                    leaderboard.write()
-                }
-            }
+            .execute { modes.forEach { it.leaderboard.write() } }
             .run()
     }
 
@@ -60,7 +59,8 @@ class IEP : ViPlugin() {
 
     private fun registerStyle(path: String) {
         Config.CONFIG.getPaths(path).forEach { name ->
-            register(RandomStyle(name, Config.CONFIG.getStringList("$path.$name")
+            registerStyle(
+                RandomStyle(name, Config.CONFIG.getStringList("$path.$name")
                 .map {
                     try {
                         return@map Material.getMaterial(it.uppercase())!!
@@ -68,7 +68,8 @@ class IEP : ViPlugin() {
                         logging.error("Invalid material in style $path.$name: $it")
                         return@map Material.STONE
                     }
-                }))
+                })
+            )
         }
     }
 
@@ -82,15 +83,17 @@ class IEP : ViPlugin() {
         lateinit var instance: IEP
             private set
 
-        private val leaderboards: MutableList<Leaderboard> = mutableListOf()
+        private val modes: MutableList<Mode> = mutableListOf()
 
-        fun register(leaderboard: Leaderboard) = leaderboards.add(leaderboard)
+        fun registerMode(mode: Mode) = modes.add(mode)
 
-        fun getLeaderboard(name: String) = leaderboards.first { it.name == name }
+        fun getMode(name: String) = modes.first { it.name == name }
+
+        fun getModes() = modes.toList()
 
         private val styles: MutableList<Style> = mutableListOf()
 
-        fun register(style: Style) = styles.add(style)
+        fun registerStyle(style: Style) = styles.add(style)
 
         fun getStyle(name: String) = styles.first { it.name() == name }
 

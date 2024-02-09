@@ -5,6 +5,17 @@ styles:
   incremental:
     red: ["red_wool", "red_concrete", "red_terracotta", "red_stained_glass"]
 
+# -= Mode settings =-
+mode-settings:
+  min-speed:
+    # -= The min speed =-
+    # The min speed in m/s
+    min-speed: 35
+
+    # -= Actionbar length =-
+    # The length of the actionbar
+    actionbar-length: 30
+
 # -= Join on join =-
 # If true, players that join the server will join the parkour.
 join-on-join: true

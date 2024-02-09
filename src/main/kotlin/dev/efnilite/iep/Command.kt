@@ -1,6 +1,7 @@
 package dev.efnilite.iep
 
 import dev.efnilite.iep.generator.Generator
+import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.vilib.command.ViCommand
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -11,7 +12,7 @@ class Command : ViCommand() {
         if (args.isEmpty() || sender !is Player) return false
 
         when (args[0]) {
-            "play" -> Generator.create(sender)
+            "play" -> PlayMenu.open(sender)
             "leave" -> Generator.remove(sender)
         }
 

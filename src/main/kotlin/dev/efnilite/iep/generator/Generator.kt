@@ -1,10 +1,12 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.Config
+import dev.efnilite.iep.ElytraPlayer
+import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.generator.util.Section
+import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.leaderboard.Score
-import dev.efnilite.iep.player.ElytraPlayer
-import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
@@ -18,6 +20,9 @@ import org.bukkit.util.Vector
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
+import kotlin.math.max
 
 private class Island(vector: Vector, schematic: Schematic) {
 
@@ -48,21 +53,24 @@ private class Island(vector: Vector, schematic: Schematic) {
     }
 }
 
-class Generator {
+open class Generator {
 
-    val players = mutableListOf<ElytraPlayer>()
-    private val rings = mutableMapOf<Int, Ring>()
+    private val sections = mutableMapOf<Int, Section>()
 
-    var style = IEP.getStyles()[0]
-    private var start: Instant = Instant.now()
+    private var start: Instant? = null
     private lateinit var task: BukkitTask
 
     private lateinit var island: Island
     private val heading = Vector(1, 0, 0)
 
-    private val director = RingDirector()
+    private var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
+    private var random = Random()
 
-    private val leaderboard = IEP.getLeaderboard("default")
+    private val leaderboard = IEP.getMode("default").leaderboard
+
+    val players = mutableListOf<ElytraPlayer>()
+    var settings: Settings = Settings(IEP.getStyles().random(), 5, seed)
+        private set
 
     /**
      * Adds a player to the generator.
@@ -82,9 +90,11 @@ class Generator {
         if (players.isEmpty()) {
             task.cancel()
 
-            reset()
+            reset(false)
 
             island.clear()
+
+            Divider.remove(this)
         }
     }
 
@@ -95,10 +105,7 @@ class Generator {
     fun start(vector: Vector) {
         island = Island(vector, Schematics.getSchematic(IEP.instance, "spawn-island"))
 
-        players.forEach { it.teleport(island.playerSpawn) }
-
-        rings[0] = Ring(heading, island.blockSpawn, 0)
-        generate()
+        reset()
 
         task = Task.create(IEP.instance)
             .repeat(1)
@@ -109,92 +116,180 @@ class Generator {
     /**
      * Updates all players' scoreboards.
      */
-    private fun updateBoard(score: Int) {
-        val timeMs = Instant.now().minusMillis(start.toEpochMilli())
-        val time = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
+    private fun updateBoard(score: Int, time: Instant) {
+        val formattedTime = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
             .withZone(ZoneOffset.UTC)
-            .format(timeMs)
+            .format(time)
 
-        players.forEach { it.updateBoard(score, time) }
+        players.forEach { it.updateBoard(score, formattedTime, seed) }
     }
+
+    open fun getScore() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
+
+    fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
+
+    private var resetUp = false
 
     /**
      * Ticks the generator.
      */
-    private fun tick() {
-        val latest = rings.maxBy { it.key }
-        val idx = latest.key
-        val ring = latest.value
+    protected open fun tick() {
+        val idx = sections.keys.max()
+        val section = sections[idx]!!
 
-        val pos = players[0].position
+        val player = players[0]
+        val pos = player.position
+        val score = getScore()
 
-        updateBoard(idx - 1)
+        updateBoard(score, getTime())
 
-        if (ring.isNear(pos)) {
-            for (player in players) {
-                leaderboard.update(player.uuid, Score(
-                    name = player.name,
-                    score = idx - 1,
-                    time = Instant.now().minusMillis(start.toEpochMilli()).toEpochMilli(),
-                    difficulty = 0.0))
-            }
-
-            generate()
-
-            if (idx - 1 == 0) {
-                start = Instant.now()
-            }
-
-            return
+        if (start == null && score > 0) {
+            start = Instant.now()
         }
 
-        if (ring.isOutOfBounds(pos)) {
+        if (score > 5 && !player.player.isGliding) {
             reset()
             return
         }
+
+        if (section.isNear(pos, 0) && section.end.y < 25) {
+            val cloned = section.clone(Vector(0, 200, 0))
+
+            sections[idx + 1] = cloned
+
+            cloned.generate(settings)
+
+            resetUp = true
+
+            return
+        }
+
+        if (resetUp) {
+            val previous = sections[idx - 1]!!
+
+            if (!previous.isNear(pos)) {
+                return
+            }
+
+            resetHeight()
+
+            return
+        }
+
+        if (section.isNear(pos)) {
+            generate()
+
+            return
+        }
+
+        if (sections.size > 2) {
+            val last = sections.minBy { it.key }
+            val lastIdx = last.key
+            val lastSection = last.value
+
+            lastSection.clear()
+
+            sections.remove(lastIdx)
+        }
     }
 
     /**
-     * Generates the next ring.
+     * Generates the next knot.
      */
-    private fun generate() {
-        val latest = rings.maxBy { it.key }
+    protected open fun generate() {
+        if (sections.isEmpty()) {
+            val section = Section(island.blockSpawn, random)
+
+            sections[0] = section
+
+            section.generate(settings)
+
+            return
+        }
+
+        val latest = sections.maxBy { it.key }
         val idx = latest.key
-        val ring = latest.value
+        val previous = latest.value
+        val end = previous.end
 
-        val next = ring.center.clone().add(director.nextOffset())
+        val section = Section(end, random)
 
-        val nextRing = Ring(heading, next, director.nextRadius())
-        rings[idx + 1] = nextRing
+        sections[idx + 1] = section
 
-        nextRing.blocks.forEach { it.toLocation(World.world).block.type = style.next() }
+        section.generate(settings)
     }
 
     /**
-     * Resets the players and rings.
+     * Resets the players and knots.
      */
-    private fun reset() {
-        players.forEach { it.teleport(island.playerSpawn) }
+    protected open fun reset(regenerate: Boolean = true) {
+        players.forEach {
+            leaderboard.update(
+                it.uuid, Score(
+                    name = it.name,
+                    score = getScore(),
+                    time = getTime().toEpochMilli(),
+                    seed = seed
+                )
+            )
+        }
 
-        rings.forEach { (_, ring) -> ring.blocks.forEach { it.toLocation(World.world).block.type = Material.AIR } }
-        rings.clear()
+        seed = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
+        random = Random(seed.toLong())
+        start = null
+        resetUp = false
 
-        rings[0] = Ring(heading, island.blockSpawn, 0)
+        sections.forEach { it.value.clear() }
+
+        sections.clear()
+
+        val spawn = island.playerSpawn.toLocation(World.world)
+        spawn.yaw = -90f
+
+        players.forEach { it.teleport(spawn) }
+
+        if (!regenerate) return
+
         generate()
     }
 
+    protected open fun resetHeight() {
+        val player = players[0]
+        val velocity = player.player.velocity
+
+        player.player.teleportAsync(player.player.location.add(0.0, 200.0, 0.0))
+
+        Task.create(IEP.instance)
+            .delay(2)
+            .execute { player.player.velocity = velocity }
+            .run()
+
+        resetUp = false
+    }
+
+    /**
+     * Allows for easy setting of the current [Settings] instance.
+     */
+    fun set(mapper: (Settings) -> Settings) {
+        settings = mapper.invoke(settings)
+    }
+
     companion object {
+
+        private const val SEED_BOUND = 1_000_000
 
         /**
          * Creates a new generator.
          * @param player The player to create the generator for.
          */
-        fun create(player: Player) {
+        fun create(player: Player, gen: () -> Generator) {
+            remove(player)
+
             val elytraPlayer = ElytraPlayer(player)
 
             elytraPlayer.join()
 
-            val generator = Generator()
+            val generator = gen.invoke()
 
             Divider.add(generator)
 

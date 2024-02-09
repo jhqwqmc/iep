@@ -1,4 +1,4 @@
-package dev.efnilite.iep.player
+package dev.efnilite.iep
 
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.world.Divider
@@ -8,6 +8,7 @@ import fr.mrmicky.fastboard.adventure.FastBoard
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -37,7 +38,6 @@ private data class PreviousData(private val player: Player) {
 
             inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
             inventory.addItem(Item(Material.STRING, "<white>Settings").build())
-            inventory.addItem(Item(Material.FIREWORK_ROCKET, 1, "").build())
         }
     }
 
@@ -86,13 +86,26 @@ class ElytraPlayer(val player: Player) {
         player.teleportAsync(vector.toLocation(World.world))
     }
 
-    fun updateBoard(score: Int, time: String) {
-        board.updateTitle(deserialize("<gradient:#ff0000:#800000>Infinite Elytra Parkour</gradient>"))
+    fun teleport(location: Location) {
+        player.teleportAsync(location)
+    }
+
+    fun send(message: String) {
+        player.sendMessage(deserialize(message))
+    }
+
+    fun sendActionBar(message: String) {
+        player.sendActionBar(deserialize(message))
+    }
+
+    fun updateBoard(score: Int, time: String, seed: Int) {
+        board.updateTitle(deserialize("<gradient:#ff0000:#800000><bold>IEP</gradient>"))
 
         board.updateLines(
             deserialize(""),
             deserialize("<#b30000><bold>Score</bold> <gray>$score"),
             deserialize("<#b30000><bold>Time</bold> <gray>$time"),
+            deserialize("<#b30000><bold>Seed</bold> <gray>$seed"),
             deserialize(""),
             deserialize("<#505050>server.ip")
         )
