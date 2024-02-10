@@ -45,8 +45,13 @@ object SettingsMenu {
         )
 
         menu.item(11, Item(Material.TORCHFLOWER_SEEDS, "<#00538a><bold>Seed")
-            .lore("<dark_gray>Currently <white>${generator.settings.seed}", "",
-                "<dark_gray>To change this seed, use <white>/iep seed <seed>."))
+            .lore("<gray>Currently <white>${generator.settings.seed}", "",
+                "<gray>To change this seed, use <white>/iep seed <seed>."))
+
+        menu.item(11, Item(Material.FEATHER, "<white><bold>Info")
+            .lore("<gray>Currently <white>${generator.settings.info}", "",
+                "<gray>View extra info.")
+            .click({ generator.set { settings -> Settings(settings, info = !settings.info) }}))
 
         menu.item(23, Item(Material.SPRUCE_HANGING_SIGN, "<white><bold>Leaderboards")
             .click({ LeaderboardMenu.open(player) }))

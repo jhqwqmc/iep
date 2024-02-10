@@ -40,7 +40,7 @@ open class Generator {
     private lateinit var leaderboard: Leaderboard
 
     val players = mutableListOf<ElytraPlayer>()
-    var settings: Settings = Settings(IEP.getStyles().random(), 5, seed)
+    var settings: Settings = Settings(IEP.getStyles().random(), 5, seed, true)
         private set
 
     /**
@@ -117,6 +117,7 @@ open class Generator {
         val score = score
 
         updateBoard(score, time)
+        updateInfo()
 
         if (start == null && score > 0) {
             start = Instant.now()
@@ -240,6 +241,37 @@ open class Generator {
             .run()
 
         resetUp = false
+    }
+
+    private fun updateInfo() {
+        if (!settings.info) return
+
+        players.forEach {
+            it.sendActionBar(getFormattedSpeed(it))
+        }
+    }
+
+    /**
+     * Returns the current speed of the player in m/s.
+     * @param player The player to get the speed for.
+     * @return The current speed.
+     */
+    fun getSpeed(player: ElytraPlayer): Double = player.player.velocity.clone().setY(0).length() * 20
+
+    /**
+     * Returns the current formatted speed to one decimal.
+     * @param player The player to get the speed for.
+     * @param metric Whether to use metric (km/h) or imperial (mph).
+     * @return The current formatted speed.
+     */
+    fun getFormattedSpeed(player: ElytraPlayer, metric: Boolean = true): String {
+        val speedMeters = getSpeed(player)
+
+        return if (metric) {
+            "<gray>%.1f km/h".format(speedMeters * 3.6)
+        } else {
+            "<gray>%.1f mph".format(speedMeters * 2.236936)
+        }
     }
 
     /**

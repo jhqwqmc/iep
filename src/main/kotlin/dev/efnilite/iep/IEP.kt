@@ -1,9 +1,6 @@
 package dev.efnilite.iep
 
-import dev.efnilite.iep.mode.CloseMode
-import dev.efnilite.iep.mode.DefaultMode
-import dev.efnilite.iep.mode.MinSpeedMode
-import dev.efnilite.iep.mode.Mode
+import dev.efnilite.iep.mode.*
 import dev.efnilite.iep.style.IncrementalStyle
 import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.iep.style.Style
@@ -42,8 +39,9 @@ class IEP : ViPlugin() {
         registerStyle("styles.incremental") { name, data -> IncrementalStyle(name, data) }
 
         registerMode(DefaultMode)
-        registerMode(MinSpeedMode)
         registerMode(CloseMode)
+        registerMode(SpeedDemonMode)
+        registerMode(MinSpeedMode)
 
         Task.create(this)
             .async()

@@ -6,7 +6,7 @@ import kotlin.math.max
 class MinSpeedGenerator : Generator() {
 
     private var startX = 0
-    private var maxSpeedSoFar = 0.0
+    private var maxSpeed = 0.0
     private var ticksTooSlow = 0
 
     override val score: Int
@@ -20,15 +20,15 @@ class MinSpeedGenerator : Generator() {
         super.tick()
 
         val player = players[0]
-        val speed = player.player.velocity.setY(0).length() * 20
+        val speed = getSpeed(player)
 
-        maxSpeedSoFar = maxOf(maxSpeedSoFar, speed)
+        maxSpeed = maxOf(maxSpeed, speed)
 
         if (speed > MIN_SPEED && startX == 0) {
             startX = player.position.blockX
         }
 
-        if (MIN_SPEED > speed && maxSpeedSoFar > MIN_SPEED) {
+        if (MIN_SPEED > speed && maxSpeed > MIN_SPEED) {
             ticksTooSlow++
         }
 
@@ -36,13 +36,13 @@ class MinSpeedGenerator : Generator() {
             reset()
         }
 
-        player.sendActionBar("${getProgressBar(speed)} <reset><dark_gray>| <gray>${"%.1f".format(speed)} m/s")
+        player.sendActionBar("${getProgressBar(speed)} <reset><dark_gray>| <gray>${getFormattedSpeed(player)}")
     }
 
     override fun reset(regenerate: Boolean) {
         super.reset(regenerate)
 
-        maxSpeedSoFar = 0.0
+        maxSpeed = 0.0
         ticksTooSlow = 0
         startX = 0
     }
