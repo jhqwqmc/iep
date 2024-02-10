@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 
 object MinSpeedMode : Mode {
 
-    override val name = "minspeed"
+    override val name = "min speed"
 
     override val leaderboard = Leaderboard(name)
 

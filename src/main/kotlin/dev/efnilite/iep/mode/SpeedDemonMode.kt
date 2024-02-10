@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 
 object SpeedDemonMode : Mode {
 
-    override val name = "speeddemon"
+    override val name = "speed demon"
 
     override val leaderboard = Leaderboard(name)
 

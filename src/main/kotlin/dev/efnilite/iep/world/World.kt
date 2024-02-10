@@ -64,6 +64,7 @@ object World {
         world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false)
         world.setGameRule(GameRule.KEEP_INVENTORY, true)
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
+        world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0)
 
         world.worldBorder.setCenter(0.0, 0.0)
         world.worldBorder.size = 10000000.0

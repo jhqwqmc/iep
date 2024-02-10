@@ -27,6 +27,19 @@ mode-settings:
     # The length of the actionbar
     actionbar-length: 30
 
+  time-trial:
+
+    # -= Seed =-
+    seed: 0
+
+    # -= Score =-
+    # The score the player needs to reach to complete the parkour
+    score: 2500
+
+    # -= Actionbar length =-
+    # The length of the actionbar
+    actionbar-length: 30
+
 # -= Join on join =-
 # If true, players that join the server will join the parkour.
 join-on-join: true

@@ -36,11 +36,11 @@ class MinSpeedGenerator : Generator() {
             reset()
         }
 
-        player.sendActionBar("${getProgressBar(speed)} <reset><dark_gray>| <gray>${getFormattedSpeed(player)}")
+        player.sendActionBar("${getProgressBar(speed, MIN_SPEED, ACTIONBAR_LENGTH)} <reset><dark_gray>| <gray>${getFormattedSpeed(player)}")
     }
 
-    override fun reset(regenerate: Boolean) {
-        super.reset(regenerate)
+    override fun reset(regenerate: Boolean, s: Int) {
+        super.reset(regenerate, s)
 
         maxSpeed = 0.0
         ticksTooSlow = 0
@@ -53,22 +53,8 @@ class MinSpeedGenerator : Generator() {
         ticksTooSlow = 0
     }
 
-    private fun getProgressBar(speed: Double): String {
-        val increments = MIN_SPEED / ACTIONBAR_LENGTH.toDouble()
-
-        return (0 until ACTIONBAR_LENGTH)
-            .map {
-                if (it * increments < speed) {
-                    return@map "<green><bold>|"
-                } else {
-                    return@map "<reset><dark_gray>|"
-                }
-            }
-            .joinToString("") { it }
-    }
-
     companion object {
-        val MIN_SPEED = Config.CONFIG.getInt("mode-settings.min-speed.min-speed")
-        val ACTIONBAR_LENGTH = Config.CONFIG.getInt("mode-settings.min-speed.actionbar-length")
+        val MIN_SPEED = Config.CONFIG.getDouble("mode-settings.min-speed.min-speed") { it > 0 }
+        val ACTIONBAR_LENGTH = Config.CONFIG.getInt("mode-settings.min-speed.actionbar-length") { it > 0 }
     }
 }

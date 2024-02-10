@@ -34,7 +34,7 @@ open class Generator {
 
     protected lateinit var island: Island
 
-    private var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
+    protected var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
     private var random = Random()
 
     private lateinit var leaderboard: Leaderboard
@@ -73,7 +73,7 @@ open class Generator {
      * Initializes all the stuff.
      * @param start The vector to spawn the island at.
      */
-    fun start(ld: Leaderboard, start: Vector, type: PointType) {
+    open fun start(ld: Leaderboard, start: Vector, type: PointType) {
         leaderboard = ld
         island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
         pointType = type
@@ -198,7 +198,7 @@ open class Generator {
     /**
      * Resets the players and knots.
      */
-    protected open fun reset(regenerate: Boolean = true) {
+    protected open fun reset(regenerate: Boolean = true, s: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)) {
         players.forEach {
             leaderboard.update(
                 it.uuid, Score(
@@ -210,7 +210,7 @@ open class Generator {
             )
         }
 
-        seed = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
+        seed = s
         random = Random(seed.toLong())
         start = null
         resetUp = false
@@ -272,6 +272,27 @@ open class Generator {
         } else {
             "<gray>%.1f mph".format(speedMeters * 2.236936)
         }
+    }
+
+    /**
+     * Returns a formatted progress bar.
+     * @param t The current value.
+     * @param max The maximum value.
+     * @param length The length of the progress bar.
+     * @return The formatted progress bar.
+     */
+    fun getProgressBar(t: Double, max: Double, length: Int = 30): String {
+        val increments = max / length.toDouble()
+
+        return (0 until length)
+            .map {
+                if (it * increments < t) {
+                    return@map "<green><bold>|"
+                } else {
+                    return@map "<reset><dark_gray>|"
+                }
+            }
+            .joinToString("") { it }
     }
 
     /**

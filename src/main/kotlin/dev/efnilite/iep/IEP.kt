@@ -39,9 +39,10 @@ class IEP : ViPlugin() {
         registerStyle("styles.incremental") { name, data -> IncrementalStyle(name, data) }
 
         registerMode(DefaultMode)
-        registerMode(CloseMode)
         registerMode(SpeedDemonMode)
         registerMode(MinSpeedMode)
+        registerMode(TimeTrialMode)
+        registerMode(CloseMode)
 
         Task.create(this)
             .async()

@@ -15,8 +15,8 @@ class SpeedDemonGenerator : Generator() {
         maxSpeedSoFar = maxOf(maxSpeedSoFar, speed)
     }
 
-    override fun reset(regenerate: Boolean) {
-        super.reset(regenerate)
+    override fun reset(regenerate: Boolean, s: Int) {
+        super.reset(regenerate, s)
 
         maxSpeedSoFar = 0.0
     }

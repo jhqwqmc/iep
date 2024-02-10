@@ -52,5 +52,16 @@ enum class Config(file: String) {
         return value
     }
 
+    /**
+     * Returns a double from the file.
+     */
+    fun getDouble(path: String, bounds: (Double) -> Boolean = { true }): Double {
+        val value = config.getDouble(path)
+
+        require(bounds.invoke(value))
+
+        return value
+    }
+
     fun getPaths(path: String): Set<String> = config.getConfigurationSection(path)!!.getKeys(false)
 }
