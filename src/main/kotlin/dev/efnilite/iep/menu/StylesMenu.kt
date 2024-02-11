@@ -3,6 +3,7 @@ package dev.efnilite.iep.menu
 import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.Item
 import org.bukkit.Material
@@ -16,7 +17,7 @@ object StylesMenu {
 
         for ((idx, style) in styles.withIndex()) {
             menu.item(idx, Item(style.next(), "<white><bold>${style.name()}")
-                .lore("<dark_gray>Type <white>${style.name().lowercase()}")
+                .lore("<gray>Type <white>${if (style is RandomStyle) "random" else "incremental"}")
                 .click({ generator.set { settings -> Settings(settings, style = style) } }))
         }
 

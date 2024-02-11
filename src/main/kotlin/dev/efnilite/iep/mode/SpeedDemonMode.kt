@@ -14,7 +14,7 @@ object SpeedDemonMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun create(player: Player) = Generator.create(player, leaderboard, PointType.CIRCLE) { SpeedDemonGenerator() }
+    override fun create(player: Player) = Generator.create(player, leaderboard) { SpeedDemonGenerator() }
 
     override fun getItem(locale: String): Item = Item(Material.SPLASH_POTION, "<#cc3399><bold>Speed Demon")
         .lore("<gray>Go as fast as you can.")

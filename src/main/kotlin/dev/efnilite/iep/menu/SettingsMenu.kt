@@ -48,7 +48,7 @@ object SettingsMenu {
             .lore("<gray>Currently <white>${generator.settings.seed}", "",
                 "<gray>To change this seed, use <white>/iep seed <seed>."))
 
-        menu.item(11, Item(Material.FEATHER, "<white><bold>Info")
+        menu.item(12, Item(Material.FEATHER, "<white><bold>Info")
             .lore("<gray>Currently <white>${generator.settings.info}", "",
                 "<gray>View extra info.")
             .click({ generator.set { settings -> Settings(settings, info = !settings.info) }}))

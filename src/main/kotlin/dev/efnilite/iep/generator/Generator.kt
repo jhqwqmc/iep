@@ -73,10 +73,10 @@ open class Generator {
      * Initializes all the stuff.
      * @param start The vector to spawn the island at.
      */
-    open fun start(ld: Leaderboard, start: Vector, type: PointType) {
+    open fun start(ld: Leaderboard, start: Vector, point: PointType) {
         leaderboard = ld
         island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
-        pointType = type
+        pointType = point
 
         reset()
 
@@ -97,10 +97,10 @@ open class Generator {
         players.forEach { it.updateBoard(score, formattedTime, seed) }
     }
 
-    open val score
+    protected open val score
         get() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
 
-    val time
+    protected val time: Instant
         get() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
     private var resetUp = false
@@ -160,12 +160,8 @@ open class Generator {
 
         if (sections.size > 2) {
             val last = sections.minBy { it.key }
-            val lastIdx = last.key
-            val lastSection = last.value
 
-            lastSection.clear()
-
-            sections.remove(lastIdx)
+            clear(last.key, last.value)
         }
     }
 
@@ -195,6 +191,12 @@ open class Generator {
         section.generate(settings, pointType)
     }
 
+    protected open fun clear(idx: Int, section: Section) {
+        section.clear()
+
+        sections.remove(idx)
+    }
+
     /**
      * Resets the players and knots.
      */
@@ -215,7 +217,7 @@ open class Generator {
         start = null
         resetUp = false
 
-        sections.forEach { it.value.clear() }
+        sections.toMap().forEach { clear(it.key, it.value) }
 
         sections.clear()
 
@@ -310,7 +312,10 @@ open class Generator {
          * Creates a new generator.
          * @param player The player to create the generator for.
          */
-        fun create(player: Player, leaderboard: Leaderboard, pointType: PointType, gen: () -> Generator) {
+        fun create(player: Player,
+                   leaderboard: Leaderboard,
+                   pointType: PointType = PointType.CIRCLE,
+                   gen: () -> Generator) {
             remove(player)
 
             val elytraPlayer = ElytraPlayer(player)

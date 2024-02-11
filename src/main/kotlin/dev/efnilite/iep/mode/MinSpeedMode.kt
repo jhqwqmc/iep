@@ -14,7 +14,7 @@ object MinSpeedMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun create(player: Player) = Generator.create(player, leaderboard, PointType.CIRCLE) { MinSpeedGenerator() }
+    override fun create(player: Player) = Generator.create(player, leaderboard) { MinSpeedGenerator() }
 
     override fun getItem(locale: String): Item = Item(Material.FEATHER, "<white><bold>Min Speed")
         .lore("<gray>Once you've reached the minimum speed,", "<gray>going slower will reset you.")

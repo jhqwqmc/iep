@@ -8,8 +8,8 @@ styles:
     cherry: ["cherry_wood", "stripped_cherry_wood", "cherry_planks", "cherry_slab", "cherry_stairs", "cherry_fence"]
     crimson: ["crimson_hyphae", "stripped_crimson_hyphae", "crimson_planks", "crimson_slab", "crimson_stairs", "crimson_fence"]
   incremental:
-    leaves: ["oak_leaves", "spruce_leaves", "birch_leaves", "jungle_leaves", "acacia_leaves", "dark_oak_leaves", "azalea_leaves",
-      "flowering_azalea_leaves", "cherry_leaves", "mangrove_leaves"]
+    herring: ["white_concrete", "white_concrete", "white_concrete", "white_concrete", "white_concrete", "white_concrete", "white_concrete",
+              "white_concrete", "red_concrete"]
 
 # -= Mode settings =-
 mode-settings:
