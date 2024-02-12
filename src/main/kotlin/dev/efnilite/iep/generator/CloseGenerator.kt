@@ -11,7 +11,7 @@ class CloseGenerator : Generator() {
         val pos = player.position
         val last = sections.minBy { it.key }
         val section = last.value
-        val progressInSection = score - (section.beginning.x - island.blockSpawn.x).toInt()
+        val progressInSection = (score - (section.beginning.x - island.blockSpawn.x)).toInt()
 
         if (progressInSection < 0) {
             return

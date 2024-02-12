@@ -54,7 +54,7 @@ data class Leaderboard(val name: String) {
      * @param score The player's score
      */
     fun update(uuid: UUID, score: Score) {
-        val existing = data.getOrDefault(uuid, EMPTY)
+        val existing = data.getOrDefault(uuid, EMPTY_SCORE)
 
         if (existing.score > score.score) {
             return
@@ -72,7 +72,7 @@ data class Leaderboard(val name: String) {
      * @return The score instance of this player, else an empty score
      */
     fun getScore(uuid: UUID): Score {
-        return data.getOrDefault(uuid, EMPTY)
+        return data.getOrDefault(uuid, EMPTY_SCORE)
     }
 
     /**
@@ -83,7 +83,7 @@ data class Leaderboard(val name: String) {
     fun getRank(rank: Int): Score {
         val scores = data.values.sortedByDescending { it.score }
 
-        if (rank >= scores.size) return EMPTY
+        if (rank >= scores.size) return EMPTY_SCORE
 
         return scores[rank]
     }
@@ -91,6 +91,6 @@ data class Leaderboard(val name: String) {
     fun getAllScores() = data.values.sortedByDescending { it.score }
 
     companion object {
-        private val EMPTY = Score("?", 0, 0, 0)
+        private val EMPTY_SCORE = Score("?", 0.0, 0, 0)
     }
 }

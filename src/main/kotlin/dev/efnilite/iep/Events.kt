@@ -56,7 +56,8 @@ class Events : EventWatcher {
     fun rightSettings(event: PlayerInteractEvent) {
         val player = event.player.asElytraPlayer() ?: return
 
-        if (event.action != Action.RIGHT_CLICK_AIR || event.hand != EquipmentSlot.HAND) return
+        if ((event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK) ||
+            event.hand != EquipmentSlot.HAND) return
 
         if (event.item?.type == Material.SUGAR_CANE) {
             PlayMenu.open(player.player)

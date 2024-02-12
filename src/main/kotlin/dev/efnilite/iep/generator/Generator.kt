@@ -26,22 +26,19 @@ import kotlin.math.max
 
 open class Generator {
 
-    protected val sections = mutableMapOf<Int, Section>()
-
-    private var start: Instant? = null
-    private var pointType: PointType = PointType.CIRCLE
-    private lateinit var task: BukkitTask
+    lateinit var settings: Settings
+        private set
+    val players = mutableListOf<ElytraPlayer>()
 
     protected lateinit var island: Island
-
+    protected val sections = mutableMapOf<Int, Section>()
     protected var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
-    private var random = Random()
 
+    private lateinit var task: BukkitTask
     private lateinit var leaderboard: Leaderboard
-
-    val players = mutableListOf<ElytraPlayer>()
-    var settings: Settings = Settings(IEP.getStyles().random(), 5, seed, true)
-        private set
+    private var start: Instant? = null
+    private var pointType: PointType = PointType.CIRCLE
+    private var random = Random()
 
     /**
      * Adds a player to the generator.
@@ -49,6 +46,8 @@ open class Generator {
      */
     fun add(player: ElytraPlayer) {
         players.add(player)
+
+        settings = player.load()
     }
 
     /**
@@ -56,6 +55,8 @@ open class Generator {
      * @param player The player to remove.
      */
     fun remove(player: ElytraPlayer) {
+        player.save(settings)
+
         players.remove(player)
 
         if (players.isEmpty()) {
@@ -89,7 +90,7 @@ open class Generator {
     /**
      * Updates all players' scoreboards.
      */
-    private fun updateBoard(score: Int, time: Instant) {
+    private fun updateBoard(score: Double, time: Instant) {
         val formattedTime = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
             .withZone(ZoneOffset.UTC)
             .format(time)
@@ -98,7 +99,7 @@ open class Generator {
     }
 
     protected open val score
-        get() = max(0, (players[0].position.x - island.blockSpawn.x).toInt())
+        get() = max(0.0, (players[0].position.x - island.blockSpawn.x))
 
     protected val time: Instant
         get() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
@@ -302,11 +303,13 @@ open class Generator {
      */
     fun set(mapper: (Settings) -> Settings) {
         settings = mapper.invoke(settings)
+
+        players.forEach { it.save(settings) }
     }
 
     companion object {
 
-        private const val SEED_BOUND = 1_000_000
+        const val SEED_BOUND = 1_000_000
 
         /**
          * Creates a new generator.

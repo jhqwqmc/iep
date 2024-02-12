@@ -1,10 +1,12 @@
 package dev.efnilite.iep
 
+import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.ViPlugin
 import dev.efnilite.vilib.inventory.item.Item
+import dev.efnilite.vilib.util.Task
 import fr.mrmicky.fastboard.adventure.FastBoard
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -15,6 +17,16 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.util.Vector
+import java.io.File
+import java.util.concurrent.ThreadLocalRandom
+
+private data class SerializedSettings(val style: String, val radius: Int, val seed: Int, val info: Boolean) {
+
+    constructor(settings: Settings) : this(settings.style.name(), settings.radius, settings.seed, settings.info)
+
+    fun convert() = Settings(IEP.getStyles().first { it.name() == style }, radius, seed, info)
+
+}
 
 /**
  * Class for storing a player's previous data.
@@ -77,8 +89,8 @@ class ElytraPlayer(val player: Player) {
      * The player's previous position.
      */
     private val data = PreviousData(player)
-
     private val board = FastBoard(player)
+    private val file = File(IEP.instance.dataFolder, "players/${player.uniqueId}.json")
 
     /**
      * Joins the player to the generator.
@@ -93,11 +105,6 @@ class ElytraPlayer(val player: Player) {
 
         board.delete()
     }
-
-    /**
-     * Returns the generator the player is in.
-     */
-    fun getGenerator() = Divider.generators.first { it.players.contains(this) }
 
     /**
      * Teleports the player.
@@ -137,12 +144,12 @@ class ElytraPlayer(val player: Player) {
      * @param time The time to display.
      * @param seed The seed to display.
      */
-    fun updateBoard(score: Int, time: String, seed: Int) {
+    fun updateBoard(score: Double, time: String, seed: Int) {
         board.updateTitle(deserialize("<gradient:#ff0000:#800000><bold>IEP</gradient>"))
 
         board.updateLines(
             deserialize(""),
-            deserialize("<#b30000><bold>Score</bold> <gray>$score"),
+            deserialize("<#b30000><bold>Score</bold> <gray>${"%.1f".format(score)}"),
             deserialize("<#b30000><bold>Time</bold> <gray>$time"),
             deserialize("<#b30000><bold>Seed</bold> <gray>$seed"),
             deserialize(""),
@@ -150,15 +157,49 @@ class ElytraPlayer(val player: Player) {
         )
     }
 
+    /**
+     * Saves the player's settings.
+     * @param settings The settings to save.
+     */
     fun save(settings: Settings) {
-        ViPlugin.getGson().toJson(settings)
+        Task.create(IEP.instance)
+            .async()
+            .execute {
+                file.parentFile.mkdirs()
+                file.createNewFile()
+
+                file.writer().use { IEP.GSON.toJson(SerializedSettings(settings), it) }
+            }
+            .run()
     }
+
+    /**
+     * Loads the player's settings.
+     * @return The player's settings.
+     */
+    fun load(): Settings {
+        if (!file.exists()) {
+            return DEFAULT_SETTINGS
+        }
+
+        val serialized = file.reader().use { ViPlugin.getGson().fromJson(it, SerializedSettings::class.java) }
+
+        return serialized?.convert() ?: DEFAULT_SETTINGS
+    }
+
+    /**
+     * Returns the generator the player is in.
+     */
+    fun getGenerator() = Divider.generators.first { it.players.contains(this) }
 
     private fun deserialize(string: String): Component {
         return MiniMessage.miniMessage().deserialize(string)
     }
 
     companion object {
+
+        val DEFAULT_SETTINGS
+            get() = Settings(IEP.getStyles()[0], 5, ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND), false)
 
         fun Player.asElytraPlayer(): ElytraPlayer? {
             return Divider.generators.flatMap { it.players }.firstOrNull { it.player == this }

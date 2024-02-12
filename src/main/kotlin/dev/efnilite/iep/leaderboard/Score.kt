@@ -5,7 +5,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-data class Score(val name: String, val score: Int, val time: Long, val seed: Int) {
+data class Score(val name: String, val score: Double, val time: Long, val seed: Int) {
 
     /**
      * @return The time in a formatted manner.

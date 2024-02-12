@@ -1,5 +1,7 @@
 package dev.efnilite.iep
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dev.efnilite.iep.mode.*
 import dev.efnilite.iep.style.IncrementalStyle
 import dev.efnilite.iep.style.RandomStyle
@@ -43,6 +45,7 @@ class IEP : ViPlugin() {
         registerMode(MinSpeedMode)
         registerMode(TimeTrialMode)
         registerMode(CloseMode)
+        registerMode(ObstacleMode)
 
         Task.create(this)
             .async()
@@ -82,6 +85,8 @@ class IEP : ViPlugin() {
     override fun getElevator(): GitElevator? = null
 
     companion object {
+        val GSON: Gson = GsonBuilder().disableHtmlEscaping().create()
+
         lateinit var instance: IEP
             private set
 

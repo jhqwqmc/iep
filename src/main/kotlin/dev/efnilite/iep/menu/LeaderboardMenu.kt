@@ -35,7 +35,7 @@ private object SingleLeaderboardMenu {
             menu.addToDisplay(
                 listOf(
                     Item(Material.PLAYER_HEAD, "<white><bold>#${idx + 1} - ${score.name}")
-                        .lore("<gray>Score <white>${score.getFormattedTime()}",
+                        .lore("<gray>Score <white>${"%.1f".format(score.score)}",
                             "<gray>Time <white>${score.time}",
                             "<gray>Seed <white>${score.seed}")
                 )

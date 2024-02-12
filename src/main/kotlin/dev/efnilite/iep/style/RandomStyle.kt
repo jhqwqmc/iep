@@ -13,4 +13,6 @@ data class RandomStyle(val name: String, val data: List<Material>) : Style {
 
     override fun name() = name
 
+    override fun toString() = name
+
 }
