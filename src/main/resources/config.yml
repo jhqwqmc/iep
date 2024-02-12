@@ -1,27 +1,18 @@
-# -= Styles =-
-styles:
-  random:
-    glass: ["white_stained_glass"]
-    bamboo: ["bamboo_block", "stripped_bamboo_block", "bamboo_planks", "bamboo_mosaic", "bamboo_stairs", "bamboo_mosaic_stairs",
-            "bamboo_slab", "bamboo_mosaic_slab", "bamboo_fence"]
-    spruce: ["spruce_wood", "stripped_spruce_wood", "spruce_planks", "spruce_slab", "spruce_stairs", "spruce_fence"]
-    cherry: ["cherry_wood", "stripped_cherry_wood", "cherry_planks", "cherry_slab", "cherry_stairs", "cherry_fence"]
-    crimson: ["crimson_hyphae", "stripped_crimson_hyphae", "crimson_planks", "crimson_slab", "crimson_stairs", "crimson_fence"]
-  incremental:
-    herring: ["white_concrete", "white_concrete", "white_concrete", "white_concrete", "white_concrete", "white_concrete", "white_concrete",
-              "white_concrete", "red_concrete"]
+# -= Debug =-
+# If true, the plugin will print debug messages to the console.
+debug: false
 
 # -= Mode settings =-
 mode-settings:
   close:
     # -= Radius =-
     # The radius of the allowed area around the center
-    radius: 4
+    radius: 4.0
 
   min-speed:
     # -= The min speed =-
     # The min speed in m/s
-    min-speed: 35
+    min-speed: 35.0
 
     # -= Actionbar length =-
     # The length of the actionbar
@@ -34,7 +25,7 @@ mode-settings:
 
     # -= Score =-
     # The score the player needs to reach to complete the parkour
-    score: 2500
+    score: 2500.0
 
     # -= Actionbar length =-
     # The length of the actionbar
@@ -51,3 +42,16 @@ time-format: "mm:ss:SSS"
 # -= Firework respawn time =-
 # The time in seconds it takes for a firework to respawn after use.
 firework-respawn-time: 5
+
+# -= Styles =-
+styles:
+  random:
+    cherry: [ "cherry_wood", "stripped_cherry_wood", "cherry_planks", "cherry_slab", "cherry_stairs", "cherry_fence" ]
+    spruce: [ "spruce_wood", "stripped_spruce_wood", "spruce_planks", "spruce_slab", "spruce_stairs", "spruce_fence" ]
+    crimson: [ "crimson_hyphae", "stripped_crimson_hyphae", "crimson_planks", "crimson_slab", "crimson_stairs", "crimson_fence" ]
+    bamboo: [ "bamboo_block", "stripped_bamboo_block", "bamboo_planks", "bamboo_mosaic", "bamboo_stairs", "bamboo_mosaic_stairs",
+              "bamboo_slab", "bamboo_mosaic_slab", "bamboo_fence" ]
+    glass: ["white_stained_glass"]
+  incremental:
+    herring: ["barrier", "barrier", "barrier", "barrier", "barrier", "barrier", "barrier", "barrier", "barrier",
+              "barrier", "barrier", "red_concrete"]

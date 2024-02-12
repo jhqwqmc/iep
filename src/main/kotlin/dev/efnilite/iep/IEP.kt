@@ -6,6 +6,7 @@ import dev.efnilite.iep.mode.*
 import dev.efnilite.iep.style.IncrementalStyle
 import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.iep.style.Style
+import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.ViPlugin
 import dev.efnilite.vilib.inventory.Menu
@@ -79,6 +80,8 @@ class IEP : ViPlugin() {
     }
 
     override fun disable() {
+        Divider.generators.forEach { generator -> generator.players.forEach { generator.remove(it) } }
+
         World.delete()
     }
 

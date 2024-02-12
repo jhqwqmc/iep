@@ -4,11 +4,9 @@ import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
-import dev.efnilite.vilib.ViPlugin
 import dev.efnilite.vilib.inventory.item.Item
 import dev.efnilite.vilib.util.Task
 import fr.mrmicky.fastboard.adventure.FastBoard
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -182,7 +180,7 @@ class ElytraPlayer(val player: Player) {
             return DEFAULT_SETTINGS
         }
 
-        val serialized = file.reader().use { ViPlugin.getGson().fromJson(it, SerializedSettings::class.java) }
+        val serialized = file.reader().use { IEP.GSON.fromJson(it, SerializedSettings::class.java) }
 
         return serialized?.convert() ?: DEFAULT_SETTINGS
     }
@@ -192,9 +190,7 @@ class ElytraPlayer(val player: Player) {
      */
     fun getGenerator() = Divider.generators.first { it.players.contains(this) }
 
-    private fun deserialize(string: String): Component {
-        return MiniMessage.miniMessage().deserialize(string)
-    }
+    private fun deserialize(string: String) = MiniMessage.miniMessage().deserialize(string)
 
     companion object {
 

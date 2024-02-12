@@ -60,12 +60,12 @@ class Section {
     /**
      * Returns whether the given vector is near a section knot.
      */
-    fun isNearKnot(vector: Vector, idx: Int, distance: Int = 6) = knots[idx].distance(vector) < distance
+    fun isNearKnot(vector: Vector, idx: Int, distance: Double = 6.0) = knots[idx].distance(vector) < distance
 
     /**
      * Returns whether the given vector is near a section point.
      */
-    fun isNearPoint(vector: Vector, idx: Int, distance: Int = 6) = points[idx].distance(vector) < distance
+    fun isNearPoint(vector: Vector, idx: Int, distance: Double = 6.0) = points[idx].distance(vector) < distance
 
     /**
      * Clones the section with the given offset.

@@ -1,5 +1,6 @@
 package dev.efnilite.iep
 
+import dev.efnilite.vilib.configupdater.ConfigUpdater
 import org.bukkit.configuration.file.YamlConfiguration
 
 enum class Config(file: String) {
@@ -10,6 +11,8 @@ enum class Config(file: String) {
 
     init {
         IEP.instance.saveFile(file)
+
+        ConfigUpdater.update(IEP.instance, file, IEP.instance.dataFolder.resolve(file), /*TODO listOf("styles")*/)
 
         config = YamlConfiguration.loadConfiguration(IEP.instance.dataFolder.resolve(file))
     }

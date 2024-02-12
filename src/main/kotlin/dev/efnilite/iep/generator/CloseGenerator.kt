@@ -25,6 +25,6 @@ class CloseGenerator : Generator() {
     }
 
     companion object {
-        val RADIUS = Config.CONFIG.getInt("mode-settings.close.radius") { it > 0 }
+        val RADIUS = Config.CONFIG.getDouble("mode-settings.close.radius") { it > 0 }
     }
 }

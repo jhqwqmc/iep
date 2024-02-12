@@ -14,7 +14,7 @@ private enum class Obstacle {
             val points = mutableListOf<Vector>()
             val range = -radius..radius
 
-            repeat(3) {
+            repeat(4) {
                 val dz = range.random()
 
                 for (dy in range) {
@@ -34,7 +34,7 @@ private enum class Obstacle {
             val points = mutableListOf<Vector>()
             val range = -radius..radius
 
-            repeat(3) {
+            repeat(4) {
                 val dy = range.random()
 
                 for (dz in range) {
@@ -101,9 +101,6 @@ class ObstacleGenerator : Generator() {
         val obstacle = Obstacle.entries.random()
         val points = obstacle.getPoints(section.end, settings.radius)
 
-        println()
-        println("obstacle: $obstacle")
-
         val blocks = mutableListOf<Block>()
         for (point in points) {
             val block = point.toLocation(World.world).block
@@ -112,8 +109,6 @@ class ObstacleGenerator : Generator() {
 
             blocks.add(block)
         }
-
-        println("blocks: ${blocks.size}")
 
         obstacles[idx] = blocks
     }

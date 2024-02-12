@@ -1,7 +1,6 @@
 package dev.efnilite.iep.leaderboard
 
 import dev.efnilite.iep.IEP
-import dev.efnilite.vilib.ViPlugin
 import dev.efnilite.vilib.util.Task
 import java.io.File
 import java.util.*
@@ -28,11 +27,10 @@ data class Leaderboard(val name: String) {
         Task.create(IEP.instance)
             .async()
             .execute {
-                val map = ViPlugin.getGson().fromJson(file.reader(), Map::class.java) ?: return@execute
+                val map = file.reader().use { IEP.GSON.fromJson(it, Map::class.java) ?: return@execute }
 
                 for ((uuid, score) in map) {
-                    data[UUID.fromString(uuid.toString())] = ViPlugin.getGson()
-                        .fromJson(score.toString(), Score::class.java)
+                    data[UUID.fromString(uuid.toString())] = IEP.GSON.fromJson(score.toString(), Score::class.java)
                 }
             }
             .run()
@@ -44,7 +42,7 @@ data class Leaderboard(val name: String) {
     fun write() {
         Task.create(IEP.instance)
             .async()
-            .execute { ViPlugin.getGson().toJson(data, file.writer()) }
+            .execute { file.writer().use { IEP.GSON.toJson(data, it) } }
             .run()
     }
 
