@@ -21,7 +21,7 @@ class Island(vector: Vector, schematic: Schematic) {
             it.type = Material.AIR
         }
         blocks.first { it.type == Material.EMERALD_BLOCK }.let {
-            blockSpawn = it.location.toVector()
+            blockSpawn = it.location.toVector().add(Vector(5, 0, 0))
 
             it.type = Material.AIR
         }

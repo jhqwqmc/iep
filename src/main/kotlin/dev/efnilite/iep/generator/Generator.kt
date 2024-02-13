@@ -110,8 +110,7 @@ open class Generator {
      * Ticks the generator.
      */
     protected open fun tick() {
-        val idx = sections.keys.max()
-        val section = sections[idx]!!
+        val (idx, section) = sections.maxBy { it.key }
 
         val player = players[0]
         val pos = player.position
@@ -124,12 +123,13 @@ open class Generator {
             start = Instant.now()
         }
 
-        if (score > 5 && !player.player.isGliding) {
+        if (shouldReset(player, pos)) {
             reset()
             return
         }
 
         if (section.isNearKnot(pos, 0) && section.end.y < 25) {
+            //(island.blockSpawn.x - section.beginning.x).toInt()
             val cloned = section.clone(Vector(0, 200, 0))
 
             sections[idx + 1] = cloned
@@ -160,10 +160,23 @@ open class Generator {
         }
 
         if (sections.size > 2) {
-            val last = sections.minBy { it.key }
+            val (minIdx, minSection) = sections.minBy { it.key }
 
-            clear(last.key, last.value)
+            clear(minIdx, minSection)
         }
+    }
+
+    private fun shouldReset(player: ElytraPlayer, pos: Vector): Boolean {
+        val (idx, section) = sections
+            .filter { pos.x < it.value.end.x }
+            .minByOrNull { it.key } ?: sections.entries.first()
+
+        val progress = pos.x - section.beginning.x
+        val isPastSpawn = if (idx == 0) progress > 5 else true
+        val isNotGliding = isPastSpawn && !player.player.isGliding
+        val isOutOfBounds = isPastSpawn && !section.isNearPoint(pos, progress.toInt(), settings.radius.toDouble())
+
+        return isNotGliding || isOutOfBounds
     }
 
     /**
@@ -203,14 +216,24 @@ open class Generator {
      */
     protected open fun reset(regenerate: Boolean = true, s: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)) {
         players.forEach {
-            leaderboard.update(
-                it.uuid, Score(
-                    name = it.name,
-                    score = score,
-                    time = time.toEpochMilli(),
-                    seed = seed
-                )
+            if (score == 0.0) {
+                return@forEach
+            }
+
+            val score = Score(
+                name = it.name,
+                score = score,
+                time = time.toEpochMilli(),
+                seed = seed
             )
+
+            leaderboard.update(it.uuid, score)
+
+            it.send("<dark_gray>===============")
+            it.send("<gray>Score <white>${"%.1f".format(score.score)}")
+            it.send("<gray>Time <white>${score.getFormattedTime()}")
+            it.send("<gray>Seed <white>${score.seed}")
+            it.send("<dark_gray>===============")
         }
 
         seed = s
@@ -236,7 +259,12 @@ open class Generator {
         val player = players[0]
         val velocity = player.player.velocity
 
-        player.player.teleportAsync(player.player.location.add(0.0, 200.0, 0.0))
+//        val dx = island.blockSpawn.x - sections[sections.keys.max() - 1]!!.beginning.x
+        val to = player.player.location.add(0.0, 200.0, 0.0)
+
+//        to.chunk.load()
+
+        player.player.teleportAsync(to)
 
         Task.create(IEP.instance)
             .delay(2)
@@ -249,9 +277,7 @@ open class Generator {
     private fun updateInfo() {
         if (!settings.info) return
 
-        players.forEach {
-            it.sendActionBar(getFormattedSpeed(it))
-        }
+        players.forEach { it.sendActionBar(getFormattedSpeed(it)) }
     }
 
     /**

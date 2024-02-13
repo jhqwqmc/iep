@@ -5,7 +5,7 @@ class SpeedDemonGenerator : Generator() {
     private var maxSpeedSoFar = 0.0
 
     override val score: Double
-        get() = maxSpeedSoFar // todo add Double
+        get() = maxSpeedSoFar
 
     override fun tick() {
         super.tick()

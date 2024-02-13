@@ -13,6 +13,8 @@ import kotlin.math.sqrt
  */
 object Divider {
 
+    private val size = Vector(20000, 250, 20000)
+
     private val sections = mutableMapOf<Generator, Int>()
 
     val generators: Set<Generator>
@@ -40,13 +42,9 @@ object Divider {
     fun toLocation(generator: Generator): Vector {
         val idx = sections[generator]!!
 
-        val head = spiralAt(idx)
+        val (x, z) = spiralAt(idx)
 
-        val x = head.first
-        val y = 250.0
-        val z = head.second
-
-        return Vector(x * 20000.0, y, z * 20000.0)
+        return Vector(x * size.x, size.y, z * size.z)
     }
 
     /**

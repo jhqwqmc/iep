@@ -31,6 +31,7 @@ private data class SerializedSettings(val style: String, val radius: Int, val se
  */
 private data class PreviousData(private val player: Player) {
 
+    val invulnerable = player.isInvulnerable
     val gamemode = player.gameMode
     val position = player.location.toVector()
     val inventoryContents: Array<ItemStack?> = player.inventory.contents
@@ -50,6 +51,7 @@ private data class PreviousData(private val player: Player) {
             inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
             inventory.addItem(Item(Material.SUGAR_CANE, "<#2fb900><bold>Play").build())
             inventory.addItem(Item(Material.COMPARATOR, "<#c10000><bold>Settings").build())
+            inventory.addItem(Item(Material.SPRUCE_HANGING_SIGN, "<white><bold>Leaderboard").build())
         }
     }
 
@@ -60,6 +62,7 @@ private data class PreviousData(private val player: Player) {
         with(player) {
             teleportAsync(position.toLocation(World.world))
 
+            isInvulnerable = invulnerable
             gameMode = gamemode
             inventory.contents = inventoryContents
 

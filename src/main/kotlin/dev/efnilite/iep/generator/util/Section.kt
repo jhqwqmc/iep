@@ -13,13 +13,14 @@ import java.util.*
  */
 class Section {
 
-    // TODO yikes!
-    private var builder: AsyncBuilder? = null
-
     private val director: KnotDirector
     private val interpolator: SplineInterpolator
     private val knots: List<Vector>
     private val points: List<Vector>
+    private val blocks = mutableListOf<Block>()
+
+    // TODO yikes!
+    private var builder: AsyncBuilder? = null
 
     /**
      * The beginning position of the section.
@@ -32,11 +33,6 @@ class Section {
      */
     val end
         get() = knots.last()
-
-    /**
-     * The blocks that make up the rings of the section.
-     */
-    val blocks = mutableListOf<Block>()
 
     /**
      * Constructs a section with the given start position and random.
@@ -60,12 +56,12 @@ class Section {
     /**
      * Returns whether the given vector is near a section knot.
      */
-    fun isNearKnot(vector: Vector, idx: Int, distance: Double = 6.0) = knots[idx].distance(vector) < distance
+    fun isNearKnot(vector: Vector, idx: Int, distance: Double = 6.0) = knots[idx].distanceSquared(vector) < distance * distance
 
     /**
      * Returns whether the given vector is near a section point.
      */
-    fun isNearPoint(vector: Vector, idx: Int, distance: Double = 6.0) = points[idx].distance(vector) < distance
+    fun isNearPoint(vector: Vector, idx: Int, distance: Double = 6.0) = points[idx].distanceSquared(vector) < distance * distance
 
     /**
      * Clones the section with the given offset.

@@ -6,7 +6,7 @@ import kotlin.math.floor
 
 enum class PointType(val heightOffset: Int) {
 
-    CIRCLE(0) {
+    CIRCLE(-1) {
         override fun getPoints(center: Vector, radius: Int): List<Vector> {
             val blocks = mutableListOf<Vector>()
             val centerX = floor(center.x) + 0.5

@@ -9,15 +9,14 @@ class CloseGenerator : Generator() {
 
         val player = players[0]
         val pos = player.position
-        val last = sections.minBy { it.key }
-        val section = last.value
-        val progressInSection = (score - (section.beginning.x - island.blockSpawn.x)).toInt()
+        val section = sections.minBy { it.key }.value
+        val progressInSection = pos.x - section.beginning.x
 
         if (progressInSection < 0) {
             return
         }
 
-        val isNear = section.isNearPoint(pos, progressInSection, RADIUS)
+        val isNear = section.isNearPoint(pos, progressInSection.toInt(), RADIUS)
 
         if (score > 25 && !isNear) {
             reset()

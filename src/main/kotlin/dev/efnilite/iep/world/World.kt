@@ -35,13 +35,15 @@ private class EmptyBiomeGenerator : BiomeProvider() {
  */
 object World {
 
+    const val NAME = "iep"
+
     lateinit var world: World
 
     /**
      * Creates the world.
      */
     fun create() {
-        world = WorldCreator("iep")
+        world = WorldCreator(NAME)
             .generator(EmptyChunkGenerator())
             .generateStructures(false)
             .biomeProvider(EmptyBiomeGenerator())
@@ -77,14 +79,13 @@ object World {
      * Deletes the parkour world.
      */
     fun delete() {
-        val file = File("iep")
+        val file = File(NAME)
 
         if (!file.exists()) {
             return
         }
 
-        // can't be run asynchronously
-        Bukkit.unloadWorld(file.name, false)
+        Bukkit.unloadWorld(NAME, false)
 
         try {
             FileUtils.deleteDirectory(file)

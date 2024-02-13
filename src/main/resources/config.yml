@@ -2,6 +2,18 @@
 # If true, the plugin will print debug messages to the console.
 debug: false
 
+# -= Join on join =-
+# If true, players that join the server will join the parkour.
+join-on-join: false
+
+# -= Time format =-
+# H = hours, m = minutes, s = seconds, S = milliseconds
+time-format: "mm:ss:SSS"
+
+# -= Firework respawn time =-
+# The time in seconds it takes for a firework to respawn after use.
+firework-respawn-time: 5
+
 # -= Mode settings =-
 mode-settings:
   close:
@@ -30,18 +42,6 @@ mode-settings:
     # -= Actionbar length =-
     # The length of the actionbar
     actionbar-length: 30
-
-# -= Join on join =-
-# If true, players that join the server will join the parkour.
-join-on-join: true
-
-# -= Time format =-
-# H = hours, m = minutes, s = seconds, S = milliseconds
-time-format: "mm:ss:SSS"
-
-# -= Firework respawn time =-
-# The time in seconds it takes for a firework to respawn after use.
-firework-respawn-time: 5
 
 # -= Styles =-
 styles:

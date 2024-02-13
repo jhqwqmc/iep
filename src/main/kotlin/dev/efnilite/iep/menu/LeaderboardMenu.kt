@@ -1,19 +1,19 @@
 package dev.efnilite.iep.menu
 
-import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.PagedMenu
 import dev.efnilite.vilib.inventory.item.Item
 import org.bukkit.Material
+import org.bukkit.entity.Player
 
 object LeaderboardMenu {
 
-    fun open(player: ElytraPlayer) {
+    fun open(player: Player) {
         val menu = Menu(3, "Leaderboards")
             .distributeRowsEvenly()
-            .item(19, Item(Material.ARROW, "<white><bold>Go back").click({ SettingsMenu.open(player) }))
+            .item(23, Item(Material.ARROW, "<white><bold>Go back").click({ player.inventory.close() }))
 
         for (mode in IEP.getModes()) {
             menu.item(menu.items.size + 9, mode.getItem("")
@@ -27,7 +27,7 @@ object LeaderboardMenu {
 
 private object SingleLeaderboardMenu {
 
-    fun open(player: ElytraPlayer, leaderboard: Leaderboard) {
+    fun open(player: Player, leaderboard: Leaderboard) {
         val menu = PagedMenu(3, leaderboard.name)
             .displayRows(0, 1)
 

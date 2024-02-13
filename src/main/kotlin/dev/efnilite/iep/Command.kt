@@ -6,13 +6,21 @@ import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
 import dev.efnilite.vilib.command.ViCommand
+import dev.efnilite.vilib.mm.adventure.text.Component
+import dev.efnilite.vilib.mm.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class Command : ViCommand() {
 
     override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
-        if (args.isEmpty() || sender !is Player) return false
+        if (sender !is Player) return false
+
+        if (args.isEmpty()) {
+
+
+            return true
+        }
 
         when (args[0]) {
             "play" -> PlayMenu.open(sender)
@@ -23,11 +31,11 @@ class Command : ViCommand() {
             "leave" -> Generator.remove(sender)
         }
 
-        if (args.isNotEmpty()) {
-            when (args[1]) {
+        if (args.size > 1) {
+            when (args[0]) {
                 "seed" -> {
                     val player = sender.asElytraPlayer() ?: return true
-                    val seed = args[2]
+                    val seed = args[1]
 
                     try {
                         player.getGenerator().set { settings -> Settings(settings, seed = seed.toInt()) }
@@ -41,6 +49,10 @@ class Command : ViCommand() {
         }
 
         return true
+    }
+
+    private fun deserialize(message: String): Component {
+        return MiniMessage.miniMessage().deserialize(message)
     }
 
     override fun tabComplete(sender: CommandSender, args: Array<out String>): List<String> {

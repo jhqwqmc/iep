@@ -28,6 +28,7 @@ enum class Config(file: String) {
     fun getInt(path: String, bounds: (Int) -> Boolean = { true }): Int {
         val value = config.getInt(path)
 
+        // todo replace require
         require(bounds.invoke(value))
 
         return value
