@@ -103,6 +103,7 @@ open class Generator {
     fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
     private var resetUp = false
+    private var isBeingTeleported = false
 
     /**
      * Ticks the generator.
@@ -165,6 +166,10 @@ open class Generator {
     }
 
     private fun shouldReset(player: ElytraPlayer, pos: Vector): Boolean {
+        if (isBeingTeleported) {
+            return false
+        }
+
         val (idx, section) = sections
             .filter { pos.x < it.value.end.x }
             .minByOrNull { it.key } ?: sections.entries.first()
@@ -266,9 +271,13 @@ open class Generator {
 
         Task.create(IEP.instance)
             .delay(2)
-            .execute { player.player.velocity = velocity }
+            .execute {
+                player.player.velocity = velocity
+                isBeingTeleported = false
+            }
             .run()
 
+        isBeingTeleported = true
         resetUp = false
     }
 

@@ -14,7 +14,7 @@ private enum class Obstacle {
             val points = mutableListOf<Vector>()
             val range = -radius..radius
 
-            repeat(4) {
+            repeat(2 * radius - 3) {
                 val dz = range.random()
 
                 for (dy in range) {
@@ -34,7 +34,7 @@ private enum class Obstacle {
             val points = mutableListOf<Vector>()
             val range = -radius..radius
 
-            repeat(4) {
+            repeat(2 * radius - 3) {
                 val dy = range.random()
 
                 for (dz in range) {
@@ -51,17 +51,34 @@ private enum class Obstacle {
     },
     HOLE_IN_WALL {
         override fun getPoints(center: Vector, radius: Int): List<Vector> {
-            // todo
-            return emptyList()
+            val random = { (-2..2).random() }
+            val offset = center.add(Vector(random(), random(), random()))
+
+            val radius2 = radius * radius
+            val points = mutableListOf<Vector>()
+            for (dy in radius + 1..radius) {
+                for (dz in radius + 1..radius) {
+                    val point = center.clone().add(Vector(0, dy, dz))
+
+                    if (point.distanceSquared(center) <= radius2 &&
+                        point.distanceSquared(offset) >= 2) {
+                        points.add(point)
+                    }
+                }
+            }
+
+            return points
         }
     },
     CIRCLE {
+        fun get(center: Vector, radius: Int) = PointType.CIRCLE.getPoints(center, radius)
+
         override fun getPoints(center: Vector, radius: Int): List<Vector> {
-            return PointType.CIRCLE.getPoints(center, radius - 2)
+            return (0..radius).filter { it % 3 == 0 }.flatMap { get(center, it) }
         }
     },
     DIAMOND {
-        override fun getPoints(center: Vector, radius: Int): List<Vector> {
+        fun get(center: Vector, radius: Int): List<Vector> {
             val points = mutableListOf<Vector>()
             val newCenter = center.clone().add(Vector(0, -radius + 2, 0))
             val r = radius - 2
@@ -80,6 +97,10 @@ private enum class Obstacle {
             }
 
             return points
+        }
+
+        override fun getPoints(center: Vector, radius: Int): List<Vector> {
+            return (0..radius).filter { it % 3 == 0 }.flatMap { get(center, it) }
         }
     };
 

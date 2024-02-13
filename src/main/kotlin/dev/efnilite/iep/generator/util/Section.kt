@@ -26,13 +26,13 @@ class Section {
      * The beginning position of the section.
      */
     val beginning
-        get() = knots.first()
+        get() = knots.first().clone()
 
     /**
      * The end position of the section.
      */
     val end
-        get() = knots.last()
+        get() = knots.last().clone()
 
     /**
      * Constructs a section with the given start position and random.

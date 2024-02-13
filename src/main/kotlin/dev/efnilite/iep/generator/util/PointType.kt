@@ -8,6 +8,10 @@ enum class PointType(val heightOffset: Int) {
 
     CIRCLE(-1) {
         override fun getPoints(center: Vector, radius: Int): List<Vector> {
+            if (radius == 0) {
+                return listOf(center)
+            }
+
             val blocks = mutableListOf<Vector>()
             val centerX = floor(center.x) + 0.5
             val centerY = floor(center.y) + 0.5
