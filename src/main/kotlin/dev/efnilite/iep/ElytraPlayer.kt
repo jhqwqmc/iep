@@ -189,6 +189,18 @@ class ElytraPlayer(val player: Player) {
     }
 
     /**
+     * @param permission The permission to check.
+     * @return If the player has the permission.
+     */
+    fun hasPermission(permission: String): Boolean {
+        if (Config.CONFIG.getBoolean("permissions")) {
+            return player.hasPermission(permission)
+        }
+
+        return true
+    }
+
+    /**
      * Returns the generator the player is in.
      */
     fun getGenerator() = Divider.generators.first { it.players.contains(this) }

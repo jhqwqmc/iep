@@ -9,12 +9,11 @@ class MinSpeedGenerator : Generator() {
     private var maxSpeed = 0.0
     private var ticksTooSlow = 0
 
-    override val score: Double
-        get() {
-            if (startX == 0) return 0.0
+    override fun getScore(): Double {
+        if (startX == 0) return 0.0
 
-            return max(0.0, players[0].position.x - startX)
-        }
+        return max(0.0, players[0].position.x - startX)
+    }
 
     override fun tick() {
         super.tick()

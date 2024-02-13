@@ -16,6 +16,10 @@ object StylesMenu {
         val generator = player.getGenerator()
 
         for ((idx, style) in styles.withIndex()) {
+            if (!player.hasPermission("iep.setting.style.${style.name()}")) {
+                continue
+            }
+
             menu.item(idx, Item(style.next(), "<white><bold>${style.name()}")
                     .lore("<gray>Type <white>${if (style is RandomStyle) "random" else "incremental"}")
                     .click({

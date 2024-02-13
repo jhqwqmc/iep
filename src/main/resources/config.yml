@@ -10,9 +10,9 @@ join-on-join: false
 # H = hours, m = minutes, s = seconds, S = milliseconds
 time-format: "mm:ss:SSS"
 
-# -= Firework respawn time =-
-# The time in seconds it takes for a firework to respawn after use.
-firework-respawn-time: 5
+# -= Permissions =-
+# If true, the plugin will use permissions
+permissions: false
 
 # -= Mode settings =-
 mode-settings:

@@ -18,7 +18,7 @@ class CloseGenerator : Generator() {
 
         val isNear = section.isNearPoint(pos, progressInSection.toInt(), RADIUS)
 
-        if (score > 25 && !isNear) {
+        if (getScore() > 25 && !isNear) {
             reset()
         }
     }

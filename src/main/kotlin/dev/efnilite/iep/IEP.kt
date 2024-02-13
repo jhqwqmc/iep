@@ -2,6 +2,7 @@ package dev.efnilite.iep
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dev.efnilite.iep.hook.PapiHook
 import dev.efnilite.iep.mode.*
 import dev.efnilite.iep.style.IncrementalStyle
 import dev.efnilite.iep.style.RandomStyle
@@ -47,6 +48,10 @@ class IEP : ViPlugin() {
         registerMode(TimeTrialMode)
         registerMode(CloseMode)
         registerMode(ObstacleMode)
+
+        if (server.pluginManager.isPluginEnabled("PlaceholderAPI")) {
+            PapiHook.register()
+        }
 
         Task.create(this)
             .async()
@@ -97,7 +102,7 @@ class IEP : ViPlugin() {
 
         fun registerMode(mode: Mode) = modes.add(mode)
 
-        fun getMode(name: String) = modes.first { it.name == name }
+        fun getMode(name: String): Mode? = modes.firstOrNull { it.name == name }
 
         fun getModes() = modes.toList()
 

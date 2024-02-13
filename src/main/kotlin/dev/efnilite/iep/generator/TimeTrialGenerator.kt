@@ -8,12 +8,12 @@ import kotlin.math.min
 
 class TimeTrialGenerator : Generator() {
 
-    override val score: Double
-        get() = min(SCORE, super.score)
+    override fun getScore() = min(SCORE, super.getScore())
 
     override fun tick() {
         super.tick()
 
+        val score = getScore()
         val player = players[0]
 
         if (score >= SCORE) {

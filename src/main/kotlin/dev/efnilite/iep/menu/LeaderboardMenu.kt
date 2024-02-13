@@ -1,5 +1,6 @@
 package dev.efnilite.iep.menu
 
+import dev.efnilite.iep.Config
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.Menu
@@ -16,6 +17,10 @@ object LeaderboardMenu {
             .item(23, Item(Material.ARROW, "<white><bold>Go back").click({ player.inventory.close() }))
 
         for (mode in IEP.getModes()) {
+            if (Config.CONFIG.getBoolean("permissions") && !player.hasPermission("iep.leaderboard.${mode.name}")) {
+                continue
+            }
+
             menu.item(menu.items.size + 9, mode.getItem("")
                 .click({ SingleLeaderboardMenu.open(player, mode.leaderboard) })
             )

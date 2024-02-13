@@ -98,11 +98,9 @@ open class Generator {
         players.forEach { it.updateBoard(score, formattedTime, seed) }
     }
 
-    protected open val score
-        get() = max(0.0, (players[0].position.x - island.blockSpawn.x))
+    open fun getScore() = max(0.0, (players[0].position.x - island.blockSpawn.x))
 
-    protected val time: Instant
-        get() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
+    fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
     private var resetUp = false
 
@@ -114,9 +112,9 @@ open class Generator {
 
         val player = players[0]
         val pos = player.position
-        val score = score
+        val score = getScore()
 
-        updateBoard(score, time)
+        updateBoard(score, getTime())
         updateInfo()
 
         if (start == null && score > 0) {
@@ -216,14 +214,14 @@ open class Generator {
      */
     protected open fun reset(regenerate: Boolean = true, s: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)) {
         players.forEach {
-            if (score == 0.0) {
+            if (getScore() == 0.0) {
                 return@forEach
             }
 
             val score = Score(
                 name = it.name,
-                score = score,
-                time = time.toEpochMilli(),
+                score = getScore(),
+                time = getTime().toEpochMilli(),
                 seed = seed
             )
 
@@ -285,7 +283,7 @@ open class Generator {
      * @param player The player to get the speed for.
      * @return The current speed.
      */
-    fun getSpeed(player: ElytraPlayer): Double = player.player.velocity.clone().setY(0).length() * 20
+    fun getSpeed(player: ElytraPlayer) = player.player.velocity.clone().setY(0).length() * 20
 
     /**
      * Returns the current formatted speed to one decimal.

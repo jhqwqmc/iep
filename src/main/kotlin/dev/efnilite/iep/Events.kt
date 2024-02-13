@@ -61,9 +61,21 @@ class Events : EventWatcher {
             event.hand != EquipmentSlot.HAND) return
 
         when (event.item?.type) {
-            Material.SUGAR_CANE -> PlayMenu.open(player.player)
-            Material.COMPARATOR -> SettingsMenu.open(player)
-            Material.SPRUCE_HANGING_SIGN -> LeaderboardMenu.open(player.player)
+            Material.SUGAR_CANE -> {
+                if (player.hasPermission("iep.play")) {
+                    PlayMenu.open(player.player)
+                }
+            }
+            Material.COMPARATOR -> {
+                if (player.hasPermission("iep.setting")) {
+                    SettingsMenu.open(player)
+                }
+            }
+            Material.SPRUCE_HANGING_SIGN -> {
+                if (player.hasPermission("iep.leaderboard")) {
+                    LeaderboardMenu.open(player.player)
+                }
+            }
 
             else -> {}
         }

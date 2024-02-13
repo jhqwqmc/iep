@@ -1,0 +1,10 @@
+- iep.play
+- iep.leave
+- iep.setting
+- iep.setting.style: Style menu
+- iep.setting.style.%style%: Specific style
+- iep.setting.radius
+- iep.setting.seed
+- iep.setting.info
+- iep.leaderboard: Leaderboards menu
+- iep.leaderboard.%mode%: Specific mode leaderboard
