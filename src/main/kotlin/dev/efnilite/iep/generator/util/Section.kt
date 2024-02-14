@@ -53,6 +53,8 @@ class Section {
         points = section.points.map { it.clone().add(offset) }
     }
 
+    fun getKnot(idx: Int) = knots[idx]
+
     /**
      * Returns whether the given vector is near a section knot.
      */

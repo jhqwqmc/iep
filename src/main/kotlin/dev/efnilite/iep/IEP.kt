@@ -113,9 +113,5 @@ class IEP : ViPlugin() {
         fun getStyle(name: String) = styles.first { it.name() == name }
 
         fun getStyles() = styles.toList()
-
-        fun String.toTitleCase(): String {
-            return this.split(" ").joinToString(" ") { it.uppercase() }
-        }
     }
 }

@@ -2,13 +2,14 @@ package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.Config
 import dev.efnilite.iep.IEP
-import dev.efnilite.iep.IEP.Companion.toTitleCase
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.PagedMenu
 import dev.efnilite.vilib.inventory.item.Item
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.meta.SkullMeta
 
 object LeaderboardMenu {
 
@@ -37,20 +38,34 @@ private object SingleLeaderboardMenu {
         val menu = PagedMenu(3, leaderboard.name.toTitleCase())
             .displayRows(0, 1)
 
-        for ((idx, score) in leaderboard.getAllScores().withIndex()) {
-            menu.addToDisplay(
-                listOf(
-                    Item(Material.PLAYER_HEAD, "<white><bold>#${idx + 1} - ${score.name}")
-                        .lore("<gray>Score <white>${"%.1f".format(score.score)}",
-                            "<gray>Time <white>${score.getFormattedTime()}",
-                            "<gray>Seed <white>${score.seed}")
-                )
-            )
+        for ((idx, entry) in leaderboard.getAllScores().withIndex()) {
+            val (uuid, score) = entry
+
+            val item = Item(Material.PLAYER_HEAD, "<white><bold>#${idx + 1} - ${score.name}")
+                .lore("<gray>Score <white>${"%.1f".format(score.score)}",
+                    "<gray>Time <white>${score.getFormattedTime()}",
+                    "<gray>Seed <white>${score.seed}")
+
+            val meta = item.build().itemMeta
+            (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(uuid)
+            item.meta(meta)
+
+            menu.addToDisplay(listOf(item))
+
+            if (uuid == player.uniqueId) {
+                menu.item(21, item.clone())
+            }
         }
 
-        menu.prevPage(19, Item(Material.RED_DYE, "<white>Previous").click({ menu.page(-1) }))
+        menu
+            .prevPage(19, Item(Material.RED_DYE, "<white>Previous").click({ menu.page(-1) }))
             .nextPage(27, Item(Material.GREEN_DYE, "<white>Next").click({ menu.page(1) }))
-            .item(22, Item(Material.ARROW, "<white><bold>Go back").click({ LeaderboardMenu.open(player) }))
+            .distributeRowEvenly(2)
+            .item(23, Item(Material.ARROW, "<white><bold>Go back").click({ LeaderboardMenu.open(player) }))
             .open(player.player)
+    }
+
+    private fun String.toTitleCase(): String {
+        return this.split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
     }
 }

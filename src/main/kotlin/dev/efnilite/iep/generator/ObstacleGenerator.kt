@@ -110,17 +110,20 @@ private enum class Obstacle {
 
 class ObstacleGenerator : Generator() {
 
-    private val obstacles = mutableMapOf<Int, List<Block>>()
+    private val obstacles = mutableMapOf<Int, MutableList<Block>>()
 
     override fun generate() {
         super.generate()
 
-        val latest = sections.maxBy { it.key }
-        val idx = latest.key
-        val section = latest.value
+        val (idx, section) = sections.maxBy { it.key }
 
+        generateObstacle(idx, section, 1)
+        generateObstacle(idx, section, 3)
+    }
+
+    private fun generateObstacle(idx: Int, section: Section, knotIdx: Int) {
         val obstacle = Obstacle.entries.random()
-        val points = obstacle.getPoints(section.end, settings.radius)
+        val points = obstacle.getPoints(section.getKnot(knotIdx), settings.radius)
 
         val blocks = mutableListOf<Block>()
         for (point in points) {
@@ -131,7 +134,10 @@ class ObstacleGenerator : Generator() {
             blocks.add(block)
         }
 
-        obstacles[idx] = blocks
+        obstacles.getOrDefault(idx, mutableListOf()).let {
+            it.addAll(blocks)
+            obstacles[idx] = it
+        }
     }
 
     override fun clear(idx: Int, section: Section) {
