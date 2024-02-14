@@ -26,7 +26,7 @@ object Divider {
      * @param generator The generator to add.
      * @return The section the generator was added to.
      */
-    fun add(generator: Generator): Int {
+    fun add(generator: Generator): Vector {
         val missing = (0..sections.size)
             .first { !sections.values.contains(it) }
 
@@ -34,7 +34,7 @@ object Divider {
 
         IEP.log("Added generator to divider at ${toLocation(generator)}")
 
-        return missing
+        return toLocation(generator)
     }
 
     /**

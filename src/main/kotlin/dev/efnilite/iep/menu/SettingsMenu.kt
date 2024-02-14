@@ -1,8 +1,9 @@
 package dev.efnilite.iep.menu
 
-import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.Item
 import dev.efnilite.vilib.inventory.item.SliderItem
@@ -77,7 +78,7 @@ object SettingsMenu {
             )
         }
 
-        menu.item(23, Item(Material.ARROW, "<white><bold>Go back").click({ player.player.inventory.close() }))
+        menu.item(23, Locales.getItem(player.player, "go-back").click({ player.player.inventory.close() }))
             .open(player.player)
     }
 }

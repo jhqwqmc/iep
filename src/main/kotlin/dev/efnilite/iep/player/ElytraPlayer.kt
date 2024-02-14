@@ -1,81 +1,33 @@
-package dev.efnilite.iep
+package dev.efnilite.iep.player
 
+import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
-import dev.efnilite.vilib.inventory.item.Item
 import dev.efnilite.vilib.util.Task
 import fr.mrmicky.fastboard.adventure.FastBoard
 import net.kyori.adventure.text.minimessage.MiniMessage
-import org.bukkit.GameMode
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import org.bukkit.potion.PotionEffect
 import org.bukkit.util.Vector
 import java.io.File
 import java.util.concurrent.ThreadLocalRandom
 
-private data class SerializedSettings(val style: String, val radius: Int, val seed: Int, val info: Boolean) {
+private data class SerializedSettings(val locale: String, val style: String, val radius: Int, val seed: Int, val info: Boolean) {
 
-    constructor(settings: Settings) : this(settings.style.name(), settings.radius, settings.seed, settings.info)
+    constructor(settings: Settings) : this(settings.locale, settings.style.name(), settings.radius, settings.seed, settings.info)
 
-    fun convert() = Settings(IEP.getStyles().first { it.name() == style }, radius, seed, info)
+    fun convert() = Settings(style, IEP.getStyles().first { it.name() == style }, radius, seed, info)
 
-}
-
-/**
- * Class for storing a player's previous data.
- */
-private data class PreviousData(private val player: Player) {
-
-    val invulnerable = player.isInvulnerable
-    val gamemode = player.gameMode
-    val position = player.location.toVector()
-    val inventoryContents: Array<ItemStack?> = player.inventory.contents
-    val effects: Collection<PotionEffect> = player.activePotionEffects
-
-    /**
-     * Sets player stuff.
-     */
-    fun join() {
-        with(player) {
-            clearActivePotionEffects()
-            gameMode = GameMode.ADVENTURE
-            isInvulnerable = true
-
-            inventory.clear()
-
-            inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
-            inventory.addItem(Item(Material.SUGAR_CANE, "<#2fb900><bold>Play").build())
-            inventory.addItem(Item(Material.COMPARATOR, "<#c10000><bold>Settings").build())
-            inventory.addItem(Item(Material.SPRUCE_HANGING_SIGN, "<white><bold>Leaderboard").build())
-        }
-    }
-
-    /**
-     * Resets the player's data.
-     */
-    fun leave() {
-        with(player) {
-            teleportAsync(position.toLocation(World.world))
-
-            isInvulnerable = invulnerable
-            gameMode = gamemode
-            inventory.contents = inventoryContents
-
-            clearActivePotionEffects()
-            addPotionEffects(effects)
-        }
-    }
 }
 
 /**
  * Class for wrapping players.
  */
-class ElytraPlayer(val player: Player) {
+class ElytraPlayer(val player: Player, private val data: PreviousData = PreviousData(player)) {
 
     /**
      * The player's position.
@@ -89,20 +41,35 @@ class ElytraPlayer(val player: Player) {
     /**
      * The player's previous position.
      */
-    private val data = PreviousData(player)
     private val board = FastBoard(player)
     private val file = File(IEP.instance.dataFolder, "players/${player.uniqueId}.json")
 
     /**
-     * Joins the player to the generator.
+     * Joins a [Mode].
      */
-    fun join() = data.join()
+    fun join(mode: Mode) {
+        IEP.log("Creating generator for ${player.name}, mode = ${mode.name}")
+
+        val generator = mode.getGenerator()
+
+        val at = Divider.add(generator)
+
+        data.setup(at)
+
+        generator.add(this)
+
+        generator.start(mode.leaderboard, at, mode.pointType)
+    }
 
     /**
-     * Resets the data of the player.
+     * Leaves the current mode.
      */
-    fun leave() {
-        data.leave()
+    fun leave(switchMode: Boolean = true) {
+        getGenerator().remove(this)
+
+        data.reset(switchMode)
+
+        if (switchMode) return
 
         board.delete()
     }
@@ -151,6 +118,7 @@ class ElytraPlayer(val player: Player) {
         board.updateLines(
             deserialize(""),
             deserialize("<#b30000><bold>Score</bold> <gray>${"%.1f".format(score)}"),
+            deserialize("<#b30000><bold>High-score</bold> <gray>${"%.1f".format(getGenerator().getHighScore().score)}"),
             deserialize("<#b30000><bold>Time</bold> <gray>$time"),
             deserialize("<#b30000><bold>Seed</bold> <gray>$seed"),
             deserialize(""),
@@ -214,10 +182,14 @@ class ElytraPlayer(val player: Player) {
     companion object {
 
         val DEFAULT_SETTINGS
-            get() = Settings(IEP.getStyles()[0], 5, ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND), false)
+            get() = Settings(locale = "en",
+                style = IEP.getStyles()[0],
+                radius = 5,
+                seed = ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND),
+                info = false)
 
         fun Player.asElytraPlayer(): ElytraPlayer? {
-            return Divider.generators.flatMap { it.players }.firstOrNull { it.player == this }
+            return Divider.generators.flatMap { it.players }.firstOrNull { it.player.uniqueId == uniqueId }
         }
     }
 }

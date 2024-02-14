@@ -1,7 +1,7 @@
 package dev.efnilite.iep.hook
 
-import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 

@@ -6,5 +6,6 @@
 - iep.setting.radius
 - iep.setting.seed
 - iep.setting.info
+- iep.setting.locale
 - iep.leaderboard: Leaderboards menu
 - iep.leaderboard.%mode%: Specific mode leaderboard

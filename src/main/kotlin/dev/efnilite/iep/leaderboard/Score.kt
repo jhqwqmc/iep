@@ -1,6 +1,6 @@
 package dev.efnilite.iep.leaderboard
 
-import dev.efnilite.iep.Config
+import dev.efnilite.iep.config.Config
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter

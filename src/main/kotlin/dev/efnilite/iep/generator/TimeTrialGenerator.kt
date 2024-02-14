@@ -1,6 +1,6 @@
 package dev.efnilite.iep.generator
 
-import dev.efnilite.iep.Config
+import dev.efnilite.iep.config.Config
 import kotlin.math.min
 
 class TimeTrialGenerator : Generator() {

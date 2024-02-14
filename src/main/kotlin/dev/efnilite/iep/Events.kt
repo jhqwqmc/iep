@@ -1,10 +1,12 @@
 package dev.efnilite.iep
 
-import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.menu.LeaderboardMenu
 import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
 import dev.efnilite.iep.mode.DefaultMode
+import dev.efnilite.iep.player.ElytraPlayer
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.event.EventWatcher
 import org.bukkit.Material
@@ -27,7 +29,7 @@ class Events : EventWatcher {
     fun quit(event: PlayerQuitEvent) {
         val player = event.player.asElytraPlayer() ?: return
 
-        player.getGenerator().remove(player)
+        player.leave()
     }
 
     @EventHandler
@@ -36,13 +38,13 @@ class Events : EventWatcher {
 
         if (event.player.world == World.world) return
 
-        player.getGenerator().remove(player)
+        player.leave()
     }
 
     @EventHandler
     fun join(event: PlayerJoinEvent) {
         if (Config.CONFIG.getBoolean("join-on-join")) {
-            DefaultMode.create(event.player)
+            ElytraPlayer(event.player).join(DefaultMode)
         }
     }
 

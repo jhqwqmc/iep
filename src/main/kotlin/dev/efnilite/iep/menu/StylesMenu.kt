@@ -1,8 +1,9 @@
 package dev.efnilite.iep.menu
 
-import dev.efnilite.iep.ElytraPlayer
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.Item
@@ -33,7 +34,7 @@ object StylesMenu {
                     generator.set { settings -> Settings(settings, style = styles.random()) }
                     player.player.inventory.close()
                 }))
-            .item(23, Item(Material.ARROW, "<white><bold>Go back").click({ SettingsMenu.open(player) }))
+            .item(23, Locales.getItem(player.player, "go-back").click({ SettingsMenu.open(player) }))
             .open(player.player)
     }
 }

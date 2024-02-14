@@ -1,12 +1,10 @@
 package dev.efnilite.iep.mode
 
 import dev.efnilite.iep.generator.CloseGenerator
-import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.item.Item
 import org.bukkit.Material
-import org.bukkit.entity.Player
 
 object CloseMode : Mode {
 
@@ -14,7 +12,9 @@ object CloseMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun create(player: Player) = Generator.create(player, leaderboard, PointType.FLAT) { CloseGenerator() }
+    override val pointType = PointType.FLAT
+
+    override fun getGenerator() = CloseGenerator()
 
     override fun getItem(locale: String): Item = Item(Material.PINK_PETALS, "<#fa9abc><bold>Close")
         .lore("<gray>Stay close to the blocks.")

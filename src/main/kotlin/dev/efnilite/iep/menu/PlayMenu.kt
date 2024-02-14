@@ -1,6 +1,8 @@
 package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.player.ElytraPlayer
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.Item
 import org.bukkit.Material
@@ -15,7 +17,17 @@ object PlayMenu {
 
         for (mode in IEP.getModes()) {
             menu.item(9 + menu.items.size, mode.getItem("")
-                .click({ mode.create(player) }))
+                .click({
+                    val ep = player.asElytraPlayer()
+
+                    if (ep == null) {
+                        ElytraPlayer(player).join(mode)
+                    } else {
+                        ep.leave(true)
+
+                        ep.join(mode)
+                    }
+                }))
         }
 
         menu.open(player)

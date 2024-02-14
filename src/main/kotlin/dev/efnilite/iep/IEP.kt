@@ -2,6 +2,7 @@ package dev.efnilite.iep
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.hook.PapiHook
 import dev.efnilite.iep.mode.*
 import dev.efnilite.iep.style.IncrementalStyle
@@ -90,7 +91,7 @@ class IEP : ViPlugin() {
     }
 
     override fun disable() {
-        Divider.generators.forEach { generator -> generator.players.forEach { generator.remove(it) } }
+        Divider.generators.forEach { generator -> generator.players.forEach { it.leave() } }
 
         World.delete()
     }

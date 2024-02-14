@@ -1,5 +1,6 @@
-package dev.efnilite.iep
+package dev.efnilite.iep.config
 
+import dev.efnilite.iep.IEP
 import dev.efnilite.vilib.configupdater.ConfigUpdater
 import org.bukkit.configuration.file.YamlConfiguration
 

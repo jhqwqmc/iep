@@ -1,11 +1,11 @@
 package dev.efnilite.iep
 
-import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
-import dev.efnilite.iep.generator.Generator
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.menu.LeaderboardMenu
 import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.command.ViCommand
 import dev.efnilite.vilib.mm.adventure.text.Component
 import dev.efnilite.vilib.mm.adventure.text.minimessage.MiniMessage
@@ -43,23 +43,24 @@ class Command : ViCommand() {
                 return true
             }
             "settings" -> {
-                val iep = player.asElytraPlayer() ?: return true
+                val ep = player.asElytraPlayer() ?: return true
 
-                if (iep.hasPermission("iep.setting")) {
+                if (ep.hasPermission("iep.setting")) {
                     return true
                 }
 
-                SettingsMenu.open(iep)
+                SettingsMenu.open(ep)
             }
             "leave" -> {
-                val iep = player.asElytraPlayer() ?: return true
+                val ep = player.asElytraPlayer() ?: return true
 
-                if (iep.hasPermission("iep.leave")) {
+                if (player.hasPermission("iep.leave")) {
                     return true
                 }
 
-                Generator.remove(player)
+                ep.leave()
             }
+            "reset" -> player.isInvulnerable = false
         }
 
         if (args.size > 1) {

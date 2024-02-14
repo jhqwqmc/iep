@@ -1,8 +1,9 @@
 package dev.efnilite.iep.mode
 
+import dev.efnilite.iep.generator.Generator
+import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.item.Item
-import org.bukkit.entity.Player
 import org.jetbrains.annotations.Contract
 
 /**
@@ -22,11 +23,15 @@ interface Mode {
     val leaderboard: Leaderboard
 
     /**
-     * Method that gets called when a mode is clicked in the menu or joined using /parkour join.
-     *
-     * @param player The player.
+     * The [PointType]
      */
-    fun create(player: Player)
+    val pointType
+        get() = PointType.CIRCLE
+
+    /**
+     * Returns a new [Generator] for this mode.
+     */
+    fun getGenerator(): Generator
 
     /**
      * @param locale The locale of the menu, used to adjust the name.
@@ -34,5 +39,6 @@ interface Mode {
      */
     @Contract(pure = true)
     fun getItem(locale: String): Item
+
 
 }

@@ -50,7 +50,6 @@ styles:
     crimson: [ "crimson_hyphae", "stripped_crimson_hyphae", "crimson_planks", "crimson_slab", "crimson_stairs", "crimson_fence" ]
     bamboo: [ "bamboo_block", "stripped_bamboo_block", "bamboo_planks", "bamboo_mosaic", "bamboo_stairs", "bamboo_mosaic_stairs",
               "bamboo_slab", "bamboo_mosaic_slab", "bamboo_fence" ]
-    glass: ["white_stained_glass"]
+    glass: [ "white_stained_glass" ]
   incremental:
-    herring: ["barrier", "barrier", "barrier", "barrier", "barrier", "barrier", "barrier", "barrier", "barrier",
-              "barrier", "barrier", "red_concrete"]
+    spiral: [ "barrier", "barrier", "barrier", "barrier", "red_concrete" ]

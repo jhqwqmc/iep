@@ -1,8 +1,6 @@
 package dev.efnilite.iep.generator
 
-import dev.efnilite.iep.Config
-import dev.efnilite.iep.ElytraPlayer
-import dev.efnilite.iep.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.util.Island
 import dev.efnilite.iep.generator.util.PointType
@@ -10,11 +8,11 @@ import dev.efnilite.iep.generator.util.Section
 import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.iep.leaderboard.Score
+import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Task
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.time.Instant
@@ -109,6 +107,8 @@ open class Generator {
     open fun getScore() = max(0.0, (players[0].position.x - island.blockSpawn.x))
 
     fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
+
+    fun getHighScore() = leaderboard.getScore(players[0].uuid)
 
     private var resetUp = false
 
@@ -258,6 +258,7 @@ open class Generator {
 
             it.send("<dark_gray>===============")
             it.send("<gray>Score <white>${"%.1f".format(score.score)}")
+            it.send("<gray>High-score <white>${"%.1f".format(getHighScore().score)}")
             it.send("<gray>Time <white>${score.getFormattedTime()}")
             it.send("<gray>Seed <white>${score.seed}")
             it.send("<dark_gray>===============")
@@ -374,43 +375,5 @@ open class Generator {
 
         const val SEED_BOUND = 1_000_000
 
-        /**
-         * Creates a new generator.
-         * @param player The player to create the generator for.
-         */
-        fun create(player: Player,
-                   leaderboard: Leaderboard,
-                   pointType: PointType = PointType.CIRCLE,
-                   gen: () -> Generator) {
-            IEP.log("Creating generator for ${player.name}, pointType = $pointType")
-
-            remove(player)
-
-            val elytraPlayer = ElytraPlayer(player)
-
-            elytraPlayer.join()
-
-            val generator = gen.invoke()
-
-            Divider.add(generator)
-
-            generator.add(elytraPlayer)
-
-            generator.start(leaderboard, Divider.toLocation(generator), pointType)
-        }
-
-        /**
-         * Removes a player from the generator.
-         * @param player The player to remove.
-         */
-        fun remove(player: Player) {
-            val elytraPlayer = player.asElytraPlayer() ?: return
-
-            val generator = elytraPlayer.getGenerator()
-
-            generator.remove(elytraPlayer)
-
-            elytraPlayer.leave()
-        }
     }
 }
