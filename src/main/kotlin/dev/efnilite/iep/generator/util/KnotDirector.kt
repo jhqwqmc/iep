@@ -3,7 +3,8 @@ package dev.efnilite.iep.generator.util
 import dev.efnilite.vilib.util.Probs
 import org.bukkit.util.Vector
 import org.jetbrains.annotations.Contract
-import java.util.*
+import kotlin.random.Random
+import kotlin.random.asJavaRandom
 
 class KnotDirector(private val random: Random) {
 
@@ -27,6 +28,6 @@ class KnotDirector(private val random: Random) {
         val distribution = ((mean - 2 * sd)..(mean + 2 * sd))
             .associateWith { Probs.normalpdf(mean.toDouble(), sd.toDouble(), it.toDouble()) }
 
-        return Probs.random(distribution, random)
+        return Probs.random(distribution, random.asJavaRandom())
     }
 }

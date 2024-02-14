@@ -6,7 +6,7 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.util.Vector
-import java.util.*
+import kotlin.random.Random
 
 /**
  * Represents a section of the total parkour of size [KNOTS].

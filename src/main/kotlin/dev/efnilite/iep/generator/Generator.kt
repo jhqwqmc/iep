@@ -20,9 +20,9 @@ import org.bukkit.util.Vector
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
+import kotlin.random.Random
 
 open class Generator {
 
@@ -32,13 +32,13 @@ open class Generator {
 
     protected lateinit var island: Island
     protected val sections = mutableMapOf<Int, Section>()
-    protected var seed: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)
+    protected var seed = 0
 
     private lateinit var task: BukkitTask
     private lateinit var leaderboard: Leaderboard
     private var start: Instant? = null
     private var pointType: PointType = PointType.CIRCLE
-    private var random = Random()
+    private var random = Random(0)
 
     /**
      * Adds a player to the generator.
@@ -264,7 +264,7 @@ open class Generator {
         }
 
         seed = s
-        random = Random(seed.toLong())
+        random = Random(s)
         start = null
         resetUp = false
 

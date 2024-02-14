@@ -1,9 +1,6 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.Config
-import dev.efnilite.iep.generator.util.PointType
-import dev.efnilite.iep.leaderboard.Leaderboard
-import org.bukkit.util.Vector
 import kotlin.math.min
 
 class TimeTrialGenerator : Generator() {
@@ -17,7 +14,7 @@ class TimeTrialGenerator : Generator() {
         val player = players[0]
 
         if (score >= SCORE) {
-            reset(s = SEED)
+            reset()
             return
         }
 
@@ -25,10 +22,8 @@ class TimeTrialGenerator : Generator() {
                 "<gray>${"%.1f".format(score)}/$SCORE")
     }
 
-    override fun start(ld: Leaderboard, start: Vector, point: PointType) {
-        super.start(ld, start, point)
-
-        seed = SEED
+    override fun reset(regenerate: Boolean, s: Int) {
+        super.reset(regenerate, SEED)
     }
 
     companion object {
