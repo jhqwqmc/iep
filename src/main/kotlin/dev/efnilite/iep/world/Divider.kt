@@ -1,5 +1,6 @@
 package dev.efnilite.iep.world
 
+import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.Generator
 import org.bukkit.util.Vector
 import org.jetbrains.annotations.Contract
@@ -31,6 +32,8 @@ object Divider {
 
         sections[generator] = missing
 
+        IEP.log("Added generator to divider at ${toLocation(generator)}")
+
         return missing
     }
 
@@ -52,6 +55,8 @@ object Divider {
      * @param generator The generator to remove.
      */
     fun remove(generator: Generator) {
+        IEP.log("Removed generator from divider at ${toLocation(generator)}")
+
         sections.remove(generator)
     }
 

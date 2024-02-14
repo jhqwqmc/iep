@@ -43,6 +43,8 @@ object World {
      * Creates the world.
      */
     fun create() {
+        IEP.log("Creating world $NAME")
+
         world = WorldCreator(NAME)
             .generator(EmptyChunkGenerator())
             .generateStructures(false)
@@ -58,6 +60,8 @@ object World {
      * Sets all world settings.
      */
     private fun setup() {
+        IEP.log("Setting up rules for world $NAME")
+
         world.setGameRule(GameRule.DO_FIRE_TICK, false)
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
         world.setGameRule(GameRule.DO_TILE_DROPS, false)
@@ -79,11 +83,14 @@ object World {
      * Deletes the parkour world.
      */
     fun delete() {
+        IEP.log("Deleting world $NAME")
+
         val file = File(NAME)
 
         if (!file.exists()) {
             return
         }
+        IEP.log("Unloading world $NAME")
 
         Bukkit.unloadWorld(NAME, false)
 

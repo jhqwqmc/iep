@@ -45,6 +45,8 @@ open class Generator {
      * @param player The player to add.
      */
     fun add(player: ElytraPlayer) {
+        IEP.log("Adding player to generator ${player.name}")
+
         players.add(player)
 
         settings = player.load()
@@ -55,11 +57,15 @@ open class Generator {
      * @param player The player to remove.
      */
     fun remove(player: ElytraPlayer) {
+        IEP.log("Removing player from generator ${player.name}")
+
         player.save(settings)
 
         players.remove(player)
 
         if (players.isEmpty()) {
+            IEP.log("Players is empty, clearing generator")
+
             task.cancel()
 
             reset(false)
@@ -75,6 +81,8 @@ open class Generator {
      * @param start The vector to spawn the island at.
      */
     open fun start(ld: Leaderboard, start: Vector, point: PointType) {
+        IEP.log("Starting generator at $start")
+
         leaderboard = ld
         island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
         pointType = point
@@ -121,6 +129,12 @@ open class Generator {
             start = Instant.now()
         }
 
+        if (sections.size > 2) {
+            val (minIdx, minSection) = sections.minBy { it.key }
+
+            clear(minIdx, minSection)
+        }
+
         if (shouldReset(player, pos)) {
             reset()
             return
@@ -131,6 +145,8 @@ open class Generator {
             val cloned = section.clone(Vector(0, 200, 0))
 
             sections[idx + 1] = cloned
+
+            IEP.log("Generating cloned section for low y at ${idx + 1}")
 
             cloned.generate(settings, pointType)
 
@@ -156,12 +172,6 @@ open class Generator {
 
             return
         }
-
-        if (sections.size > 2) {
-            val (minIdx, minSection) = sections.minBy { it.key }
-
-            clear(minIdx, minSection)
-        }
     }
 
     private fun shouldReset(player: ElytraPlayer, pos: Vector): Boolean {
@@ -170,9 +180,20 @@ open class Generator {
             .minBy { it.key }
 
         val progress = pos.x - section.beginning.x
+
+        if (progress < 0) {
+            return false
+        }
+
         val isPastSpawn = if (idx == 0) progress > 5 else true
         val isNotGliding = isPastSpawn && !player.player.isGliding
         val isOutOfBounds = isPastSpawn && !section.isNearPoint(pos, progress.toInt(), settings.radius.toDouble())
+
+        if (isNotGliding) {
+            IEP.log("Player ${player.name} is not gliding")
+        } else if (isOutOfBounds) {
+            IEP.log("Player ${player.name} is out of bounds")
+        }
 
         return isNotGliding || isOutOfBounds
     }
@@ -185,6 +206,8 @@ open class Generator {
             val section = Section(island.blockSpawn.clone().add(Vector(0, pointType.heightOffset, 0)), random)
 
             sections[0] = section
+
+            IEP.log("Generating section at 0")
 
             section.generate(settings, pointType)
 
@@ -200,10 +223,14 @@ open class Generator {
 
         sections[idx + 1] = section
 
+        IEP.log("Generating section at ${idx + 1}")
+
         section.generate(settings, pointType)
     }
 
     protected open fun clear(idx: Int, section: Section) {
+        IEP.log("Clearing section at $idx")
+
         section.clear()
 
         sections.remove(idx)
@@ -213,6 +240,8 @@ open class Generator {
      * Resets the players and knots.
      */
     protected open fun reset(regenerate: Boolean = true, s: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)) {
+        IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
+
         players.forEach {
             if (getScore() == 0.0) {
                 return@forEach
@@ -257,6 +286,8 @@ open class Generator {
         val player = players[0]
         val velocity = player.player.velocity
 
+        IEP.log("Resetting player height, velocity = $velocity")
+
 //        val dx = island.blockSpawn.x - sections[sections.keys.max() - 1]!!.beginning.x
         val to = player.player.location.add(0.0, 200.0, 0.0)
 
@@ -271,8 +302,8 @@ open class Generator {
         Task.create(IEP.instance)
             .delay(2)
             .execute {
-                player.player.velocity = velocity
-            }
+                IEP.log("Restoring pre-teleport velocity, velocity = $velocity")
+                player.player.velocity = velocity }
             .run()
 
         resetUp = false
@@ -332,6 +363,8 @@ open class Generator {
      * Allows for easy setting of the current [Settings] instance.
      */
     fun set(mapper: (Settings) -> Settings) {
+        IEP.log("Updating settings from $settings to ${mapper.invoke(settings)}")
+
         settings = mapper.invoke(settings)
 
         players.forEach { it.save(settings) }
@@ -349,6 +382,8 @@ open class Generator {
                    leaderboard: Leaderboard,
                    pointType: PointType = PointType.CIRCLE,
                    gen: () -> Generator) {
+            IEP.log("Creating generator for ${player.name}, pointType = $pointType")
+
             remove(player)
 
             val elytraPlayer = ElytraPlayer(player)

@@ -37,7 +37,8 @@ class IEP : ViPlugin() {
 
         Schematics.addFromFiles(this,
             *Files.list(Path.of(dataFolder.toString(), "schematics"))
-                .map { it.toFile() }.toList().toTypedArray())
+                .map { it.toFile() }.toList().toTypedArray()
+        )
 
         registerStyle("styles.random") { name, data -> RandomStyle(name, data) }
         registerStyle("styles.incremental") { name, data -> IncrementalStyle(name, data) }
@@ -50,13 +51,17 @@ class IEP : ViPlugin() {
         registerMode(ObstacleMode)
 
         if (server.pluginManager.isPluginEnabled("PlaceholderAPI")) {
+            log("Registered Papi Hook")
             PapiHook.register()
         }
 
         Task.create(this)
             .async()
             .repeat(3 * 60 * 20)
-            .execute { modes.forEach { it.leaderboard.write() } }
+            .execute {
+                log("Saving all leaderboards")
+                modes.forEach { it.leaderboard.write() }
+            }
             .run()
     }
 
@@ -72,14 +77,14 @@ class IEP : ViPlugin() {
         Config.CONFIG.getPaths(path).forEach { name ->
             registerStyle(
                 fn.invoke(name, Config.CONFIG.getStringList("$path.$name")
-                .map {
-                    try {
-                        return@map Material.getMaterial(it.uppercase())!!
-                    } catch (ex: NullPointerException) {
-                        logging.error("Invalid material in style $path.$name: $it")
-                        return@map Material.STONE
-                    }
-                })
+                    .map {
+                        try {
+                            return@map Material.getMaterial(it.uppercase())!!
+                        } catch (ex: NullPointerException) {
+                            logging.error("Invalid material in style $path.$name: $it")
+                            return@map Material.STONE
+                        }
+                    })
             )
         }
     }
@@ -98,9 +103,19 @@ class IEP : ViPlugin() {
         lateinit var instance: IEP
             private set
 
+        fun log(message: String) {
+            if (Config.CONFIG.getBoolean("debug")) {
+                instance.logging.info("[Debug] $message")
+            }
+        }
+
         private val modes: MutableList<Mode> = mutableListOf()
 
-        fun registerMode(mode: Mode) = modes.add(mode)
+        fun registerMode(mode: Mode) {
+            log("Registered mode ${mode.name}")
+
+            modes.add(mode)
+        }
 
         fun getMode(name: String): Mode? = modes.firstOrNull { it.name == name }
 
@@ -108,7 +123,11 @@ class IEP : ViPlugin() {
 
         private val styles: MutableList<Style> = mutableListOf()
 
-        fun registerStyle(style: Style) = styles.add(style)
+        fun registerStyle(style: Style) {
+            log("Registered style ${style.name()}")
+
+            styles.add(style)
+        }
 
         fun getStyle(name: String) = styles.first { it.name() == name }
 

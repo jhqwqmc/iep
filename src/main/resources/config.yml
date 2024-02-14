@@ -1,3 +1,6 @@
+# -= Debug =-
+debug: false
+
 # -= Join on join =-
 # If true, players that join the server will join the parkour.
 join-on-join: false

@@ -166,6 +166,8 @@ class ElytraPlayer(val player: Player) {
         Task.create(IEP.instance)
             .async()
             .execute {
+                IEP.log("Saving settings for ${player.name}")
+
                 file.parentFile.mkdirs()
                 file.createNewFile()
 
@@ -179,6 +181,8 @@ class ElytraPlayer(val player: Player) {
      * @return The player's settings.
      */
     fun load(): Settings {
+        IEP.log("Loading settings for ${player.name}")
+
         if (!file.exists()) {
             return DEFAULT_SETTINGS
         }
