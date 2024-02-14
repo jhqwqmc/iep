@@ -13,7 +13,7 @@ class Island(vector: Vector, schematic: Schematic) {
     val blockSpawn: Vector
 
     init {
-        assert(blocks.isNotEmpty())
+        require(blocks.isNotEmpty())
 
         blocks.first { it.type == Material.DIAMOND_BLOCK }.let {
             playerSpawn = it.location.toVector().add(Vector(0.5, 0.0, 0.5))

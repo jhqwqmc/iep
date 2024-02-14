@@ -1,18 +1,14 @@
-# -= Debug =-
-# If true, the plugin will print debug messages to the console.
-debug: false
-
 # -= Join on join =-
 # If true, players that join the server will join the parkour.
 join-on-join: false
 
-# -= Time format =-
-# H = hours, m = minutes, s = seconds, S = milliseconds
-time-format: "mm:ss:SSS"
-
 # -= Permissions =-
 # If true, the plugin will use permissions
 permissions: false
+
+# -= Time format =-
+# H = hours, m = minutes, s = seconds, S = milliseconds
+time-format: "mm:ss:SSS"
 
 # -= Mode settings =-
 mode-settings:

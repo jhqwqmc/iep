@@ -2,6 +2,7 @@ package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.Config
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.IEP.Companion.toTitleCase
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.PagedMenu
@@ -33,7 +34,7 @@ object LeaderboardMenu {
 private object SingleLeaderboardMenu {
 
     fun open(player: Player, leaderboard: Leaderboard) {
-        val menu = PagedMenu(3, leaderboard.name)
+        val menu = PagedMenu(3, leaderboard.name.toTitleCase())
             .displayRows(0, 1)
 
         for ((idx, score) in leaderboard.getAllScores().withIndex()) {

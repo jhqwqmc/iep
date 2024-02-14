@@ -74,7 +74,7 @@ private enum class Obstacle {
         fun get(center: Vector, radius: Int) = PointType.CIRCLE.getPoints(center, radius)
 
         override fun getPoints(center: Vector, radius: Int): List<Vector> {
-            return (0..radius).filter { it % 3 == 0 }.flatMap { get(center, it) }
+            return (0..radius).filter { it % 2 == 0 }.flatMap { get(center, it) }
         }
     },
     DIAMOND {
