@@ -1,0 +1,4 @@
+go-back:
+  material: "arrow"
+  name: "<white><bold>Go back"
+  lore: ""
