@@ -1,7 +1,7 @@
 package dev.efnilite.iep.menu
 
-import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.vilib.inventory.Menu
@@ -17,14 +17,14 @@ object LeaderboardMenu {
     fun open(player: Player) {
         val menu = Menu(3, "Leaderboards")
             .distributeRowsEvenly()
-            .item(23, Locales.getItem(player, "go-back").click({ player.inventory.close() }))
+            .item(23, Locales.getItem(player, "go back").click({ player.inventory.close() }))
 
         for (mode in IEP.getModes()) {
             if (Config.CONFIG.getBoolean("permissions") && !player.hasPermission("iep.leaderboard.${mode.name}")) {
-                continue
+            continue
             }
 
-            menu.item(menu.items.size + 9, mode.getItem("")
+            menu.item(menu.items.size + 9, mode.getItem(player)
                 .click({ SingleLeaderboardMenu.open(player, mode.leaderboard) })
             )
         }
@@ -62,7 +62,7 @@ private object SingleLeaderboardMenu {
             .prevPage(19, Item(Material.RED_DYE, "<white>Previous").click({ menu.page(-1) }))
             .nextPage(27, Item(Material.GREEN_DYE, "<white>Next").click({ menu.page(1) }))
             .distributeRowEvenly(2)
-            .item(23, Locales.getItem(player, "go-back").click({ LeaderboardMenu.open(player) }))
+            .item(23, Locales.getItem(player, "go back").click({ LeaderboardMenu.open(player) }))
             .open(player.player)
     }
 

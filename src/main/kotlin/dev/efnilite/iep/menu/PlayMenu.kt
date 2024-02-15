@@ -1,22 +1,21 @@
 package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
-import dev.efnilite.vilib.inventory.item.Item
-import org.bukkit.Material
 import org.bukkit.entity.Player
 
 object PlayMenu {
 
     fun open(player: Player) {
         val menu = Menu(3, "Play")
-            .item(23, Item(Material.ARROW, "<white><bold>Go back").click({ player.inventory.close() }))
+            .item(23, Locales.getItem(player, "go back").click({ player.inventory.close() }))
             .distributeRowsEvenly()
 
         for (mode in IEP.getModes()) {
-            menu.item(9 + menu.items.size, mode.getItem("")
+            menu.item(9 + menu.items.size, mode.getItem(player)
                 .click({
                     val ep = player.asElytraPlayer()
 

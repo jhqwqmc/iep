@@ -1,4 +1,110 @@
-go-back:
+go back:
   material: "arrow"
   name: "<white><bold>Go back"
   lore: ""
+
+hotbar:
+  play:
+    material: "sugar_cane"
+    name: "<#2fb900><bold>Play"
+    lore: ""
+
+  settings:
+    material: "comparator"
+    name: "<#c10000><bold>Settings"
+    lore: ""
+
+  leaderboards:
+    material: "spruce_hanging_sign"
+    name: "<white><bold>Leaderboards"
+    lore: ""
+
+  leave:
+    material: "barrier"
+    name: "<#b32400><bold>Leave"
+    lore: ""
+
+modes:
+  default:
+    material: "barrel"
+    name: "<white><bold>Default"
+    lore: ""
+
+  close:
+    material: "pink_petals"
+    name: "<#fa9abc><bold>Close"
+    lore: "<gray>Stay close to the blocks."
+
+  min speed:
+    material: "feather"
+    name: "<white><bold>Min Speed"
+    lore: "<gray>Once you've reached the minimum speed,||<gray>going slower will reset you."
+
+  obstacle:
+    material: "oak_fence"
+    name: "<#c49402><bold>Obstacle"
+    lore: "<gray>Occasional obstacles."
+
+  speed demon:
+    material: "splash_potion"
+    name: "<#cc3399><bold>Speed Demon"
+    lore: "<gray>Go as fast as you can."
+
+  time trial:
+    material: "clock"
+    name: "<#ddd200><bold>Time Trial"
+    lore: "<gray>Reach a specific score||<gray>as soon as possible."
+
+
+styles:
+  title: "Styles"
+
+  style:
+    material: ""
+    name: "<white><bold>%a"
+    lore: "<gray>Type <white>%b"
+
+  random:
+    material: ""
+    name: "<white><bold>Random"
+    lore: ""
+
+settings:
+  title: "Settings"
+
+  styles:
+    material: ""
+    name: "<#8c0000><bold>Style"
+    lore: "<gray>Currently <white>%a"
+
+  radius:
+    material: "blaze_powder"
+    name: "<#ff9900><bold>Radius"
+    lore: "<gray>Currently <white>%a"
+
+  seed:
+    material: "wheat_seeds"
+    name: "<#00ff00><bold>Seed"
+    lore: "<gray>Currently <white>%a||<gray>To change this,||<gray>use <white>/iep seed <seed><gray>."
+
+  info:
+    material: "feather"
+    name: "<white><bold>Info"
+    lore: "<gray>Currently <white>%a||<gray>View extra info."
+
+  locale:
+    material: "paper"
+    name: "<white><bold>Locale"
+    lore: "<gray>Currently <white>%a||<gray>Click to change the language."
+
+scoreboard:
+  title: "<gradient:#ff0000:#800000><bold>IEP</gradient>"
+
+  lines:
+    - ""
+    - "<#b30000><bold>Score</bold> <gray>%a"
+    - "<#b30000><bold>High-score</bold> <gray>%b"
+    - "<#b30000><bold>Time</bold> <gray>%c"
+    - "<#b30000><bold>Seed</bold> <gray>%d"
+    - ""
+    - "<#505050>server.ip"

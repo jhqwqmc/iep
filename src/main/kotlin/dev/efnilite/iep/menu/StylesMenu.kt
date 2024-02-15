@@ -6,13 +6,13 @@ import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.vilib.inventory.Menu
-import dev.efnilite.vilib.inventory.item.Item
-import org.bukkit.Material
 
 object StylesMenu {
 
     fun open(player: ElytraPlayer) {
-        val menu = Menu(3, "Styles")
+        val menu = Menu(3, Locales.getString(player, "styles.title"))
+            .distributeRowEvenly(2)
+
         val styles = IEP.getStyles()
         val generator = player.getGenerator()
 
@@ -21,20 +21,23 @@ object StylesMenu {
                 continue
             }
 
-            menu.item(idx, Item(style.next(), "<white><bold>${style.name()}")
-                    .lore("<gray>Type <white>${if (style is RandomStyle) "random" else "incremental"}")
+            val item = Locales.getItem(player, "styles.style",
+                style.name(), if (style is RandomStyle) "random" else "incremental")
+                .material(style.next())
+
+            menu.item(idx, item
                     .click({
                         generator.set { settings -> Settings(settings, style = style) }
                         player.player.inventory.close()
                     }))
         }
 
-        menu.item(21, Item(styles.random().next(), "<white><bold>Random")
+        menu.item(21, Locales.getItem(player, "styles.random").material(styles.random().next())
                 .click({
                     generator.set { settings -> Settings(settings, style = styles.random()) }
                     player.player.inventory.close()
                 }))
-            .item(23, Locales.getItem(player.player, "go-back").click({ SettingsMenu.open(player) }))
+            .item(23, Locales.getItem(player, "go back").click({ SettingsMenu.open(player) }))
             .open(player.player)
     }
 }

@@ -1,6 +1,7 @@
 package dev.efnilite.iep
 
 import dev.efnilite.iep.config.Config
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.menu.LeaderboardMenu
 import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
@@ -9,7 +10,6 @@ import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.event.EventWatcher
-import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockPlaceEvent
@@ -62,20 +62,30 @@ class Events : EventWatcher {
         if ((event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK) ||
             event.hand != EquipmentSlot.HAND) return
 
-        when (event.item?.type) {
-            Material.SUGAR_CANE -> {
+        val play = Locales.getString(player, "hotbar.play.material").lowercase()
+        val settings = Locales.getString(player, "hotbar.settings.material").lowercase()
+        val leaderboard = Locales.getString(player, "hotbar.leaderboards.material").lowercase()
+        val leave = Locales.getString(player, "hotbar.leave.material").lowercase()
+
+        when (event.item?.type?.name?.lowercase()) {
+            play -> {
                 if (player.hasPermission("iep.play")) {
                     PlayMenu.open(player.player)
                 }
             }
-            Material.COMPARATOR -> {
+            settings -> {
                 if (player.hasPermission("iep.setting")) {
                     SettingsMenu.open(player)
                 }
             }
-            Material.SPRUCE_HANGING_SIGN -> {
+            leaderboard -> {
                 if (player.hasPermission("iep.leaderboard")) {
                     LeaderboardMenu.open(player.player)
+                }
+            }
+            leave -> {
+                if (player.hasPermission("iep.leave")) {
+                    player.leave()
                 }
             }
 

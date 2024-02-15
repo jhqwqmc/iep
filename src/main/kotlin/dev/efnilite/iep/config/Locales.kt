@@ -1,6 +1,7 @@
 package dev.efnilite.iep.config
 
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.inventory.item.Item
 import dev.efnilite.vilib.util.Task
@@ -29,7 +30,9 @@ object Locales {
     /**
      * A map of all locales with their respective yml trees
      */
-    private val locales: MutableMap<String, FileConfiguration> = HashMap<String, FileConfiguration>()
+    private val locales: LinkedHashMap<String, FileConfiguration> = LinkedHashMap()
+
+    fun getLocales() = locales.keys.toList()
 
     /**
      * Initializes this Locale handler.
@@ -61,9 +64,6 @@ object Locales {
             // create non-existent files
             if (files != null && files.isEmpty()) {
                 plugin.saveResource("locales/en.yml", false)
-                plugin.saveResource("locales/nl.yml", false)
-                plugin.saveResource("locales/fr.yml", false)
-                plugin.saveResource("locales/zh_cn.yml", false)
             }
 
             // get all files in locales folder
@@ -74,8 +74,12 @@ object Locales {
                         // get locale from file name
                         val locale = file.name.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
 
+                        IEP.log("Locale $locale found")
+
                         val config: FileConfiguration = YamlConfiguration.loadConfiguration(file)
+
                         validate(embedded, config, file)
+
                         locales[locale] = config
                     }
                 }
@@ -95,13 +99,15 @@ object Locales {
                 continue
             }
 
-            IEP.instance.logging.info("Fixing missing config node $node (${localPath.name})")
+            IEP.log("Fixing missing config node $node (${localPath.name})")
 
             user.set(node, provided.get(node))
         }
 
         try {
             user.save(localPath)
+
+            IEP.log("Validated locale file ${localPath.name}")
         } catch (ex: IOException) {
             IEP.instance.logging.stack(
                 "Error while trying to save fixed config file $localPath",
@@ -110,28 +116,16 @@ object Locales {
         }
     }
 
-    /**
-     * Gets a String from the provided path in the provided player's locale.
-     * If the player is an ElytraPlayer, their locale value will be used.
-     * If not, the default locale will be used.
-     *
-     * @param player The player
-     * @param path   The path
-     * @return a String
-     */
     fun getString(player: Player, path: String): String {
         val locale = player.asElytraPlayer()?.getGenerator()?.settings?.locale ?: locales.keys.first()
 
         return getString(locale, path)
     }
 
-    /**
-     * Gets a coloured String from the provided path in the provided locale file
-     *
-     * @param locale The locale
-     * @param path   The path
-     * @return a String
-     */
+    fun getString(player: ElytraPlayer, path: String): String {
+        return getString(player.getGenerator().settings.locale, path)
+    }
+
     private fun getString(locale: String, path: String): String {
         return getValue(
             locale,
@@ -140,14 +134,15 @@ object Locales {
         )
     }
 
-    /**
-     * Gets an uncoloured String list from the provided path in the provided locale file
-     *
-     * @param locale The locale
-     * @param path   The path
-     * @return a String list
-     */
-    fun getStringList(locale: String, path: String): List<String> {
+    fun getStringList(player: ElytraPlayer, path: String): List<String> {
+        return getValue(
+            player.getGenerator().settings.locale,
+            { config: FileConfiguration -> config.getStringList(path) },
+            emptyList()
+        )
+    }
+
+    private fun getStringList(locale: String, path: String): List<String> {
         return getValue(
             locale,
             { config: FileConfiguration -> config.getStringList(path) },
@@ -165,16 +160,10 @@ object Locales {
         return if (config != null) f.apply(config) else def
     }
 
-    /**
-     * Returns an item from a json locale file.
-     * The locale is derived from the player.
-     * If the player is an ElytraPlayer, their locale value will be used.
-     * If not, the default locale will be used.
-     *
-     * @param player The player
-     * @param path   The full path of the item in the locale file
-     * @return a non-null [Item] instance built from the description in the locale file
-     */
+    fun getItem(player: ElytraPlayer, path: String, vararg replace: String): Item {
+        return getItem(player.getGenerator().settings.locale, path, *replace)
+    }
+
     fun getItem(player: Player, path: String, vararg replace: String): Item {
         val locale = player.asElytraPlayer()?.getGenerator()?.settings?.locale ?: locales.keys.first()
 
@@ -183,16 +172,12 @@ object Locales {
 
     private val pattern: Pattern = Pattern.compile("%[a-z]")
 
-    /**
-     * Returns an item from a provided json locale file with possible replacements.
-     *
-     * @param locale  The locale
-     * @param path    The path in the json file
-     * @param replace The Strings that will replace any appearances of a String following the regex "%[a-z]"
-     * @return a non-null [Item] instance built from the description in the locale file
-     */
-    fun getItem(locale: String, path: String, vararg replace: String): Item {
+    private fun getItem(locale: String, path: String, vararg replace: String): Item {
         if (locales.isEmpty()) { // during reloading
+            return Item(Material.STONE, "")
+        }
+        if (locales[locale] == null) {
+            IEP.instance.logging.error("Invalid locale $locale")
             return Item(Material.STONE, "")
         }
 
@@ -209,7 +194,7 @@ object Locales {
                 break
             }
 
-            name = name.replaceFirst(matcher.group().toRegex(), replace[idx]!!)
+            name = name.replaceFirst(matcher.group().toRegex(), replace[idx])
             idx++
         }
 
@@ -220,7 +205,7 @@ object Locales {
                 break
             }
 
-            lore = lore.replaceFirst(matcher.group().toRegex(), replace[idx]!!)
+            lore = lore.replaceFirst(matcher.group().toRegex(), replace[idx])
             idx++
         }
 

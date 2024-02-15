@@ -2,13 +2,14 @@ package dev.efnilite.iep.player
 
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Config
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.util.Settings
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
+import dev.efnilite.vilib.fastboard.FastBoard
 import dev.efnilite.vilib.util.Task
-import fr.mrmicky.fastboard.adventure.FastBoard
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -20,7 +21,7 @@ private data class SerializedSettings(val locale: String, val style: String, val
 
     constructor(settings: Settings) : this(settings.locale, settings.style.name(), settings.radius, settings.seed, settings.info)
 
-    fun convert() = Settings(style, IEP.getStyles().first { it.name() == style }, radius, seed, info)
+    fun convert() = Settings(locale, IEP.getStyles().first { it.name() == style }, radius, seed, info)
 
 }
 
@@ -52,19 +53,19 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
         val generator = mode.getGenerator()
 
-        val at = Divider.add(generator)
-
-        data.setup(at)
-
         generator.add(this)
 
-        generator.start(mode.leaderboard, at, mode.pointType)
+        val at = Divider.add(generator)
+
+        data.setup(at).thenRun {
+            generator.start(mode.leaderboard, at, mode.pointType)
+        }
     }
 
     /**
      * Leaves the current mode.
      */
-    fun leave(switchMode: Boolean = true) {
+    fun leave(switchMode: Boolean = false) {
         getGenerator().remove(this)
 
         data.reset(switchMode)
@@ -113,17 +114,17 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * @param seed The seed to display.
      */
     fun updateBoard(score: Double, time: String, seed: Int) {
-        board.updateTitle(deserialize("<gradient:#ff0000:#800000><bold>IEP</gradient>"))
+        board.updateTitle(Locales.getString(this, "scoreboard.title"))
 
-        board.updateLines(
-            deserialize(""),
-            deserialize("<#b30000><bold>Score</bold> <gray>${"%.1f".format(score)}"),
-            deserialize("<#b30000><bold>High-score</bold> <gray>${"%.1f".format(getGenerator().getHighScore().score)}"),
-            deserialize("<#b30000><bold>Time</bold> <gray>$time"),
-            deserialize("<#b30000><bold>Seed</bold> <gray>$seed"),
-            deserialize(""),
-            deserialize("<#505050>server.ip")
-        )
+        board.updateLines(Locales.getStringList(this, "scoreboard.lines")
+            .map { updateLine(it, score, time, seed) })
+    }
+
+    private fun updateLine(line: String, score: Double, time: String, seed: Int): String {
+        return line.replace("%a", "%.1f".format(score))
+            .replace("%b", "%.1f".format(getGenerator().getHighScore().score))
+            .replace("%c", time)
+            .replace("%d", seed.toString())
     }
 
     /**
@@ -149,7 +150,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * @return The player's settings.
      */
     fun load(): Settings {
-        IEP.log("Loading settings for ${player.name}")
+        IEP.log("Loading settings for $name")
 
         if (!file.exists()) {
             return DEFAULT_SETTINGS
@@ -182,7 +183,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     companion object {
 
         val DEFAULT_SETTINGS
-            get() = Settings(locale = "en",
+            get() = Settings(locale = Locales.getLocales().first(),
                 style = IEP.getStyles()[0],
                 radius = 5,
                 seed = ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND),

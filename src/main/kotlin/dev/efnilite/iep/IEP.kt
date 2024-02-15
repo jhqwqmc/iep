@@ -3,6 +3,7 @@ package dev.efnilite.iep
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dev.efnilite.iep.config.Config
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.hook.PapiHook
 import dev.efnilite.iep.mode.*
 import dev.efnilite.iep.style.IncrementalStyle
@@ -34,6 +35,7 @@ class IEP : ViPlugin() {
         saveFile("schematics/spawn-island")
 
         World.create()
+        Locales.init()
         Menu.init(this)
 
         Schematics.addFromFiles(this,

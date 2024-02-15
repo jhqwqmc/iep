@@ -1,7 +1,7 @@
 package dev.efnilite.iep.generator
 
-import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.generator.util.Island
 import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.generator.util.Section
@@ -182,10 +182,16 @@ open class Generator {
         val progress = pos.x - section.beginning.x
 
         if (progress < 0) {
+            if (idx == 0 && pos.y < island.blockSpawn.y - settings.radius) {
+                IEP.log("Player ${player.name} is below spawn")
+
+                return true
+            }
+
             return false
         }
 
-        val isPastSpawn = if (idx == 0) progress > 5 else true
+        val isPastSpawn = progress > 0
         val isNotGliding = isPastSpawn && !player.player.isGliding
         val isOutOfBounds = isPastSpawn && !section.isNearPoint(pos, progress.toInt(), settings.radius.toDouble())
 
@@ -239,7 +245,7 @@ open class Generator {
     /**
      * Resets the players and knots.
      */
-    protected open fun reset(regenerate: Boolean = true, s: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)) {
+    open fun reset(regenerate: Boolean = true, s: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)) {
         IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
 
         players.forEach {
@@ -367,8 +373,6 @@ open class Generator {
         IEP.log("Updating settings from $settings to ${mapper.invoke(settings)}")
 
         settings = mapper.invoke(settings)
-
-        players.forEach { it.save(settings) }
     }
 
     companion object {

@@ -71,10 +71,10 @@ class Command : ViCommand() {
 
                     try {
                         iep.getGenerator().set { settings -> Settings(settings, seed = seed.toInt()) }
-                        iep.send("<dark_gray>Seed set to <white>$seed.")
+                        iep.getGenerator().reset(s = seed.toInt())
+                        iep.send("<gray>Seed set to <white>$seed.")
                     } catch (ex: NumberFormatException) {
-                        iep.send("<white>$seed <dark_gray>is not a number.")
-                        return true
+                        iep.send("<white>$seed <gray>is not a number.")
                     }
                 }
             }

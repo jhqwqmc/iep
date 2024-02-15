@@ -1,9 +1,10 @@
 package dev.efnilite.iep.mode
 
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
-import dev.efnilite.vilib.inventory.item.Item
+import org.bukkit.entity.Player
 import org.jetbrains.annotations.Contract
 
 /**
@@ -31,14 +32,13 @@ interface Mode {
     /**
      * Returns a new [Generator] for this mode.
      */
+    @Contract(pure = true)
     fun getGenerator(): Generator
 
     /**
      * @param locale The locale of the menu, used to adjust the name.
      * @return The item used in menus to show this mode. If this item is null, the mode won't be displayed.
      */
-    @Contract(pure = true)
-    fun getItem(locale: String): Item
-
+    fun getItem(player: Player) = Locales.getItem(player, "modes.$name")
 
 }
