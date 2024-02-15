@@ -245,7 +245,7 @@ open class Generator {
     /**
      * Resets the players and knots.
      */
-    open fun reset(regenerate: Boolean = true, s: Int = ThreadLocalRandom.current().nextInt(0, SEED_BOUND)) {
+    open fun reset(regenerate: Boolean = true, s: Int = 0) {
         IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
 
         players.forEach {
@@ -270,8 +270,14 @@ open class Generator {
             it.send("<dark_gray>===============")
         }
 
-        seed = s
-        random = Random(s)
+        if (settings.seed == -1) {
+            seed = ThreadLocalRandom.current().nextInt(SEED_BOUND)
+            random = Random(seed)
+        } else {
+            seed = s
+            random = Random(s)
+        }
+
         start = null
         resetUp = false
 

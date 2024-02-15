@@ -8,8 +8,6 @@ import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.command.ViCommand
-import dev.efnilite.vilib.mm.adventure.text.Component
-import dev.efnilite.vilib.mm.adventure.text.minimessage.MiniMessage
 import dev.efnilite.vilib.util.Cooldowns
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -73,14 +71,18 @@ class Command : ViCommand() {
                     }
 
                     val iep = player.asElytraPlayer() ?: return true
-                    val seed = args[1]
 
                     try {
-                        iep.getGenerator().set { settings -> Settings(settings, seed = seed.toInt()) }
-                        iep.getGenerator().reset(s = seed.toInt())
-                        iep.send(Locales.getString(player, "settings.seed.set").replace("%a", seed))
+                        val seed = args[1].toInt()
+
+                        if (seed < 0) throw NumberFormatException()
+
+                        iep.getGenerator().set { settings -> Settings(settings, seed = seed) }
+                        iep.getGenerator().reset(s = seed)
+
+                        iep.send(Locales.getString(player, "settings.seed.set").replace("%a", args[1]))
                     } catch (ex: NumberFormatException) {
-                        iep.send(Locales.getString(player, "settings.seed.invalid").replace("%a", seed))
+                        iep.send(Locales.getString(player, "settings.seed.invalid").replace("%a", args[1]))
                     }
                 }
             }
