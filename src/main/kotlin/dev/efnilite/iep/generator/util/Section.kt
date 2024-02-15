@@ -4,7 +4,6 @@ import dev.efnilite.iep.generator.util.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.bukkit.Material
-import org.bukkit.block.Block
 import org.bukkit.util.Vector
 import kotlin.random.Random
 
@@ -17,10 +16,9 @@ class Section {
     private val interpolator: SplineInterpolator
     private val knots: List<Vector>
     private val points: List<Vector>
-    private val blocks = mutableListOf<Block>()
 
     // TODO yikes!
-    private var builder: AsyncBuilder? = null
+    private lateinit var builder: AsyncBuilder
 
     /**
      * The beginning position of the section.
@@ -58,12 +56,14 @@ class Section {
     /**
      * Returns whether the given vector is near a section knot.
      */
-    fun isNearKnot(vector: Vector, idx: Int, distance: Double = 6.0) = knots[idx].distanceSquared(vector) < distance * distance
+    fun isNearKnot(vector: Vector, idx: Int, distance: Double = 6.0) =
+        knots[idx].distanceSquared(vector) < distance * distance
 
     /**
      * Returns whether the given vector is near a section point.
      */
-    fun isNearPoint(vector: Vector, idx: Int, distance: Double = 6.0) = points[idx].distanceSquared(vector) < distance * distance
+    fun isNearPoint(vector: Vector, idx: Int, distance: Double = 6.0) =
+        points[idx].distanceSquared(vector) < distance * distance
 
     /**
      * Clones the section with the given offset.
@@ -76,17 +76,17 @@ class Section {
     fun generate(settings: Settings, pointType: PointType) {
         val world = World.world
 
-        val map = points.flatMap { pointType.getPoints(it, settings.radius) }
-            .map { it.toLocation(world).block }
-            .associateWith { settings.style.next() }
-
-        builder = AsyncBuilder(map) { blocks.add(it) }
+        builder = AsyncBuilder {
+            points.flatMap { pointType.getPoints(it, settings.radius) }
+                .map { it.toLocation(world).block }
+                .associateWith { settings.style.next() }
+        }
     }
 
     fun clear() {
-        builder?.cancel()
+        builder.cancel()
 
-        AsyncBuilder(blocks.associateWith { Material.AIR })
+        AsyncBuilder { builder.blocks.associateWith { Material.AIR } }
     }
 
     private fun generatePoints(): List<Vector> {

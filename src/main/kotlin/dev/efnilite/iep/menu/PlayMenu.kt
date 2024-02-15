@@ -5,6 +5,7 @@ import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
+import dev.efnilite.vilib.util.Cooldowns
 import org.bukkit.entity.Player
 
 object PlayMenu {
@@ -22,6 +23,10 @@ object PlayMenu {
                     if (ep == null) {
                         ElytraPlayer(player).join(mode)
                     } else {
+                        if (!Cooldowns.canPerform(player, "ep join", 2500)) {
+                            return@click
+                        }
+
                         ep.leave(true)
 
                         ep.join(mode)

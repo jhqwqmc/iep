@@ -4,6 +4,7 @@ import dev.efnilite.iep.IEP
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.inventory.item.Item
+import dev.efnilite.vilib.util.Strings
 import dev.efnilite.vilib.util.Task
 import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
@@ -127,19 +128,15 @@ object Locales {
     }
 
     private fun getString(locale: String, path: String): String {
-        return getValue(
+        return Strings.colour(getValue(
             locale,
             Function<FileConfiguration, String> { config: FileConfiguration -> config.getString(path) },
             ""
-        )
+        ))
     }
 
     fun getStringList(player: ElytraPlayer, path: String): List<String> {
-        return getValue(
-            player.getGenerator().settings.locale,
-            { config: FileConfiguration -> config.getStringList(path) },
-            emptyList()
-        )
+        return getStringList(player.getGenerator().settings.locale, path)
     }
 
     private fun getStringList(locale: String, path: String): List<String> {
@@ -147,7 +144,7 @@ object Locales {
             locale,
             { config: FileConfiguration -> config.getStringList(path) },
             emptyList()
-        )
+        ).map { Strings.colour(it) }
     }
 
     private fun <T> getValue(locale: String, f: Function<FileConfiguration, T>, def: T): T {

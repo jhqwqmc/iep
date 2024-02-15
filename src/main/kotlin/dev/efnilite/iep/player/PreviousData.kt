@@ -52,21 +52,21 @@ data class PreviousData(private val player: Player) {
      * Resets the player's data.
      */
     fun reset(switchMode: Boolean) {
-        val reset = {
-            with(player) {
-                isInvulnerable = false
-                gameMode = gamemode
-                inventory.contents = inventoryContents
-
-                clearActivePotionEffects()
-                addPotionEffects(effects)
-            }
-        }
-
         if (switchMode) {
             reset()
         } else {
             player.teleportAsync(position).thenRun { reset() }
+        }
+    }
+
+    private fun reset() {
+        with(player) {
+            isInvulnerable = false
+            gameMode = gamemode
+            inventory.contents = inventoryContents
+
+            clearActivePotionEffects()
+            addPotionEffects(effects)
         }
     }
 }

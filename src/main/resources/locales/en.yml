@@ -87,6 +87,9 @@ settings:
     name: "<#00ff00><bold>Seed"
     lore: "<gray>Currently <white>%a||<gray>To change this,||<gray>use <white>/iep seed <seed><gray>."
 
+    set: "<gray>Seed set to <white>%a"
+    invalid: "<white>%a <gray>is not a number."
+
   info:
     material: "feather"
     name: "<white><bold>Info"

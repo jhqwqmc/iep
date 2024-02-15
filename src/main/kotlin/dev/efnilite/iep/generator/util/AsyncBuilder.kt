@@ -14,21 +14,35 @@ import java.util.*
  * @param map The map of vectors to materials.
  */
 class AsyncBuilder(
-    map: Map<Block, Material>,
-    onSet: (Block) -> Unit = {}
+    map: () -> Map<Block, Material>
 ) {
 
-    private var task: BukkitTask
-    private val queue = LinkedList(map.entries)
+    private var cancelled = false
+    private lateinit var task: BukkitTask
+    private val queue = LinkedList<Map.Entry<Block, Material>>()
+    val blocks = mutableListOf<Block>()
 
     init {
+        Task.create(IEP.instance)
+            .async()
+            .execute {
+                queue.addAll(map.invoke().entries)
+
+                initTask()
+            }
+            .run()
+    }
+
+    private fun initTask() {
+        if (cancelled) return
+
         task = Task.create(IEP.instance)
             .repeat(1)
             .execute(
                 object : BukkitRunnable() {
                     override fun run() {
                         repeat(BLOCKS_PER_TICK) {
-                            if (queue.isEmpty()) {
+                            if (cancelled || queue.isEmpty()) {
                                 cancel()
 
                                 return@run
@@ -38,7 +52,7 @@ class AsyncBuilder(
 
                             block.type = material
 
-                            onSet.invoke(block)
+                            blocks.add(block)
                         }
                     }
                 })
@@ -46,8 +60,7 @@ class AsyncBuilder(
     }
 
     fun cancel() {
-        queue.clear()
-        task.cancel()
+        cancelled = true
     }
 
     companion object {
