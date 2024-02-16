@@ -79,10 +79,10 @@ class Section {
     /**
      * Generates the section's points.
      */
-    fun generate(settings: Settings, pointType: PointType) {
+    fun generate(settings: Settings, pointType: PointType, blocksPerTick: Int = BLOCKS_PER_TICK) {
         val world = World.world
 
-        builder = AsyncBuilder {
+        builder = AsyncBuilder(blocksPerTick) {
             points.flatMap { pointType.getPoints(it, settings.radius) }
                 .map { it.toLocation(world).block }
                 .associateWith { settings.style.next() }
@@ -92,7 +92,7 @@ class Section {
     fun clear() {
         builder.cancel()
 
-        AsyncBuilder { builder.blocks.associateWith { Material.AIR } }
+        AsyncBuilder(BLOCKS_PER_TICK) { builder.blocks.associateWith { Material.AIR } }
     }
 
     private fun generatePoints(): List<Vector> {
@@ -167,7 +167,8 @@ class Section {
     companion object {
         private const val KNOTS = 5
         private const val EXTRA_POINTS_OFFSET = 1
-        private const val POSSIBLE_CHUNKS_PER_TICK = 2
+        private const val BLOCKS_PER_TICK = 70
+        private const val POSSIBLE_CHUNKS_PER_TICK = 3
 
         fun Chunk.getId() = "$x,$z"
     }

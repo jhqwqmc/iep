@@ -9,9 +9,11 @@ class SpeedDemonGenerator : Generator() {
     override fun tick() {
         super.tick()
 
-        val speed = getSpeed(players[0])
+        if (shouldScore()) {
+            val speed = getSpeed(players[0])
 
-        maxSpeedSoFar = maxOf(maxSpeedSoFar, speed)
+            maxSpeedSoFar = maxOf(maxSpeedSoFar, speed)
+        }
     }
 
     override fun reset(regenerate: Boolean, s: Int) {

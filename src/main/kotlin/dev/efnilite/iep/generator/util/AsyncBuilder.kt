@@ -14,6 +14,7 @@ import java.util.*
  * @param map The map of vectors to materials.
  */
 class AsyncBuilder(
+    private val blocksPerTick: Int,
     map: () -> Map<Block, Material>
 ) {
 
@@ -41,7 +42,7 @@ class AsyncBuilder(
             .execute(
                 object : BukkitRunnable() {
                     override fun run() {
-                        repeat(BLOCKS_PER_TICK) {
+                        repeat(blocksPerTick) {
                             if (cancelled || queue.isEmpty()) {
                                 cancel()
 
@@ -61,9 +62,5 @@ class AsyncBuilder(
 
     fun cancel() {
         cancelled = true
-    }
-
-    companion object {
-        private const val BLOCKS_PER_TICK = 50
     }
 }

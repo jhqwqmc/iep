@@ -97,7 +97,13 @@ open class Generator {
             .run()
     }
 
-    open fun getScore() = max(0.0, (players[0].position.x - island.blockSpawn.x))
+    fun shouldScore(): Boolean {
+        val player = players[0]
+
+        return player.player.isGliding && player.position.x - island.blockSpawn.x > 0
+    }
+
+    open fun getScore() = max(0.0, score)
 
     fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
@@ -111,9 +117,10 @@ open class Generator {
 
         val player = players[0]
         val pos = player.position
+        val score = getScore()
 
-        if (player.player.isGliding) {
-            score += player.player.velocity.x
+        if (shouldScore()) {
+            this.score += player.player.velocity.x
         }
 
         updateBoard(score, getTime())
@@ -142,7 +149,7 @@ open class Generator {
 
             IEP.log("Generating cloned section for low y at ${idx + 1}")
 
-            cloned.generate(settings, pointType)
+            cloned.generate(settings, pointType, 100)
 
             resetTo = toStart
 
