@@ -1,10 +1,16 @@
 package dev.efnilite.iep.generator.util
 
+import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.util.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
+import dev.efnilite.vilib.util.Task
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
+import org.bukkit.Chunk
 import org.bukkit.Material
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
+import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.random.Random
 
 /**
@@ -73,10 +79,10 @@ class Section {
     /**
      * Generates the section's points.
      */
-    fun generate(settings: Settings, pointType: PointType) {
+    fun generate(settings: Settings, pointType: PointType, blocksPerTick: Int = BLOCKS_PER_TICK) {
         val world = World.world
 
-        builder = AsyncBuilder {
+        builder = AsyncBuilder(blocksPerTick) {
             points.flatMap { pointType.getPoints(it, settings.radius) }
                 .map { it.toLocation(world).block }
                 .associateWith { settings.style.next() }
@@ -86,7 +92,7 @@ class Section {
     fun clear() {
         builder.cancel()
 
-        AsyncBuilder { builder.blocks.associateWith { Material.AIR } }
+        AsyncBuilder(BLOCKS_PER_TICK) { builder.blocks.associateWith { Material.AIR } }
     }
 
     private fun generatePoints(): List<Vector> {
@@ -126,8 +132,44 @@ class Section {
         return knots
     }
 
+    fun awaitChunks(): CompletableFuture<HashMap<String, Chunk>> {
+        val queue = LinkedList(points)
+        val future = CompletableFuture<HashMap<String, Chunk>>()
+        val chunks = HashMap<String, Chunk>()
+
+        Task.create(IEP.instance)
+            .repeat(1)
+            .execute(
+                object : BukkitRunnable() {
+                    override fun run() {
+                        repeat(POSSIBLE_CHUNKS_PER_TICK) {
+                            if (queue.isEmpty()) {
+                                cancel()
+
+                                future.complete(chunks)
+                                return@run
+                            }
+
+                            val next = queue.poll()
+                            val chunk = next.toLocation(World.world).chunk
+
+                            chunks[chunk.getId()] = chunk
+
+                            chunk.addPluginChunkTicket(IEP.instance)
+                        }
+                    }
+                })
+            .run()
+
+        return future
+    }
+
     companion object {
         private const val KNOTS = 5
         private const val EXTRA_POINTS_OFFSET = 1
+        private const val BLOCKS_PER_TICK = 70
+        private const val POSSIBLE_CHUNKS_PER_TICK = 3
+
+        fun Chunk.getId() = "$x,$z"
     }
 }

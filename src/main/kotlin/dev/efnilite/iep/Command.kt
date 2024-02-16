@@ -66,7 +66,7 @@ class Command : ViCommand() {
         if (args.size > 1) {
             when (args[0]) {
                 "seed" -> {
-                    if (!Cooldowns.canPerform(player, "ep set seed", 2500)) {
+                    if (!Cooldowns.canPerform(player, "ep set seed", 1000)) {
                         return true
                     }
 

@@ -1,6 +1,7 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.config.Config
+import org.bukkit.util.Vector
 import kotlin.math.max
 
 class MinSpeedGenerator : Generator() {
@@ -46,8 +47,8 @@ class MinSpeedGenerator : Generator() {
         startX = 0
     }
 
-    override fun resetPlayerHeight() {
-        super.resetPlayerHeight()
+    override fun resetPlayerHeight(toStart: Vector) {
+        super.resetPlayerHeight(toStart)
 
         ticksTooSlow = 0
     }

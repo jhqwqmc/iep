@@ -23,7 +23,7 @@ object PlayMenu {
                     if (ep == null) {
                         ElytraPlayer(player).join(mode)
                     } else {
-                        if (!Cooldowns.canPerform(player, "ep join", 2500)) {
+                        if (!Cooldowns.canPerform(player, "ep join", 1000)) {
                             return@click
                         }
 

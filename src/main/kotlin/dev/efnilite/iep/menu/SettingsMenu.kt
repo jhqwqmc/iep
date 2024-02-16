@@ -75,7 +75,7 @@ object SettingsMenu {
         }
 
         if (player.hasPermission("iep.setting.locale")) {
-            val locales = Locales.getLocales()
+            val locales = Locales.getLocales().toList()
             val item = SliderItem()
                 .initial(locales.indexOf(settings.locale))
 
