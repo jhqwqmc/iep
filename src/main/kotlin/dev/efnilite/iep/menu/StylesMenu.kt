@@ -28,6 +28,12 @@ object StylesMenu {
             menu.item(idx, item
                     .click({
                         generator.set { settings -> Settings(settings, style = style) }
+
+                        // todo for speed demon
+                        if (generator.getScore() == 0.0) {
+                            generator.reset()
+                        }
+
                         player.player.inventory.close()
                     }))
         }

@@ -85,7 +85,7 @@ settings:
   seed:
     material: "wheat_seeds"
     name: "<#00ff00><bold>Seed"
-    lore: "<gray>Currently <white>%a||<gray>To change this,||<gray>use <white>/iep seed <seed><gray>."
+    lore: "<gray>Currently <white>%a||<gray>To set a seed, use <white>/iep seed <seed><gray>.||<gray>To return to random seeds, click this item."
 
     set: "<gray>Seed set to <white>%a"
     invalid: "<white>%a <gray>is not a number."

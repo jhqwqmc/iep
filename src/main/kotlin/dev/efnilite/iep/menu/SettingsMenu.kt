@@ -56,7 +56,12 @@ object SettingsMenu {
         }
 
         if (player.hasPermission("iep.setting.seed")) {
-            menu.item(11, Locales.getItem(player, "settings.seed", settings.seed.toString()))
+            menu.item(11, Locales.getItem(player, "settings.seed", settings.seed.toString())
+                .click({
+                    generator.set { settings -> Settings(settings, seed = -1) }
+                    generator.reset()
+                    open(player)
+                }))
         }
 
         if (player.hasPermission("iep.setting.info")) {
