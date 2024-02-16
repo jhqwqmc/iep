@@ -33,7 +33,7 @@ object Locales {
      */
     private val locales: LinkedHashMap<String, FileConfiguration> = LinkedHashMap()
 
-    fun getLocales() = locales.keys.toList()
+    fun getLocales() = locales.keys
 
     /**
      * Initializes this Locale handler.

@@ -64,6 +64,6 @@ class AsyncBuilder(
     }
 
     companion object {
-        private const val BLOCKS_PER_TICK = 100
+        private const val BLOCKS_PER_TICK = 50
     }
 }
