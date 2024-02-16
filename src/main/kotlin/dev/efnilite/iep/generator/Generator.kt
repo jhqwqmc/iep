@@ -39,7 +39,7 @@ open class Generator {
     private var start: Instant? = null
     private var pointType: PointType = PointType.CIRCLE
     private var random = Random(0)
-    private var score = 0.0
+    private var movementScore = 0.0
     private var resetTo: Vector? = null
 
     /**
@@ -103,7 +103,7 @@ open class Generator {
         return player.player.isGliding && player.position.x - island.blockSpawn.x > 0
     }
 
-    open fun getScore() = max(0.0, score)
+    open fun getScore() = max(0.0, movementScore)
 
     fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
@@ -120,7 +120,7 @@ open class Generator {
         val score = getScore()
 
         if (shouldScore()) {
-            this.score += player.player.velocity.x
+            this.movementScore += player.player.velocity.x
         }
 
         updateBoard(score, getTime())
@@ -313,7 +313,7 @@ open class Generator {
             it.send("<dark_gray>===============")
         }
 
-        score = 0.0
+        movementScore = 0.0
         start = null
         resetTo = null
         if (settings.seed == -1) {
