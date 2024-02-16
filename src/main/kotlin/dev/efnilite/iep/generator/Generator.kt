@@ -31,7 +31,8 @@ open class Generator {
 
     private val chunks = mutableMapOf<String, Chunk>()
     protected val sections = mutableMapOf<Int, Section>()
-    protected var seed = 0
+    var seed = 0
+        protected set
 
     private lateinit var island: Island
     private lateinit var task: BukkitTask
@@ -188,7 +189,7 @@ open class Generator {
     private fun updateInfo() {
         if (!settings.info) return
 
-        players.forEach { it.sendActionBar(getFormattedSpeed(it)) }
+        players.forEach { it.sendActionBar("${getFormattedSpeed(it, true)} <dark_gray>| ${getFormattedSpeed(it, false)}") }
     }
 
     private fun shouldReset(player: ElytraPlayer, pos: Vector): Boolean {
@@ -288,7 +289,7 @@ open class Generator {
     /**
      * Resets the players and knots.
      */
-    open fun reset(regenerate: Boolean = true, s: Int = 0) {
+    open fun reset(regenerate: Boolean = true, s: Int = 0, overrideSeedSettings: Boolean = false) {
         IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
 
         players.forEach {
@@ -316,7 +317,7 @@ open class Generator {
         movementScore = 0.0
         start = null
         resetTo = null
-        if (settings.seed == -1) {
+        if (settings.seed == -1 && !overrideSeedSettings) {
             seed = ThreadLocalRandom.current().nextInt(SEED_BOUND)
             random = Random(seed)
         } else {
@@ -359,7 +360,7 @@ open class Generator {
      * @param metric Whether to use metric (km/h) or imperial (mph).
      * @return The current formatted speed.
      */
-    fun getFormattedSpeed(player: ElytraPlayer, metric: Boolean = true): String {
+    fun getFormattedSpeed(player: ElytraPlayer, metric: Boolean): String {
         val speedMeters = getSpeed(player)
 
         return if (metric) {
@@ -397,6 +398,8 @@ open class Generator {
         IEP.log("Updating settings from $settings to ${mapper.invoke(settings)}")
 
         settings = mapper.invoke(settings)
+
+        players.forEach { it.save(settings) }
     }
 
     companion object {

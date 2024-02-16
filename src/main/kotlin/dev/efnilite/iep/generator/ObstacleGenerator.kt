@@ -32,7 +32,7 @@ private enum class Obstacle {
             val points = mutableListOf<Vector>()
             val range = -radius..radius
 
-            for (dy in range.filter { it % 2 == 0 }) {
+            for (dy in range.filter { it % 3 == 0 }) {
                 for (dz in range) {
                     val new = center.clone().add(Vector(0, dy, dz))
 
@@ -48,12 +48,12 @@ private enum class Obstacle {
     HOLE_IN_WALL {
         override fun getPoints(center: Vector, radius: Int): List<Vector> {
             val random = { (-2..2).random() }
-            val offset = center.clone().add(Vector(random(), random(), random()))
+            val offset = center.clone().add(Vector(0, random(), random()))
 
             val radius2 = radius * radius
             val points = mutableListOf<Vector>()
-            for (dy in radius + 1..radius) {
-                for (dz in radius + 1..radius) {
+            for (dy in -radius + 1..radius) {
+                for (dz in -radius + 1..radius) {
                     val point = center.clone().add(Vector(0, dy, dz))
 
                     if (point.distanceSquared(center) <= radius2 &&

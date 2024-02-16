@@ -36,11 +36,12 @@ class MinSpeedGenerator : Generator() {
             reset()
         }
 
-        player.sendActionBar("${getProgressBar(speed, MIN_SPEED, ACTIONBAR_LENGTH)} <reset><dark_gray>| <gray>${getFormattedSpeed(player)}")
+        player.sendActionBar("${getProgressBar(speed, MIN_SPEED, ACTIONBAR_LENGTH)} <reset><dark_gray>| " +
+                "${getFormattedSpeed(player, true)} <dark_gray>| ${getFormattedSpeed(player, false)}")
     }
 
-    override fun reset(regenerate: Boolean, s: Int) {
-        super.reset(regenerate, s)
+    override fun reset(regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
+        super.reset(regenerate, s, overrideSeedSettings)
 
         maxSpeed = 0.0
         ticksTooSlow = 0

@@ -22,8 +22,8 @@ class TimeTrialGenerator : Generator() {
                 "<gray>${"%.1f".format(score)}/$SCORE")
     }
 
-    override fun reset(regenerate: Boolean, s: Int) {
-        super.reset(regenerate, SEED)
+    override fun reset(regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
+        super.reset(regenerate, SEED, true)
     }
 
     companion object {

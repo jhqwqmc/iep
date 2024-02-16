@@ -1,6 +1,6 @@
 package dev.efnilite.iep.mode
 
-import dev.efnilite.iep.generator.CloseGenerator
+import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.util.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
 
@@ -12,6 +12,6 @@ object CloseMode : Mode {
 
     override val pointType = PointType.FLAT
 
-    override fun getGenerator() = CloseGenerator()
+    override fun getGenerator() = Generator()
 
 }

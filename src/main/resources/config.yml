@@ -15,11 +15,6 @@ time-format: "mm:ss:SSS"
 
 # -= Mode settings =-
 mode-settings:
-  close:
-    # -= Radius =-
-    # The radius of the allowed area around the center
-    radius: 4.0
-
   min-speed:
     # -= The min speed =-
     # The min speed in m/s
