@@ -78,17 +78,17 @@ settings:
   styles:
     material: ""
     name: "<#8c0000><bold>Style"
-    lore: "<gray>Currently <white>%a"
+    lore: "<gray>Currently <white>%a||<gray>Click to change the style."
 
   radius:
     material: "blaze_powder"
     name: "<#ff9900><bold>Radius"
-    lore: "<gray>Currently <white>%a"
+    lore: "<gray>Currently <white>%a||<gray>Click to change the (circle) radius."
 
   time:
     material: "clock"
     name: "<#ffff00><bold>Time"
-    lore: "<gray>Currently <white>%a"
+    lore: "<gray>Currently <white>%a||<gray>Click to change the time."
 
   seed:
     material: "wheat_seeds"
@@ -102,20 +102,20 @@ settings:
   info:
     material: "feather"
     name: "<white><bold>Info"
-    lore: "<gray>Currently <white>%a||<gray>View extra info."
+    lore: "<gray>Currently <white>%a||<gray>Click to view extra info."
+
+  measurement:
+    material: "iron_ingot"
+    name: "<#cccccc><bold>Measurement System"
+    lore: "<gray>Currently <white>%a||<gray>Click to change the extra info measurement system."
+
+    metric: "metric"
+    imperial: "imperial"
 
   locale:
     material: "paper"
     name: "<white><bold>Locale"
     lore: "<gray>Currently <white>%a||<gray>Click to change the language."
-
-  measurement:
-    material: "iron_ingot"
-    name: "<#cccccc><bold>Measurement System"
-    lore: "<gray>Currently <white>%a"
-
-    metric: "metric"
-    imperial: "imperial"
 
 reset:
   reasons:
@@ -125,7 +125,7 @@ reset:
 
   lines:
     - ""
-    - "<gray>Score <white>%score"
+    - "<gray>Score <white>%score%"
     - "<gray>High-score <white>%high-score%"
     - "<gray>Time <white>%time%"
     - "<gray>Seed <white>%seed%"

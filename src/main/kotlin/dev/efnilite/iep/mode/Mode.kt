@@ -2,7 +2,7 @@ package dev.efnilite.iep.mode
 
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.Generator
-import dev.efnilite.iep.generator.PointType
+import dev.efnilite.iep.generator.section.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.Contract

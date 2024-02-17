@@ -1,4 +1,4 @@
-package dev.efnilite.iep.generator
+package dev.efnilite.iep.generator.section
 
 import org.bukkit.util.Vector
 import org.jetbrains.annotations.Contract

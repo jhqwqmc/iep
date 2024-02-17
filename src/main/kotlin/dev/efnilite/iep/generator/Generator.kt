@@ -3,6 +3,8 @@ package dev.efnilite.iep.generator
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
+import dev.efnilite.iep.generator.section.PointType
+import dev.efnilite.iep.generator.section.Section
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.player.ElytraPlayer
@@ -319,6 +321,7 @@ open class Generator {
             leaderboard.update(it.uuid, score)
 
             Locales.getStringList(it, "reset.lines").map { line -> updateLine(line, score, resetReason) }
+                .forEach { line -> it.send(line) }
         }
 
         movementScore = 0.0

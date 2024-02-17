@@ -29,7 +29,9 @@ data class PreviousData(private val player: Player) {
 
         with(player) {
             teleportAsync(vector.toLocation(World.world)).thenRun {
+                resetPlayerTime()
                 clearActivePotionEffects()
+
                 gameMode = GameMode.ADVENTURE
                 isInvulnerable = true
 
@@ -67,6 +69,8 @@ data class PreviousData(private val player: Player) {
 
             clearActivePotionEffects()
             addPotionEffects(effects)
+
+            resetPlayerTime()
         }
     }
 }

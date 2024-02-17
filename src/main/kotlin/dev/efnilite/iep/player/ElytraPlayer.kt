@@ -9,28 +9,38 @@ import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.fastboard.FastBoard
+import dev.efnilite.vilib.util.Strings
 import dev.efnilite.vilib.util.Task
-import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import java.io.File
 import java.util.concurrent.ThreadLocalRandom
 
-private data class SerializedSettings(val locale: String, val metric: Boolean,
-                                      val style: String, val radius: Int,
+private data class SerializedSettings(val locale: String,
+                                      val metric: Boolean,
+                                      val style: String,
+                                      val radius: Int,
                                       val time: Int,
-                                      val seed: Int, val info: Boolean) {
+                                      val seed: Int,
+                                      val info: Boolean) {
 
-    constructor(settings: Settings) : this(settings.locale, settings.metric,
-        settings.style.name(), settings.radius,
-        settings.time,
-        settings.seed, settings.info)
+    constructor(settings: Settings) : this(
+        locale = settings.locale,
+        metric = settings.metric,
+        style = settings.style.name(),
+        radius = settings.radius,
+        time = settings.time,
+        seed = settings.seed,
+        info = settings.info)
 
-    fun convert() = Settings(locale, metric,
-        IEP.getStyles().first { it.name() == style }, radius,
-        time,
-        seed, info)
+    fun convert() = Settings(locale = locale,
+        metric = metric,
+        style = IEP.getStyles().first { it.name() == style },
+        radius = radius,
+        time = time,
+        seed = seed,
+        info = info)
 
 }
 
@@ -105,7 +115,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * @param message The message to send.
      */
     fun send(message: String) {
-        player.sendMessage(deserialize(message))
+        player.sendMessage(message)
     }
 
     /**
@@ -113,7 +123,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * @param message The message to send.
      */
     fun sendActionBar(message: String) {
-        player.sendActionBar(deserialize(message))
+        player.sendActionBar(Strings.colour(message))
     }
 
     /**
@@ -186,8 +196,6 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * Returns the generator the player is in.
      */
     fun getGenerator() = Divider.generators.first { it.players.contains(this) }
-
-    private fun deserialize(string: String) = MiniMessage.miniMessage().deserialize(string)
 
     companion object {
 

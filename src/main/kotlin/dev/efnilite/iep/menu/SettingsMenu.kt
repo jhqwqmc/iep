@@ -64,22 +64,22 @@ object SettingsMenu {
                     .initial(settings.time / 6000)
                     .add(0, item) {
                         generator.set { settings -> Settings(settings, time = 0) }
-                        open(player)
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(1, item) {
                         generator.set { settings -> Settings(settings, time = 6000) }
-                        open(player)
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(2, item) {
                         generator.set { settings -> Settings(settings, time = 12000) }
-                        open(player)
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(3, item) {
                         generator.set { settings -> Settings(settings, time = 18000) }
-                        open(player)
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
             )
@@ -106,6 +106,20 @@ object SettingsMenu {
                     }))
         }
 
+
+        if (player.hasPermission("iep.setting.measurement")) {
+            val measurement = if (settings.metric) Locales.getString(player, "settings.measurement.metric")
+            else Locales.getString(player, "settings.measurement.imperial")
+
+            menu.item(
+                14,
+                Locales.getItem(player, "settings.measurement", measurement)
+                    .click({
+                        generator.set { settings -> Settings(settings, metric = !settings.metric) }
+                        open(player)
+                    }))
+        }
+
         if (player.hasPermission("iep.setting.locale")) {
             val locales = Locales.getLocales().toList()
             val item = SliderItem()
@@ -127,20 +141,7 @@ object SettingsMenu {
                 }
             }
 
-            menu.item(14, item)
-        }
-
-        if (player.hasPermission("iep.setting.measurement")) {
-            val measurement = if (settings.metric) Locales.getString(player, "settings.measurement.metric")
-                else Locales.getString(player, "settings.measurement.imperial")
-
-            menu.item(
-                15,
-                Locales.getItem(player, "settings.measurement", measurement)
-                    .click({
-                        generator.set { settings -> Settings(settings, metric = !settings.metric) }
-                        open(player)
-                    }))
+            menu.item(15, item)
         }
 
         menu.item(23, Locales.getItem(player, "go back").click({ player.player.inventory.close() }))

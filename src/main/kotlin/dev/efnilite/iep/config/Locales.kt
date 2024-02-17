@@ -148,13 +148,11 @@ object Locales {
     }
 
     private fun <T> getValue(locale: String, f: Function<FileConfiguration, T>, def: T): T {
-        if (locales.isEmpty()) {
-            return def
-        }
+        if (locales.isEmpty()) return def
 
-        val config: FileConfiguration? = locales[locale]
+        val config: FileConfiguration = locales[locale] ?: return def
 
-        return if (config != null) f.apply(config) else def
+        return f.apply(config) ?: def
     }
 
     fun getItem(player: ElytraPlayer, path: String, vararg replace: String): Item {
