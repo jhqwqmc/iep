@@ -14,7 +14,7 @@ private enum class Obstacle {
             val points = mutableListOf<Vector>()
             val range = -radius..radius
 
-            for (dz in range.filter { it % 2 == 0 }) {
+            for (dz in range.filter { it % 3 == 0 }) {
                 for (dy in range) {
                     val new = center.clone().add(Vector(0, dy, dz))
 

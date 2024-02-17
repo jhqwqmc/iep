@@ -189,7 +189,11 @@ open class Generator {
     private fun updateInfo() {
         if (!settings.info) return
 
-        players.forEach { it.sendActionBar("${getFormattedSpeed(it, true)} <dark_gray>| ${getFormattedSpeed(it, false)}") }
+        players.forEach {
+            val speed = getSpeed(it)
+
+            it.sendActionBar("<gray>${convertSpeed(speed, true)} km/h <dark_gray>| " +
+                "<gray>${convertSpeed(speed, false)} mph") }
     }
 
     private fun shouldReset(player: ElytraPlayer, pos: Vector): Boolean {
@@ -354,41 +358,8 @@ open class Generator {
      */
     fun getSpeed(player: ElytraPlayer) = player.player.velocity.clone().setY(0).length() * 20
 
-    /**
-     * Returns the current formatted speed to one decimal.
-     * @param player The player to get the speed for.
-     * @param metric Whether to use metric (km/h) or imperial (mph).
-     * @return The current formatted speed.
-     */
-    fun getFormattedSpeed(player: ElytraPlayer, metric: Boolean): String {
-        val speedMeters = getSpeed(player)
-
-        return if (metric) {
-            "<gray>%.1f km/h".format(speedMeters * 3.6)
-        } else {
-            "<gray>%.1f mph".format(speedMeters * 2.236936)
-        }
-    }
-
-    /**
-     * Returns a formatted progress bar.
-     * @param t The current value.
-     * @param max The maximum value.
-     * @param length The length of the progress bar.
-     * @return The formatted progress bar.
-     */
-    fun getProgressBar(t: Double, max: Double, length: Int = 30): String {
-        val increments = max / length.toDouble()
-
-        return (0 until length)
-            .map {
-                if (it * increments < t) {
-                    return@map "<green><bold>|"
-                } else {
-                    return@map "<reset><dark_gray>|"
-                }
-            }
-            .joinToString("") { it }
+    protected fun convertSpeed(speed: Double, metric: Boolean): String {
+        return "%.1f".format(if (metric) speed * 3.6 else speed * 2.236936)
     }
 
     /**

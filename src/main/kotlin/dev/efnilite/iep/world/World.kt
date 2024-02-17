@@ -77,6 +77,7 @@ object World {
         world.worldBorder.size = 10000000.0
         world.difficulty = Difficulty.PEACEFUL
         world.clearWeatherDuration = 1000000
+        world.time = 10000
         world.isAutoSave = false
     }
 
