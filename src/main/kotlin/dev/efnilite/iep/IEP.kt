@@ -57,6 +57,9 @@ class IEP : ViPlugin() {
             log("Registered Papi Hook")
             PapiHook.register()
         }
+        if (server.pluginManager.isPluginEnabled("Vault")) {
+            log("Registered Vault Hook")
+        }
 
         Task.create(this)
             .async()
@@ -132,7 +135,7 @@ class IEP : ViPlugin() {
             styles.add(style)
         }
 
-        fun getStyle(name: String) = styles.first { it.name() == name }
+        fun getStyle(name: String) = styles.firstOrNull { it.name() == name } ?: styles.first()
 
         fun getStyles() = styles.toList()
     }

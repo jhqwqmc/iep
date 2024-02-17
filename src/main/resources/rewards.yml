@@ -1,0 +1,19 @@
+# -= Rewards enabled? =-
+enabled: false
+
+# -= Score rewards =-
+# Rewards when a player reaches a specific score
+score:
+  10:
+    - "now||all||send||You've reached 10 points!"
+  2500:
+    - "leave||all||player command||give %player% diamond 1"
+    - "now||all||send||Good job for completing your run!"
+
+# -= Interval rewards =-
+# Rewards which will be given at certain intervals.
+# An interval of 10 means a player will get a reward at 10, 20, 30, etc.
+interval:
+  10:
+    - "now||all||player command||/me hello :)"
+    - "leave||time trial||send||<green>Good job!"

@@ -5,6 +5,7 @@ author: Efnilite
 main: dev.efnilite.iep.IEP
 softdepend:
   - PlaceholderAPI
+  - Vault
 commands:
   iep:
     description: IEP main command

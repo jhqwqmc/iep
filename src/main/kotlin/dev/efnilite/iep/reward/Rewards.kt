@@ -1,0 +1,40 @@
+package dev.efnilite.iep.reward
+
+import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Config
+
+object Rewards {
+
+    private val enabled = Config.REWARDS.getBoolean("enabled")
+    val scoreRewards = getRewards("score")
+    val intervalRewards = getRewards("interval")
+
+    private fun getRewards(path: String): Map<Int, Set<Reward>> {
+        if (!enabled) {
+            return emptyMap()
+        }
+
+        val rewards = mutableMapOf<Int, Set<Reward>>()
+        for (score in Config.REWARDS.getPaths(path)) {
+            val fullPath = "$path.$score"
+
+            try {
+                val parsedScore = score.toInt()
+
+                if (parsedScore < 1) {
+                    IEP.instance.logging.error("Invalid score $score in rewards")
+                    continue
+                }
+
+                rewards[parsedScore] = Config.REWARDS.getStringList(fullPath)
+                    .map { Reward(it) }
+                    .toSet()
+            } catch (ex: NumberFormatException) {
+                IEP.instance.logging.error("Invalid score $score in rewards")
+            }
+        }
+
+        return rewards
+    }
+
+}
