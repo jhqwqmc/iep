@@ -1,4 +1,4 @@
-package dev.efnilite.iep.generator.util
+package dev.efnilite.iep.generator
 
 import dev.efnilite.vilib.util.Probs
 import org.bukkit.util.Vector

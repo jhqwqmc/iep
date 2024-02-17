@@ -127,7 +127,7 @@ object Locales {
         return getString(player.getGenerator().settings.locale, path)
     }
 
-    private fun getString(locale: String, path: String): String {
+    fun getString(locale: String, path: String): String {
         return Strings.colour(getValue(
             locale,
             Function<FileConfiguration, String> { config: FileConfiguration -> config.getString(path) },

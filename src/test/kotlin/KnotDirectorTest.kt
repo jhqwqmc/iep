@@ -1,4 +1,4 @@
-import dev.efnilite.iep.generator.util.KnotDirector
+import dev.efnilite.iep.generator.KnotDirector
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 

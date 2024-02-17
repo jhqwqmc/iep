@@ -4,7 +4,7 @@ import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.Generator
-import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
@@ -15,14 +15,22 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import java.io.File
-import java.time.Instant
 import java.util.concurrent.ThreadLocalRandom
 
-private data class SerializedSettings(val locale: String, val style: String, val radius: Int, val seed: Int, val info: Boolean) {
+private data class SerializedSettings(val locale: String, val metric: Boolean,
+                                      val style: String, val radius: Int,
+                                      val time: Int,
+                                      val seed: Int, val info: Boolean) {
 
-    constructor(settings: Settings) : this(settings.locale, settings.style.name(), settings.radius, settings.seed, settings.info)
+    constructor(settings: Settings) : this(settings.locale, settings.metric,
+        settings.style.name(), settings.radius,
+        settings.time,
+        settings.seed, settings.info)
 
-    fun convert() = Settings(locale, IEP.getStyles().first { it.name() == style }, radius, seed, info)
+    fun convert() = Settings(locale, metric,
+        IEP.getStyles().first { it.name() == style }, radius,
+        time,
+        seed, info)
 
 }
 
@@ -122,10 +130,10 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     }
 
     private fun updateLine(line: String, score: Double, time: String, seed: Int): String {
-        return line.replace("%a", "%.1f".format(score))
-            .replace("%b", "%.1f".format(getGenerator().getHighScore().score))
-            .replace("%c", time)
-            .replace("%d", seed.toString())
+        return line.replace("%score%", "%.1f".format(score))
+            .replace("%high-score%", "%.1f".format(getGenerator().getHighScore().score))
+            .replace("%time%", time)
+            .replace("%seed%", seed.toString())
     }
 
     /**
@@ -185,8 +193,10 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
         val DEFAULT_SETTINGS
             get() = Settings(locale = Locales.getLocales().first(),
+                metric = true,
                 style = IEP.getStyles()[0],
                 radius = 5,
+                time = 0,
                 seed = ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND),
                 info = false)
 

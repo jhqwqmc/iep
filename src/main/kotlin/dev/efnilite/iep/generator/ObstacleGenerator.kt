@@ -1,7 +1,5 @@
 package dev.efnilite.iep.generator
 
-import dev.efnilite.iep.generator.util.PointType
-import dev.efnilite.iep.generator.util.Section
 import dev.efnilite.iep.world.World
 import org.bukkit.Material
 import org.bukkit.block.Block

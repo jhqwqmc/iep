@@ -2,7 +2,8 @@ package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Locales
-import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.generator.ResetReason
+import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.style.RandomStyle
 import dev.efnilite.vilib.inventory.Menu
@@ -31,7 +32,7 @@ object StylesMenu {
 
                         // todo for speed demon
                         if (generator.getScore() == 0.0) {
-                            generator.reset()
+                            generator.reset(ResetReason.RESET)
                         }
 
                         player.player.inventory.close()

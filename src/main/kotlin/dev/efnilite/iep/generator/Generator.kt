@@ -2,10 +2,7 @@ package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Config
-import dev.efnilite.iep.generator.util.Island
-import dev.efnilite.iep.generator.util.PointType
-import dev.efnilite.iep.generator.util.Section
-import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.iep.leaderboard.Score
 import dev.efnilite.iep.player.ElytraPlayer
@@ -71,7 +68,7 @@ open class Generator {
 
             task.cancel()
 
-            reset(false)
+            reset(ResetReason.RESET, false)
 
             island.clear()
 
@@ -90,7 +87,7 @@ open class Generator {
         island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
         pointType = point
 
-        reset()
+        reset(ResetReason.RESET)
 
         task = Task.create(IEP.instance)
             .repeat(1)
@@ -124,6 +121,7 @@ open class Generator {
             this.movementScore += player.player.velocity.x
         }
 
+        player.player.setPlayerTime(settings.time.toLong(), false)
         updateBoard(score, getTime())
         updateInfo()
 
@@ -137,8 +135,9 @@ open class Generator {
             clear(minIdx, minSection)
         }
 
-        if (shouldReset(player, pos)) {
-            reset()
+        val resetReason = shouldReset(player, pos)
+        if (resetReason != null) {
+            reset(resetReason)
             return
         }
 
@@ -192,11 +191,18 @@ open class Generator {
         players.forEach {
             val speed = getSpeed(it)
 
-            it.sendActionBar("<gray>${convertSpeed(speed, true)} km/h <dark_gray>| " +
-                "<gray>${convertSpeed(speed, false)} mph") }
+            it.sendActionBar("<gray>${convertSpeed(speed)}") }
     }
 
-    private fun shouldReset(player: ElytraPlayer, pos: Vector): Boolean {
+    private fun convertSpeed(speed: Double): String {
+        return if (settings.metric) {
+            "%.1f km/h".format(speed * 3.6)
+        } else {
+            "%.1f mph".format(speed * 2.236936)
+        }
+    }
+
+    private fun shouldReset(player: ElytraPlayer, pos: Vector): ResetReason? {
         val (idx, section) = sections
             .filter { pos.x < it.value.end.x }
             .minBy { it.key }
@@ -207,10 +213,10 @@ open class Generator {
             if (idx == 0 && pos.y < island.blockSpawn.y - settings.radius) {
                 IEP.log("Player ${player.name} is below spawn")
 
-                return true
+                return ResetReason.BOUNDS
             }
 
-            return false
+            return null
         }
 
         val isPastSpawn = progress > 0
@@ -219,11 +225,13 @@ open class Generator {
 
         if (isNotGliding) {
             IEP.log("Player ${player.name} is not gliding")
+            return ResetReason.FLYING
         } else if (isOutOfBounds) {
             IEP.log("Player ${player.name} is out of bounds")
+            return ResetReason.BOUNDS
         }
 
-        return isNotGliding || isOutOfBounds
+        return null
     }
 
     /**
@@ -275,7 +283,7 @@ open class Generator {
         player.player.teleportAsync(to)
 
         Task.create(IEP.instance)
-            .delay(2)
+            .delay(5)
             .execute {
                 IEP.log("Restoring pre-teleport velocity, velocity = $velocity")
                 player.player.velocity = velocity }
@@ -293,7 +301,7 @@ open class Generator {
     /**
      * Resets the players and knots.
      */
-    open fun reset(regenerate: Boolean = true, s: Int = 0, overrideSeedSettings: Boolean = false) {
+    open fun reset(resetReason: ResetReason, regenerate: Boolean = true, s: Int = 0, overrideSeedSettings: Boolean = false) {
         IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
 
         players.forEach {
@@ -310,12 +318,7 @@ open class Generator {
 
             leaderboard.update(it.uuid, score)
 
-            it.send("<dark_gray>===============")
-            it.send("<gray>Score <white>${"%.1f".format(score.score)}")
-            it.send("<gray>High-score <white>${"%.1f".format(getHighScore().score)}")
-            it.send("<gray>Time <white>${score.getFormattedTime()}")
-            it.send("<gray>Seed <white>${score.seed}")
-            it.send("<dark_gray>===============")
+            Locales.getStringList(it, "reset.lines").map { line -> updateLine(line, score, resetReason) }
         }
 
         movementScore = 0.0
@@ -351,16 +354,21 @@ open class Generator {
         chunks.clear()
     }
 
+    private fun updateLine(line: String, score: Score, resetReason: ResetReason): String {
+        return line.replace("%score%", "%.1f".format(score.score))
+            .replace("%high-score%", "%.1f".format(getHighScore().score))
+            .replace("%time%", score.getFormattedTime())
+            .replace("%seed%", score.seed.toString())
+            .replace("%reason%", Locales.getString(settings.locale, "reset.reasons.${resetReason.name.lowercase()}"))
+
+    }
+
     /**
      * Returns the current speed of the player in m/s.
      * @param player The player to get the speed for.
      * @return The current speed.
      */
     fun getSpeed(player: ElytraPlayer) = player.player.velocity.clone().setY(0).length() * 20
-
-    protected fun convertSpeed(speed: Double, metric: Boolean): String {
-        return "%.1f".format(if (metric) speed * 3.6 else speed * 2.236936)
-    }
 
     /**
      * Allows for easy setting of the current [Settings] instance.

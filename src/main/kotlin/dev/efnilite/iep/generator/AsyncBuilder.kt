@@ -1,4 +1,4 @@
-package dev.efnilite.iep.generator.util
+package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.IEP
 import dev.efnilite.vilib.util.Task

@@ -1,7 +1,7 @@
 package dev.efnilite.iep.mode
 
 import dev.efnilite.iep.generator.Generator
-import dev.efnilite.iep.generator.util.PointType
+import dev.efnilite.iep.generator.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
 
 object CloseMode : Mode {

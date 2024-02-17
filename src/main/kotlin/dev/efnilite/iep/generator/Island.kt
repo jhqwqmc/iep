@@ -1,4 +1,4 @@
-package dev.efnilite.iep.generator.util
+package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic

@@ -2,7 +2,8 @@ package dev.efnilite.iep
 
 import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
-import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.generator.ResetReason
+import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.menu.LeaderboardMenu
 import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
@@ -78,7 +79,7 @@ class Command : ViCommand() {
                         if (seed < 0) throw NumberFormatException()
 
                         iep.getGenerator().set { settings -> Settings(settings, seed = seed) }
-                        iep.getGenerator().reset(s = seed)
+                        iep.getGenerator().reset(ResetReason.RESET, s = seed)
 
                         iep.send(Locales.getString(player, "settings.seed.set").replace("%a", args[1]))
                     } catch (ex: NumberFormatException) {

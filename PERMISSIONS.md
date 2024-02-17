@@ -7,5 +7,7 @@
 - iep.setting.seed
 - iep.setting.info
 - iep.setting.locale
+- iep.setting.time
+- iep.setting.measurement
 - iep.leaderboard: Leaderboards menu
 - iep.leaderboard.%mode%: Specific mode leaderboard

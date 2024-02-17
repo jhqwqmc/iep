@@ -2,6 +2,7 @@ package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.config.Config
 import org.bukkit.util.Vector
+import kotlin.math.ceil
 import kotlin.math.max
 
 class MinSpeedGenerator : Generator() {
@@ -32,30 +33,36 @@ class MinSpeedGenerator : Generator() {
             ticksTooSlow++
         }
 
-        if (ticksTooSlow == 3) {
-            reset()
+        if (ticksTooSlow == 6) {
+            reset(ResetReason.SPEED)
         }
 
         player.sendActionBar("${getProgressBar(speed)}${getAboveBar(speed)} <reset><dark_gray>| " +
-                "<gray>${convertSpeed(speed, true)}/${convertSpeed(MIN_SPEED, true)} km/h <dark_gray>| " +
-                "<gray>${convertSpeed(speed, false)}/${convertSpeed(MIN_SPEED, false)} mph")
+                "<gray>${convertSpeed(speed, MIN_SPEED)}")
+    }
+
+    private fun convertSpeed(a: Double, b: Double): String {
+        return if (settings.metric) {
+            "%.1f/%.1f km/h".format(a * 3.6, b * 3.6)
+        } else {
+            "%.1f/%.1f mph".format(a * 2.236936, b * 2.236936)
+        }
     }
 
     private fun getAboveBar(speed: Double): String {
-        val barAmount = ((MIN_SPEED - speed) / INCREMENTS).toInt()
+        val barAmount = ceil((speed - MIN_SPEED) / INCREMENTS).toInt()
 
-        return (0 until barAmount).joinToString("") { "<red><bold>|" }
+        return (0 until barAmount).joinToString("") { "<green><bold>|" }
     }
 
     private fun getProgressBar(t: Double): String {
         return (0 until ACTIONBAR_LENGTH)
-            .map { if (it * INCREMENTS < t) return@map "<red><bold>|" else return@map "<reset><dark_gray>|" }
+            .map { if (it * INCREMENTS < t) return@map "<red>|" else return@map "<reset><dark_gray>|" }
             .joinToString("") { it }
     }
 
-
-    override fun reset(regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
-        super.reset(regenerate, s, overrideSeedSettings)
+    override fun reset(resetReason: ResetReason, regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
+        super.reset(resetReason, regenerate, s, overrideSeedSettings)
 
         maxSpeed = 0.0
         ticksTooSlow = 0

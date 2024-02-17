@@ -14,7 +14,7 @@ class TimeTrialGenerator : Generator() {
         val player = players[0]
 
         if (score >= SCORE) {
-            reset()
+            reset(ResetReason.RESET)
             return
         }
 
@@ -27,8 +27,8 @@ class TimeTrialGenerator : Generator() {
             .joinToString("") { it }
     }
 
-    override fun reset(regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
-        super.reset(regenerate, SEED, true)
+    override fun reset(resetReason: ResetReason, regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
+        super.reset(resetReason, regenerate, SEED, true)
     }
 
     companion object {

@@ -2,7 +2,8 @@ package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Locales
-import dev.efnilite.iep.generator.util.Settings
+import dev.efnilite.iep.generator.ResetReason
+import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.SliderItem
@@ -55,20 +56,49 @@ object SettingsMenu {
             )
         }
 
+        if (player.hasPermission("iep.setting.time")) {
+            val item = Locales.getItem(player, "settings.time", settings.time.toString())
+
+            menu.item(
+                11, SliderItem()
+                    .initial(settings.time / 6000)
+                    .add(0, item) {
+                        generator.set { settings -> Settings(settings, time = 0) }
+                        open(player)
+                        return@add true
+                    }
+                    .add(1, item) {
+                        generator.set { settings -> Settings(settings, time = 6000) }
+                        open(player)
+                        return@add true
+                    }
+                    .add(2, item) {
+                        generator.set { settings -> Settings(settings, time = 12000) }
+                        open(player)
+                        return@add true
+                    }
+                    .add(3, item) {
+                        generator.set { settings -> Settings(settings, time = 18000) }
+                        open(player)
+                        return@add true
+                    }
+            )
+        }
+
         if (player.hasPermission("iep.setting.seed")) {
             val seed = if (settings.seed == -1) Locales.getString(player, "settings.seed.random") else generator.seed.toString()
 
-            menu.item(11, Locales.getItem(player, "settings.seed", seed)
+            menu.item(12, Locales.getItem(player, "settings.seed", seed)
                 .click({
                     generator.set { settings -> Settings(settings, seed = -1) }
-                    generator.reset()
+                    generator.reset(ResetReason.RESET)
                     open(player)
                 }))
         }
 
         if (player.hasPermission("iep.setting.info")) {
             menu.item(
-                12,
+                13,
                 Locales.getItem(player, "settings.info", settings.info.toString())
                     .click({
                         generator.set { settings -> Settings(settings, info = !settings.info) }
@@ -97,7 +127,20 @@ object SettingsMenu {
                 }
             }
 
-            menu.item(13, item)
+            menu.item(14, item)
+        }
+
+        if (player.hasPermission("iep.setting.measurement")) {
+            val measurement = if (settings.metric) Locales.getString(player, "settings.measurement.metric")
+                else Locales.getString(player, "settings.measurement.imperial")
+
+            menu.item(
+                15,
+                Locales.getItem(player, "settings.measurement", measurement)
+                    .click({
+                        generator.set { settings -> Settings(settings, metric = !settings.metric) }
+                        open(player)
+                    }))
         }
 
         menu.item(23, Locales.getItem(player, "go back").click({ player.player.inventory.close() }))

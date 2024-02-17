@@ -85,6 +85,11 @@ settings:
     name: "<#ff9900><bold>Radius"
     lore: "<gray>Currently <white>%a"
 
+  time:
+    material: "clock"
+    name: "<#ffff00><bold>Time"
+    lore: "<gray>Currently <white>%a"
+
   seed:
     material: "wheat_seeds"
     name: "<#00ff00><bold>Seed"
@@ -104,14 +109,36 @@ settings:
     name: "<white><bold>Locale"
     lore: "<gray>Currently <white>%a||<gray>Click to change the language."
 
+  measurement:
+    material: "iron_ingot"
+    name: "<#cccccc><bold>Measurement System"
+    lore: "<gray>Currently <white>%a"
+
+    metric: "metric"
+    imperial: "imperial"
+
+reset:
+  reasons:
+    flying: "You were reset because you weren't flying."
+    bounds: "You were reset because you went out of bounds."
+    speed: "You were reset for going too slow."
+
+  lines:
+    - ""
+    - "<gray>Score <white>%score"
+    - "<gray>High-score <white>%high-score%"
+    - "<gray>Time <white>%time%"
+    - "<gray>Seed <white>%seed%"
+    - "<gray>%reason%"
+
 scoreboard:
   title: "<gradient:#ff0000:#800000><bold>IEP</gradient>"
 
   lines:
     - ""
-    - "<#b30000><bold>Score</bold> <gray>%a"
-    - "<#b30000><bold>High-score</bold> <gray>%b"
-    - "<#b30000><bold>Time</bold> <gray>%c"
-    - "<#b30000><bold>Seed</bold> <gray>%d"
+    - "<#b30000><bold>Score</bold> <gray>%score%"
+    - "<#b30000><bold>High-score</bold> <gray>%high-score%"
+    - "<#b30000><bold>Time</bold> <gray>%time%"
+    - "<#b30000><bold>Seed</bold> <gray>%seed%"
     - ""
     - "<#505050>server.ip"
