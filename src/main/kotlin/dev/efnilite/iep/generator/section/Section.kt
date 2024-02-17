@@ -2,6 +2,7 @@ package dev.efnilite.iep.generator.section
 
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.Settings
+import dev.efnilite.iep.generator.Settings.Companion.asStyle
 import dev.efnilite.iep.generator.section.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.util.Task
@@ -82,11 +83,12 @@ class Section {
      */
     fun generate(settings: Settings, pointType: PointType, blocksPerTick: Int = BLOCKS_PER_TICK) {
         val world = World.world
+        val style = settings.style.asStyle()
 
         builder = AsyncBuilder(blocksPerTick) {
             points.flatMap { pointType.getPoints(it, settings.radius) }
                 .map { it.toLocation(world).block }
-                .associateWith { settings.style.next() }
+                .associateWith { style.next() }
         }
     }
 

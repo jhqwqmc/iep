@@ -4,6 +4,7 @@ import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.ResetReason
 import dev.efnilite.iep.generator.Settings
+import dev.efnilite.iep.generator.Settings.Companion.asStyle
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.SliderItem
@@ -18,10 +19,12 @@ object SettingsMenu {
         val settings = generator.settings
 
         if (player.hasPermission("iep.setting.style")) {
+            val style = settings.style.asStyle()
+
             menu.item(
                 9,
-                Locales.getItem(player, "settings.styles", settings.style.name())
-                    .material(settings.style.next())
+                Locales.getItem(player, "settings.styles", style.name())
+                    .material(style.next())
                     .click({ StylesMenu.open(player) })
             )
         }

@@ -6,14 +6,15 @@ import org.bukkit.configuration.file.YamlConfiguration
 
 enum class Config(file: String) {
 
-    CONFIG("config.yml");
+    CONFIG("config.yml"),
+    REWARDS("rewards.yml");
 
     private val config: YamlConfiguration
 
     init {
         IEP.instance.saveFile(file)
 
-        ConfigUpdater.update(IEP.instance, file, IEP.instance.dataFolder.resolve(file), /*TODO listOf("styles")*/)
+        ConfigUpdater.update(IEP.instance, file, IEP.instance.dataFolder.resolve(file), listOf("styles"))
 
         config = YamlConfiguration.loadConfiguration(IEP.instance.dataFolder.resolve(file))
     }
@@ -29,8 +30,9 @@ enum class Config(file: String) {
     fun getInt(path: String, bounds: (Int) -> Boolean = { true }): Int {
         val value = config.getInt(path)
 
-        // todo replace require
-        require(bounds.invoke(value))
+        if (!bounds.invoke(value)) {
+            IEP.instance.logging.error("Value $value at path $path is invalid")
+        }
 
         return value
     }
@@ -41,7 +43,9 @@ enum class Config(file: String) {
     fun getString(path: String, bounds: (String) -> Boolean = { true }): String {
         val value = config.getString(path)!!
 
-        require(bounds.invoke(value))
+        if (!bounds.invoke(value)) {
+            IEP.instance.logging.error("Value $value at path $path is invalid")
+        }
 
         return value
     }
@@ -52,7 +56,9 @@ enum class Config(file: String) {
     fun getStringList(path: String, bounds: (List<String>) -> Boolean = { true }): List<String> {
         val value = config.getStringList(path)
 
-        require(bounds.invoke(value))
+        if (!bounds.invoke(value)) {
+            IEP.instance.logging.error("Value $value at path $path is invalid")
+        }
 
         return value
     }
@@ -63,7 +69,9 @@ enum class Config(file: String) {
     fun getDouble(path: String, bounds: (Double) -> Boolean = { true }): Double {
         val value = config.getDouble(path)
 
-        require(bounds.invoke(value))
+        if (!bounds.invoke(value)) {
+            IEP.instance.logging.error("Value $value at path $path is invalid")
+        }
 
         return value
     }

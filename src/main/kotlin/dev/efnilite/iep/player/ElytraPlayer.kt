@@ -6,6 +6,7 @@ import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.mode.Mode
+import dev.efnilite.iep.reward.Reward
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.fastboard.FastBoard
@@ -16,33 +17,6 @@ import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import java.io.File
 import java.util.concurrent.ThreadLocalRandom
-
-private data class SerializedSettings(val locale: String,
-                                      val metric: Boolean,
-                                      val style: String,
-                                      val radius: Int,
-                                      val time: Int,
-                                      val seed: Int,
-                                      val info: Boolean) {
-
-    constructor(settings: Settings) : this(
-        locale = settings.locale,
-        metric = settings.metric,
-        style = settings.style.name(),
-        radius = settings.radius,
-        time = settings.time,
-        seed = settings.seed,
-        info = settings.info)
-
-    fun convert() = Settings(locale = locale,
-        metric = metric,
-        style = IEP.getStyles().first { it.name() == style },
-        radius = radius,
-        time = time,
-        seed = seed,
-        info = info)
-
-}
 
 /**
  * Class for wrapping players.
@@ -159,7 +133,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
                 file.parentFile.mkdirs()
                 file.createNewFile()
 
-                file.writer().use { IEP.GSON.toJson(SerializedSettings(settings), it) }
+                file.writer().use { IEP.GSON.toJson(settings, it) }
             }
             .run()
     }
@@ -175,9 +149,13 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
             return DEFAULT_SETTINGS
         }
 
-        val serialized = file.reader().use { IEP.GSON.fromJson(it, SerializedSettings::class.java) }
+        val serialized = file.reader().use { IEP.GSON.fromJson(it, Settings::class.java) }
 
-        return serialized?.convert() ?: DEFAULT_SETTINGS
+        return serialized ?: DEFAULT_SETTINGS
+    }
+
+    fun addReward(reward: Reward) {
+        data.leaveRewards.add(reward)
     }
 
     /**
@@ -202,7 +180,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
         val DEFAULT_SETTINGS
             get() = Settings(locale = Locales.getLocales().first(),
                 metric = true,
-                style = IEP.getStyles()[0],
+                style = IEP.getStyles().first().name(),
                 radius = 5,
                 time = 0,
                 seed = ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND),

@@ -236,6 +236,10 @@ open class Generator {
         return null
     }
 
+    private fun checkRewards() {
+        // TODO
+    }
+
     /**
      * Generates the next knot.
      */
@@ -363,7 +367,6 @@ open class Generator {
             .replace("%time%", score.getFormattedTime())
             .replace("%seed%", score.seed.toString())
             .replace("%reason%", Locales.getString(settings.locale, "reset.reasons.${resetReason.name.lowercase()}"))
-
     }
 
     /**

@@ -1,5 +1,6 @@
 package dev.efnilite.iep.generator
 
+import dev.efnilite.iep.IEP
 import dev.efnilite.iep.style.Style
 
 /**
@@ -7,7 +8,7 @@ import dev.efnilite.iep.style.Style
  */
 data class Settings(val locale: String,
                     val metric: Boolean,
-                    val style: Style,
+                    val style: String,
                     val radius: Int,
                     val time: Int,
                     val seed: Int,
@@ -16,7 +17,7 @@ data class Settings(val locale: String,
     constructor(settings: Settings,
                 locale: String = settings.locale,
                 metric: Boolean = settings.metric,
-                style: Style = settings.style,
+                style: String = settings.style,
                 radius: Int = settings.radius,
                 time: Int = settings.time,
                 seed: Int = settings.seed,
@@ -29,5 +30,12 @@ data class Settings(val locale: String,
                 time = time,
                 seed = seed,
                 info = info)
+
+    companion object {
+
+        fun String.asStyle(): Style {
+            return IEP.getStyle(this)
+        }
+    }
 
 }

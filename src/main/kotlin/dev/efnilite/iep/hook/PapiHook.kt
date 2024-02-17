@@ -34,7 +34,7 @@ object PapiHook : PlaceholderExpansion() {
     }
 
     private fun request(params: String): String? {
-        val parts = params.split("_")
+        val parts = params.split("_", limit = 4)
         val mode = parts[1].lowercase()
         val type = parts[2].lowercase()
         val rank = parts[3].toInt()

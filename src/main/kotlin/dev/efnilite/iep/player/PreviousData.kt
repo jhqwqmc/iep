@@ -1,6 +1,8 @@
 package dev.efnilite.iep.player
 
 import dev.efnilite.iep.config.Locales
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.reward.Reward
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.inventory.item.Item
 import org.bukkit.GameMode
@@ -15,6 +17,8 @@ import java.util.concurrent.CompletableFuture
  * Class for storing a player's previous data.
  */
 data class PreviousData(private val player: Player) {
+
+    val leaveRewards: MutableList<Reward> = mutableListOf()
 
     private val gamemode = player.gameMode
     private val position = player.location
@@ -72,5 +76,7 @@ data class PreviousData(private val player: Player) {
 
             resetPlayerTime()
         }
+
+        leaveRewards.forEach { it.execute(player.asElytraPlayer()) }
     }
 }
