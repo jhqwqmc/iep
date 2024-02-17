@@ -58,7 +58,6 @@ modes:
     name: "<#ddd200><bold>Time Trial"
     lore: "<gray>Reach a specific score||<gray>as soon as possible."
 
-
 styles:
   title: "Styles"
 
@@ -116,6 +115,15 @@ settings:
     material: "paper"
     name: "<white><bold>Locale"
     lore: "<gray>Currently <white>%a||<gray>Click to change the language."
+
+leaderboards:
+  sort:
+    material: "bookshelf"
+    name: "<#DEA11F><bold>Sorted by %s"
+    lore: ""
+    values:
+      - "score"
+      - "time"
 
 reset:
   reasons:

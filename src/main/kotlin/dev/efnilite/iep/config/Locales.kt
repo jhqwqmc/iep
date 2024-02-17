@@ -117,10 +117,10 @@ object Locales {
         }
     }
 
-    fun getString(player: Player, path: String): String {
-        val locale = player.asElytraPlayer()?.getGenerator()?.settings?.locale ?: locales.keys.first()
+    private fun getLocale(player: Player) = player.asElytraPlayer()?.getGenerator()?.settings?.locale ?: locales.keys.first()
 
-        return getString(locale, path)
+    fun getString(player: Player, path: String): String {
+        return getString(getLocale(player), path)
     }
 
     fun getString(player: ElytraPlayer, path: String): String {
@@ -133,6 +133,10 @@ object Locales {
             Function<FileConfiguration, String> { config: FileConfiguration -> config.getString(path) },
             ""
         ))
+    }
+
+    fun getStringList(player: Player, path: String): List<String> {
+        return getStringList(getLocale(player), path)
     }
 
     fun getStringList(player: ElytraPlayer, path: String): List<String> {
