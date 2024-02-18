@@ -5,9 +5,10 @@ import dev.efnilite.iep.config.Config
 
 object Rewards {
 
-    private val enabled = Config.REWARDS.getBoolean("enabled")
+    val enabled = Config.REWARDS.getBoolean("enabled")
     val scoreRewards = getRewards("score")
     val intervalRewards = getRewards("interval")
+    val oneTimeRewards = getRewards("one-time")
 
     private fun getRewards(path: String): Map<Int, Set<Reward>> {
         if (!enabled) {

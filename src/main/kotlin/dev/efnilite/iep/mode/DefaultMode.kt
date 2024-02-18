@@ -9,5 +9,5 @@ object DefaultMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun getGenerator() = Generator()
+    override fun getGenerator() = Generator(this)
 }

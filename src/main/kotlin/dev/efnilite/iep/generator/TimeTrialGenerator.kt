@@ -1,9 +1,10 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.config.Config
+import dev.efnilite.iep.mode.Mode
 import kotlin.math.min
 
-class TimeTrialGenerator : Generator() {
+class TimeTrialGenerator(mode: Mode) : Generator(mode) {
 
     override fun getScore() = min(SCORE, super.getScore())
 
@@ -28,6 +29,8 @@ class TimeTrialGenerator : Generator() {
     }
 
     override fun reset(resetReason: ResetReason, regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
+        // todo dont register scores < 2500
+
         super.reset(resetReason, regenerate, SEED, true)
     }
 

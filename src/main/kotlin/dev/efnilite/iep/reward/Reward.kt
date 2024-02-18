@@ -3,8 +3,10 @@ package dev.efnilite.iep.reward
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.hook.VaultHook
 import dev.efnilite.iep.mode.Mode
-import dev.efnilite.iep.player.ElytraPlayer
+import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.vilib.util.Strings
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 /**
  * String representation of a reward.
@@ -13,13 +15,13 @@ import org.bukkit.Bukkit
  */
 data class Reward(val string: String) {
 
-    fun execute(player: ElytraPlayer, currentMode: Mode) {
+    fun execute(player: Player, currentMode: Mode) {
         val parts = string.split("||", limit = 4)
 
         val time = parts[0].lowercase()
 
         if (time == "leave") {
-            player.addReward(Reward("now||${parts[1]}||${parts[2]}||${parts[3]}"))
+            player.asElytraPlayer()?.addReward(currentMode, Reward("now||${parts[1]}||${parts[2]}||${parts[3]}"))
             return
         }
 
@@ -39,16 +41,16 @@ data class Reward(val string: String) {
         }
 
         val command = parts[2].lowercase()
-        val value = parts[3]
+        val value = parts[3].replace("%player%", player.name)
 
         when (command) {
-            "send" -> player.send(value)
-            "player-command" -> player.player.performCommand(value)
-            "console-command" -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value)
+            "send" -> player.sendMessage(Strings.colour(value))
+            "player command" -> player.performCommand(value)
+            "console command" -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value)
             "vault" -> {
                 try {
                     val amount = value.toDouble()
-                    VaultHook.give(player.player, amount)
+                    VaultHook.give(player, amount)
                 } catch (e: NumberFormatException) {
                     IEP.instance.logging.error("Invalid numerical value $value in rewards")
                 }

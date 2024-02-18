@@ -9,5 +9,5 @@ object SpeedDemonMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun getGenerator() = SpeedDemonGenerator()
+    override fun getGenerator() = SpeedDemonGenerator(this)
 }

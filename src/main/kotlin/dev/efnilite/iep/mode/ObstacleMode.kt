@@ -9,6 +9,6 @@ object ObstacleMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun getGenerator() = ObstacleGenerator()
+    override fun getGenerator() = ObstacleGenerator(this)
 
 }

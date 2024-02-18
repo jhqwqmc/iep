@@ -154,8 +154,12 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
         return serialized ?: DEFAULT_SETTINGS
     }
 
-    fun addReward(reward: Reward) {
-        data.leaveRewards.add(reward)
+    fun addReward(mode: Mode, reward: Reward) {
+        val set = data.leaveRewards[mode] ?: mutableSetOf()
+
+        set.add(reward)
+
+        data.leaveRewards[mode] = set
     }
 
     /**
@@ -184,7 +188,8 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
                 radius = 5,
                 time = 0,
                 seed = ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND),
-                info = false)
+                info = false,
+                rewards = mutableSetOf())
 
         fun Player.asElytraPlayer(): ElytraPlayer? {
             return Divider.generators.flatMap { it.players }.firstOrNull { it.player.uniqueId == uniqueId }

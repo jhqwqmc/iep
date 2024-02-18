@@ -74,7 +74,7 @@ private object SingleLeaderboardMenu {
             menu.addToDisplay(listOf(item))
 
             if (uuid == player.uniqueId) {
-                menu.item(21, item.clone())
+                menu.item(20, item.clone())
             }
         }
 
@@ -91,6 +91,7 @@ private object SingleLeaderboardMenu {
             .item(22, Locales.getItem(player, "leaderboards.sort", current[sort.ordinal])
                 .click({ open(player, leaderboard, next) }))
             .item(24, Locales.getItem(player, "go back").click({ LeaderboardMenu.open(player) }))
+            .distributeRowEvenly(2)
             .open(player.player)
     }
 

@@ -12,7 +12,8 @@ data class Settings(val locale: String,
                     val radius: Int,
                     val time: Int,
                     val seed: Int,
-                    val info: Boolean) {
+                    val info: Boolean,
+                    val rewards: MutableSet<Int>) {
 
     constructor(settings: Settings,
                 locale: String = settings.locale,
@@ -21,7 +22,8 @@ data class Settings(val locale: String,
                 radius: Int = settings.radius,
                 time: Int = settings.time,
                 seed: Int = settings.seed,
-                info: Boolean = settings.info) :
+                info: Boolean = settings.info,
+                rewards: MutableSet<Int> = settings.rewards) :
 
             this(locale = locale,
                 metric = metric,
@@ -29,7 +31,8 @@ data class Settings(val locale: String,
                 radius = radius,
                 time = time,
                 seed = seed,
-                info = info)
+                info = info,
+                rewards = rewards)
 
     companion object {
 

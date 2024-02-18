@@ -28,7 +28,7 @@ object StylesMenu {
 
             menu.item(idx, item
                     .click({
-                        generator.set { settings -> Settings(settings, style = style) }
+                        generator.set { settings -> Settings(settings, style = style.name()) }
 
                         // todo for speed demon
                         if (generator.getScore() == 0.0) {
@@ -41,7 +41,7 @@ object StylesMenu {
 
         menu.item(21, Locales.getItem(player, "styles.random").material(styles.random().next())
                 .click({
-                    generator.set { settings -> Settings(settings, style = styles.random()) }
+                    generator.set { settings -> Settings(settings, style = styles.random().name()) }
                     player.player.inventory.close()
                 }))
             .item(23, Locales.getItem(player, "go back").click({ SettingsMenu.open(player) }))

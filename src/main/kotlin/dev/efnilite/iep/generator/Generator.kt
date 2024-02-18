@@ -7,12 +7,15 @@ import dev.efnilite.iep.generator.section.PointType
 import dev.efnilite.iep.generator.section.Section
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.iep.leaderboard.Score
+import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.player.ElytraPlayer
+import dev.efnilite.iep.reward.Rewards
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Task
 import org.bukkit.Chunk
+import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.time.Instant
@@ -22,7 +25,71 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
 import kotlin.random.Random
 
-open class Generator {
+private class RewardHandler(val mode: Mode) {
+
+    /**
+     * Achieved score rewards this run.
+     */
+    private val scoreRewards = mutableListOf<Int>()
+
+    /**
+     * Achieved interval rewards this run.
+     */
+    private val intervalRewards = mutableListOf<Int>()
+
+    /**
+     * Achieved one-time rewards this run.
+     */
+    private val oneTimeRewards = mutableListOf<Int>()
+
+    fun checkScores(score: Int, generator: Generator) {
+        for (player in generator.players) {
+            ((score - 4)..score)
+                .filter { it > 0 }
+                .forEach { check(it, player.player, generator) }
+        }
+    }
+
+    private fun check(score: Int, player: Player, generator: Generator) {
+        for ((key, rewards) in Rewards.scoreRewards) {
+            if (score < key || key in scoreRewards) continue
+
+            scoreRewards.add(key)
+
+            rewards.forEach { it.execute(player, mode) }
+        }
+
+        for ((key, rewards) in Rewards.oneTimeRewards) {
+            if (score < key || score in oneTimeRewards || key in generator.settings.rewards) continue
+
+            oneTimeRewards.add(score)
+            generator.set { settings ->
+                val newRewards = settings.rewards
+                newRewards.add(key)
+                return@set Settings(settings, rewards = newRewards)
+            }
+
+            rewards.forEach { it.execute(player, mode) }
+        }
+
+        for ((key, rewards) in Rewards.intervalRewards) {
+            if (score % key != 0 || score in intervalRewards) continue
+
+            intervalRewards.add(score)
+
+            rewards.forEach { it.execute(player, mode) }
+        }
+    }
+
+    fun clear() {
+        scoreRewards.clear()
+        oneTimeRewards.clear()
+    }
+}
+
+open class Generator(val mode: Mode) {
+
+    private val rewardHandler = RewardHandler(mode)
 
     lateinit var settings: Settings
         private set
@@ -124,6 +191,10 @@ open class Generator {
         }
 
         player.player.setPlayerTime(settings.time.toLong(), false)
+        if (Rewards.enabled) {
+            rewardHandler.checkScores(score.toInt(), this)
+        }
+
         updateBoard(score, getTime())
         updateInfo()
 
@@ -236,10 +307,6 @@ open class Generator {
         return null
     }
 
-    private fun checkRewards() {
-        // TODO
-    }
-
     /**
      * Generates the next knot.
      */
@@ -342,6 +409,8 @@ open class Generator {
         sections.toMap().forEach { clear(it.key, it.value) }
 
         sections.clear()
+
+        rewardHandler.clear()
 
         val spawn = island.playerSpawn.toLocation(World.world)
         spawn.yaw = -90f

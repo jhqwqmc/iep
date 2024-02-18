@@ -14,7 +14,7 @@ enum class Config(file: String) {
     init {
         IEP.instance.saveFile(file)
 
-        ConfigUpdater.update(IEP.instance, file, IEP.instance.dataFolder.resolve(file), listOf("styles"))
+        ConfigUpdater.update(IEP.instance, file, IEP.instance.dataFolder.resolve(file), listOf("styles", "score", "interval", "one-time"))
 
         config = YamlConfiguration.loadConfiguration(IEP.instance.dataFolder.resolve(file))
     }

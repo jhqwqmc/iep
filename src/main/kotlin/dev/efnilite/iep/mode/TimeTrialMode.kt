@@ -13,5 +13,5 @@ object TimeTrialMode : Mode {
     override val sort
         get() = LeaderboardMenu.Sort.TIME
 
-    override fun getGenerator() = TimeTrialGenerator()
+    override fun getGenerator() = TimeTrialGenerator(this)
 }

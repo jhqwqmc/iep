@@ -1,7 +1,7 @@
 package dev.efnilite.iep.player
 
 import dev.efnilite.iep.config.Locales
-import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
+import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.inventory.item.Item
@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture
  */
 data class PreviousData(private val player: Player) {
 
-    val leaveRewards: MutableList<Reward> = mutableListOf()
+    val leaveRewards: MutableMap<Mode, MutableSet<Reward>> = mutableMapOf()
 
     private val gamemode = player.gameMode
     private val position = player.location
@@ -77,6 +77,8 @@ data class PreviousData(private val player: Player) {
             resetPlayerTime()
         }
 
-        leaveRewards.forEach { it.execute(player.asElytraPlayer()) }
+        for ((mode, rewards) in leaveRewards) {
+            rewards.forEach { it.execute(player, mode) }
+        }
     }
 }
