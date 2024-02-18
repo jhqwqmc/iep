@@ -43,9 +43,15 @@ interface Mode {
     fun getGenerator(): Generator
 
     /**
-     * @param locale The locale of the menu, used to adjust the name.
+     * @param player The player.
      * @return The item used in menus to show this mode. If this item is null, the mode won't be displayed.
      */
     fun getItem(player: Player) = Locales.getItem(player, "modes.$name")
+
+    /**
+     * @param score The score to format.
+     * @return The formatted score.
+     */
+    fun formatDisplayScore(score: Double): String = "%.1f".format(score)
 
 }

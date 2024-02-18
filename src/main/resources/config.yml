@@ -13,6 +13,10 @@ permissions: false
 # H = hours, m = minutes, s = seconds, S = milliseconds
 time-format: "mm:ss:SSS"
 
+# -= Default measurement system =-
+# If true, metric is used. If false, imperial is used.
+metric: true
+
 # -= Mode settings =-
 mode-settings:
   min-speed:

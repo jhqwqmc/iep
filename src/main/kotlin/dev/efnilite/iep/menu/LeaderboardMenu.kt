@@ -3,8 +3,8 @@ package dev.efnilite.iep.menu
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
-import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.iep.leaderboard.Score
+import dev.efnilite.iep.mode.Mode
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.PagedMenu
 import dev.efnilite.vilib.inventory.item.Item
@@ -27,7 +27,7 @@ object LeaderboardMenu {
             }
 
             menu.item(menu.items.size + 9, mode.getItem(player)
-                .click({ SingleLeaderboardMenu.open(player, mode.leaderboard, mode.sort) })
+                .click({ SingleLeaderboardMenu.open(player, mode, mode.sort) })
             )
         }
 
@@ -55,7 +55,8 @@ object LeaderboardMenu {
 
 private object SingleLeaderboardMenu {
 
-    fun open(player: Player, leaderboard: Leaderboard, sort: LeaderboardMenu.Sort) {
+    fun open(player: Player, mode: Mode, sort: LeaderboardMenu.Sort) {
+        val leaderboard = mode.leaderboard
         val menu = PagedMenu(3, leaderboard.name.toTitleCase())
             .displayRows(0, 1)
 
@@ -63,7 +64,7 @@ private object SingleLeaderboardMenu {
             val (uuid, score) = entry
 
             val item = Item(Material.PLAYER_HEAD, "<white><bold>#${idx + 1} - ${score.name}")
-                .lore("<gray>Score <white>${"%.1f".format(score.score)}",
+                .lore("<gray>Score <white>${mode.formatDisplayScore(score.score)}",
                     "<gray>Time <white>${score.getFormattedTime()}",
                     "<gray>Seed <white>${score.seed}")
 
@@ -89,7 +90,7 @@ private object SingleLeaderboardMenu {
             .prevPage(19, Item(Material.RED_DYE, "<#DE1F1F><bold>«").click({ menu.page(-1) }))
             .nextPage(27, Item(Material.GREEN_DYE, "<#0DCB07><bold>»").click({ menu.page(1) }))
             .item(22, Locales.getItem(player, "leaderboards.sort", current[sort.ordinal])
-                .click({ open(player, leaderboard, next) }))
+                .click({ open(player, mode, next) }))
             .item(24, Locales.getItem(player, "go back").click({ LeaderboardMenu.open(player) }))
             .distributeRowEvenly(2)
             .open(player.player)
