@@ -6,8 +6,9 @@
 - iep.setting.radius
 - iep.setting.seed
 - iep.setting.info
-- iep.setting.locale
 - iep.setting.time
-- iep.setting.measurement
+- iep.setting.metric
+- iep.setting.locale
+- iep.setting.fall
 - iep.leaderboard: Leaderboards menu
 - iep.leaderboard.%mode%: Specific mode leaderboard

@@ -7,13 +7,14 @@ import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.generator.Settings.Companion.asStyle
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
+import dev.efnilite.vilib.inventory.item.Item
 import dev.efnilite.vilib.inventory.item.SliderItem
 import dev.efnilite.vilib.util.Task
 
 object SettingsMenu {
 
     fun open(player: ElytraPlayer) {
-        val menu = Menu(3, Locales.getString(player, "settings.title"))
+        val menu = Menu(4, Locales.getString(player, "settings.title"))
             .distributeRowsEvenly()
         val generator = player.getGenerator()
         val settings = generator.settings
@@ -99,30 +100,6 @@ object SettingsMenu {
                 }))
         }
 
-        if (player.hasPermission("iep.setting.info")) {
-            menu.item(
-                13,
-                Locales.getItem(player, "settings.info", settings.info.toString())
-                    .click({
-                        generator.set { settings -> Settings(settings, info = !settings.info) }
-                        open(player)
-                    }))
-        }
-
-
-        if (player.hasPermission("iep.setting.measurement")) {
-            val measurement = if (settings.metric) Locales.getString(player, "settings.measurement.metric")
-            else Locales.getString(player, "settings.measurement.imperial")
-
-            menu.item(
-                14,
-                Locales.getItem(player, "settings.measurement", measurement)
-                    .click({
-                        generator.set { settings -> Settings(settings, metric = !settings.metric) }
-                        open(player)
-                    }))
-        }
-
         if (player.hasPermission("iep.setting.locale")) {
             val locales = Locales.getLocales().toList()
             val item = SliderItem()
@@ -144,10 +121,55 @@ object SettingsMenu {
                 }
             }
 
-            menu.item(15, item)
+            menu.item(13, item)
         }
 
-        menu.item(23, Locales.getItem(player, "go back").click({ player.player.inventory.close() }))
+        if (player.hasPermission("iep.setting.fall")) {
+            menu.item(
+                19,
+                getBooleanItem(player, "settings.fall", settings.fall)
+                    .click({
+                        generator.set { settings -> Settings(settings, fall = !settings.fall) }
+                        open(player)
+                    }))
+        }
+
+        if (player.hasPermission("iep.setting.info")) {
+            menu.item(
+                20,
+                getBooleanItem(player, "settings.info", settings.info)
+                    .click({
+                        generator.set { settings -> Settings(settings, info = !settings.info) }
+                        open(player)
+                    }))
+        }
+
+
+        if (player.hasPermission("iep.setting.metric")) {
+            menu.item(
+                21,
+                getBooleanItem(player, "settings.metric", settings.metric)
+                    .click({
+                        generator.set { settings -> Settings(settings, metric = !settings.metric) }
+                        open(player)
+                    }))
+        }
+
+        menu.item(32, Locales.getItem(player, "go back").click({ player.player.inventory.close() }))
             .open(player.player)
+    }
+
+    private fun getBooleanItem(player: ElytraPlayer, path: String, boolean: Boolean): Item {
+        val base = if (boolean) {
+            Locales.getItem(player, "settings.enabled")
+        } else {
+            Locales.getItem(player, "settings.disabled")
+        }
+        val item = Locales.getItem(player, path, base.lore[0])
+
+        base.name(base.name + item.name)
+        base.lore(item.lore)
+
+        return base
     }
 }

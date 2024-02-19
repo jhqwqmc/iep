@@ -391,8 +391,10 @@ open class Generator(val mode: Mode) {
 
             leaderboard.update(it.uuid, score)
 
-            Locales.getStringList(it, "reset.lines").map { line -> updateLine(line, score, resetReason) }
-                .forEach { line -> it.send(line) }
+            if (settings.fall) {
+                Locales.getStringList(it, "reset.lines").map { line -> updateLine(line, score, resetReason) }
+                    .forEach { line -> it.send(line) }
+            }
         }
 
         movementScore = 0.0
