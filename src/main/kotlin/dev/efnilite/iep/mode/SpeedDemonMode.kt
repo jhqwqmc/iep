@@ -10,7 +10,7 @@ object SpeedDemonMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun getGenerator() = SpeedDemonGenerator(this)
+    override fun getGenerator() = SpeedDemonGenerator()
 
     override fun formatDisplayScore(score: Double): String {
         return if (Config.CONFIG.getString("metric") == "metric") {

@@ -12,6 +12,6 @@ object CloseMode : Mode {
 
     override val pointType = PointType.FLAT
 
-    override fun getGenerator() = Generator(this)
+    override fun getGenerator() = Generator()
 
 }

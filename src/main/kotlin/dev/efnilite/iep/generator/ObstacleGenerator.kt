@@ -2,7 +2,6 @@ package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.generator.section.PointType
 import dev.efnilite.iep.generator.section.Section
-import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.world.World
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -105,7 +104,7 @@ private enum class Obstacle {
 
 }
 
-class ObstacleGenerator(mode: Mode) : Generator(mode) {
+class ObstacleGenerator : Generator() {
 
     private val obstacles = mutableMapOf<Int, MutableList<Block>>()
 

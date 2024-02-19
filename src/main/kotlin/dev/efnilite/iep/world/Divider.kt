@@ -14,7 +14,7 @@ import kotlin.math.sqrt
  */
 object Divider {
 
-    private val size = Vector(20000, 250, 20000)
+    val SIZE = Vector(20000, 250, 20000)
 
     private val sections = mutableMapOf<Generator, Int>()
 
@@ -47,7 +47,7 @@ object Divider {
 
         val (x, z) = spiralAt(idx)
 
-        return Vector(x * size.x, size.y, z * size.z)
+        return Vector(x * SIZE.x, SIZE.y, z * SIZE.z)
     }
 
     /**

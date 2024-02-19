@@ -17,6 +17,18 @@ time-format: "mm:ss:SSS"
 # If true, metric is used. If false, imperial is used.
 metric: true
 
+# -= MySQL =-
+mysql:
+
+  # -= MySQL enabled? =-
+  enabled: false
+
+  url: "localhost"
+  port: 3306
+  username: "efnilite"
+  password: "super secret password"
+  database: "iep"
+
 # -= Mode settings =-
 mode-settings:
   min-speed:

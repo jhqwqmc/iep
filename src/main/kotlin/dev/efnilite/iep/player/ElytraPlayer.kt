@@ -51,7 +51,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
         val at = Divider.add(generator)
 
         data.setup(at).thenRun {
-            generator.start(mode.leaderboard, at, mode.pointType)
+            generator.start(mode, at, mode.pointType)
         }
     }
 
@@ -189,6 +189,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
                 time = 0,
                 seed = ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND),
                 info = false,
+                fall = true,
                 rewards = mutableSetOf())
 
         fun Player.asElytraPlayer(): ElytraPlayer? {

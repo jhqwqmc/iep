@@ -1,8 +1,6 @@
 package dev.efnilite.iep.generator
 
-import dev.efnilite.iep.mode.Mode
-
-class SpeedDemonGenerator(mode: Mode) : Generator(mode) {
+class SpeedDemonGenerator : Generator() {
 
     private var maxSpeedSoFar = 0.0
 

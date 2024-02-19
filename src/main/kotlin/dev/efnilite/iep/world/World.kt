@@ -35,7 +35,7 @@ private class EmptyBiomeGenerator : BiomeProvider() {
  */
 object World {
 
-    const val NAME = "iep"
+    private const val NAME = "iep"
 
     lateinit var world: World
 

@@ -1,12 +1,11 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.config.Config
-import dev.efnilite.iep.mode.Mode
 import org.bukkit.util.Vector
 import kotlin.math.ceil
 import kotlin.math.max
 
-class MinSpeedGenerator(mode: Mode) : Generator(mode) {
+class MinSpeedGenerator : Generator() {
 
     private var startX = 0
     private var maxSpeed = 0.0

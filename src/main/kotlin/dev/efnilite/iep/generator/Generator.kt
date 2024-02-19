@@ -87,9 +87,7 @@ private class RewardHandler(val mode: Mode) {
     }
 }
 
-open class Generator(val mode: Mode) {
-
-    private val rewardHandler = RewardHandler(mode)
+open class Generator {
 
     lateinit var settings: Settings
         private set
@@ -100,6 +98,7 @@ open class Generator(val mode: Mode) {
     var seed = 0
         protected set
 
+    private lateinit var rewardHandler: RewardHandler
     private lateinit var island: Island
     private lateinit var task: BukkitTask
     private lateinit var leaderboard: Leaderboard
@@ -149,10 +148,11 @@ open class Generator(val mode: Mode) {
      * Initializes all the stuff.
      * @param start The vector to spawn the island at.
      */
-    open fun start(ld: Leaderboard, start: Vector, point: PointType) {
+    open fun start(mode: Mode, start: Vector, point: PointType) {
         IEP.log("Starting generator at $start")
 
-        leaderboard = ld
+        rewardHandler = RewardHandler(mode)
+        leaderboard = mode.leaderboard
         island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
         pointType = point
 
@@ -172,7 +172,7 @@ open class Generator(val mode: Mode) {
 
     open fun getScore() = max(0.0, movementScore)
 
-    fun getTime() = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
+    fun getTime(): Instant = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
     fun getHighScore() = leaderboard.getScore(players.first().uuid)
 

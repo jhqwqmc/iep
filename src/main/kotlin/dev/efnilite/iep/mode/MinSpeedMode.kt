@@ -9,5 +9,5 @@ object MinSpeedMode : Mode {
 
     override val leaderboard = Leaderboard(name)
 
-    override fun getGenerator() = MinSpeedGenerator(this)
+    override fun getGenerator() = MinSpeedGenerator()
 }

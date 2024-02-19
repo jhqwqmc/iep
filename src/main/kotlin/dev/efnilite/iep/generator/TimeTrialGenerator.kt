@@ -1,10 +1,9 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.config.Config
-import dev.efnilite.iep.mode.Mode
 import kotlin.math.min
 
-class TimeTrialGenerator(mode: Mode) : Generator(mode) {
+class TimeTrialGenerator : Generator() {
 
     override fun getScore() = min(SCORE, super.getScore())
 
