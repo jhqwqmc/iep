@@ -42,7 +42,7 @@ object Divider {
      * @param generator The generator to get the position of.
      * @return The center position of the generator.
      */
-    fun toLocation(generator: Generator): Vector {
+    private fun toLocation(generator: Generator): Vector {
         val idx = sections[generator]!!
 
         val (x, z) = spiralAt(idx)
@@ -66,6 +66,11 @@ object Divider {
     @TestOnly
     fun clear() {
         sections.clear()
+    }
+
+    @TestOnly
+    fun toIndex(generator: Generator): Int {
+        return sections[generator]!!
     }
 
     // todo remove magic code

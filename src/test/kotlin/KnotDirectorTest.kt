@@ -5,7 +5,7 @@ import kotlin.random.Random
 class KnotDirectorTest {
 
     @Test
-    fun predicability() {
+    fun testReproducability() {
         val random = Random(0)
 
         val dir = KnotDirector(random)

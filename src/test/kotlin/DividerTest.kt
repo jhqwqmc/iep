@@ -2,7 +2,6 @@ import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.world.Divider
 import org.bukkit.util.Vector
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class DividerTest {
@@ -14,44 +13,53 @@ class DividerTest {
 
     @Test
     fun testAdd() {
-        assertEquals(0, Divider.add(Generator()))
-        assertEquals(1, Divider.add(Generator()))
-        assertEquals(2, Divider.add(Generator()))
+        val gen1 = Generator()
+        val gen2 = Generator()
+        val gen3 = Generator()
+
+        Divider.add(gen1)
+        Divider.add(gen2)
+        Divider.add(gen3)
+
+        assert(0 == Divider.toIndex(gen1))
+        assert(1 == Divider.toIndex(gen2))
+        assert(2 == Divider.toIndex(gen3))
     }
 
     @Test
-    fun testRemove() {
-        val generator = Generator()
+    fun testRemoveAndUsePreviousSpaces() {
+        val gen1 = Generator()
 
-        Divider.add(generator)
+        Divider.add(gen1)
         Divider.add(Generator())
         Divider.add(Generator())
 
-        Divider.remove(generator)
+        Divider.remove(gen1)
 
-        assertEquals(0, Divider.add(Generator()))
-        assertEquals(3, Divider.add(Generator()))
+        val gen2 = Generator()
+        val gen3 = Generator()
+
+        Divider.add(gen2)
+        Divider.add(gen3)
+
+        assert(0 == Divider.toIndex(gen2))
+        assert(3 == Divider.toIndex(gen3))
     }
 
     @Test
     fun testToLocation() {
-        val generator1 = Generator()
-        val generator2 = Generator()
-        val generator3 = Generator()
-        val generator4 = Generator()
-
-        Divider.add(generator1)
-        Divider.add(generator2)
-        Divider.add(generator3)
-        Divider.add(generator4)
+        val pos1 = Divider.add(Generator())
+        val pos2 = Divider.add(Generator())
+        val pos3 = Divider.add(Generator())
+        val pos4 = Divider.add(Generator())
 
         val x = Divider.SIZE.x.toInt()
         val y = Divider.SIZE.y.toInt()
         val z = Divider.SIZE.z.toInt()
 
-        assertEquals(Vector(0, y, 0), Divider.toLocation(generator1))
-        assertEquals(Vector(x * 1, y, 0), Divider.toLocation(generator2))
-        assertEquals(Vector(x * 1, y, z * 1), Divider.toLocation(generator3))
-        assertEquals(Vector(0, y, z * 1), Divider.toLocation(generator4))
+        assert(Vector(0, y, 0) == pos1)
+        assert(Vector(x * 1, y, 0) == pos2)
+        assert(Vector(x * 1, y, z * 1) == pos3)
+        assert(Vector(0, y, z * 1) == pos4)
     }
 }

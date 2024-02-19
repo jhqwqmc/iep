@@ -60,6 +60,7 @@ class Section {
     }
 
     fun getKnot(idx: Int) = knots[idx]
+    fun getPoint(idx: Int) = points[idx]
 
     /**
      * Returns whether the given vector is near a section knot.
