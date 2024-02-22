@@ -23,11 +23,9 @@ mysql:
   # -= MySQL enabled? =-
   enabled: false
 
-  url: "localhost"
-  port: 3306
-  username: "efnilite"
-  password: "super secret password"
-  database: "iep"
+  url: "localhost:3306/iep"
+  username: "username"
+  password: "password"
 
 # -= Mode settings =-
 mode-settings:

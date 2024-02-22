@@ -66,7 +66,7 @@ class IEP : ViPlugin() {
             .repeat(5 * 60 * 20)
             .execute {
                 log("Saving all leaderboards")
-                modes.forEach { it.leaderboard.write() }
+                modes.forEach { it.leaderboard.save() }
             }
             .run()
     }
@@ -96,7 +96,9 @@ class IEP : ViPlugin() {
     }
 
     override fun disable() {
-        Divider.generators.forEach { generator -> generator.players.forEach { it.leave() } }
+        Divider.generators.forEach { generator -> generator.players.forEach { it.leave(urgent = true) } }
+
+        getModes().forEach { it.leaderboard.save(urgent = true) }
 
         World.delete()
     }

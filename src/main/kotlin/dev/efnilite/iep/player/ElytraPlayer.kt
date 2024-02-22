@@ -7,6 +7,7 @@ import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward
+import dev.efnilite.iep.storage.Storage
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.fastboard.FastBoard
@@ -15,7 +16,6 @@ import dev.efnilite.vilib.util.Task
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
-import java.io.File
 import java.util.concurrent.ThreadLocalRandom
 
 /**
@@ -36,7 +36,6 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * The player's previous position.
      */
     private val board = FastBoard(player)
-    private val file = File(IEP.instance.dataFolder, "players/${player.uniqueId}.json")
 
     /**
      * Joins a [Mode].
@@ -58,8 +57,8 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     /**
      * Leaves the current mode.
      */
-    fun leave(switchMode: Boolean = false) {
-        getGenerator().remove(this)
+    fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
+        getGenerator().remove(this, urgent)
 
         data.reset(switchMode)
 
@@ -124,17 +123,17 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * Saves the player's settings.
      * @param settings The settings to save.
      */
-    fun save(settings: Settings) {
+    fun save(settings: Settings, urgent: Boolean = false) {
+        IEP.log("Saving settings for ${player.name}")
+
+        if (urgent) {
+            Storage.save(uuid, settings)
+            return
+        }
+
         Task.create(IEP.instance)
             .async()
-            .execute {
-                IEP.log("Saving settings for ${player.name}")
-
-                file.parentFile.mkdirs()
-                file.createNewFile()
-
-                file.writer().use { IEP.GSON.toJson(settings, it) }
-            }
+            .execute { Storage.save(uuid, settings) }
             .run()
     }
 
@@ -145,13 +144,9 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     fun load(): Settings {
         IEP.log("Loading settings for $name")
 
-        if (!file.exists()) {
-            return DEFAULT_SETTINGS
-        }
+        Storage.init(uuid)
 
-        val serialized = file.reader().use { IEP.GSON.fromJson(it, Settings::class.java) }
-
-        return serialized ?: DEFAULT_SETTINGS
+        return Storage.load(uuid) ?: DEFAULT_SETTINGS
     }
 
     fun addReward(mode: Mode, reward: Reward) {

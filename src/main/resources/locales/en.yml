@@ -111,7 +111,7 @@ settings:
   fall:
     material: ""
     name: "<bold>Fall"
-    lore: "<gray>Currently <white>%a||<gray>Click to change the fall damage."
+    lore: "<gray>Currently <white>%a||<gray>Click to change the fall message."
 
   info:
     material: ""

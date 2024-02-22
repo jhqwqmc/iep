@@ -123,11 +123,12 @@ open class Generator {
     /**
      * Removes a player from the generator.
      * @param player The player to remove.
+     * @param urgent To save asynchronously or not.
      */
-    fun remove(player: ElytraPlayer) {
+    fun remove(player: ElytraPlayer, urgent: Boolean = false) {
         IEP.log("Removing player from generator ${player.name}")
 
-        player.save(settings)
+        player.save(settings, urgent)
 
         players.remove(player)
 
@@ -146,7 +147,9 @@ open class Generator {
 
     /**
      * Initializes all the stuff.
+     * @param mode The mode to use.
      * @param start The vector to spawn the island at.
+     * @param point The point type to use.
      */
     open fun start(mode: Mode, start: Vector, point: PointType) {
         IEP.log("Starting generator at $start")
@@ -308,7 +311,7 @@ open class Generator {
     }
 
     /**
-     * Generates the next knot.
+     * Generates the next section.
      */
     protected open fun generate() {
         if (sections.isEmpty()) {

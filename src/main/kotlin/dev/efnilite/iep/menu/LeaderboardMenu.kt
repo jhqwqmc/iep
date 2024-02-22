@@ -68,9 +68,12 @@ private object SingleLeaderboardMenu {
                     "<gray>Time <white>${score.getFormattedTime()}",
                     "<gray>Seed <white>${score.seed}")
 
-            val meta = item.build().itemMeta
-            (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(uuid)
-            item.meta(meta)
+            // prevent crashes from fetching all the skulls at once
+            if (idx <= 36) {
+                val meta = item.build().itemMeta
+                (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(uuid)
+                item.meta(meta)
+            }
 
             menu.addToDisplay(listOf(item))
 

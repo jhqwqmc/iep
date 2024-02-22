@@ -1,6 +1,7 @@
 package dev.efnilite.iep.leaderboard
 
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.storage.Storage
 import dev.efnilite.vilib.util.Task
 import java.io.File
 import java.util.*
@@ -10,28 +11,25 @@ import java.util.*
  */
 data class Leaderboard(val name: String) {
 
-    private val data = mutableMapOf<UUID, Score>()
+    val data = mutableMapOf<UUID, Score>()
     private val file = File(IEP.instance.dataFolder, "leaderboards/$name.json")
 
     init {
         file.parentFile.mkdirs()
         file.createNewFile()
 
-        read()
+        load()
     }
 
     /**
      * Asynchronously reads the leaderboard.
      */
-    private fun read() {
+    private fun load() {
         Task.create(IEP.instance)
             .async()
             .execute {
-                val map = file.reader().use { IEP.GSON.fromJson(it, Map::class.java) ?: return@execute }
-
-                for ((uuid, score) in map) {
-                    data[UUID.fromString(uuid.toString())] = IEP.GSON.fromJson(score.toString(), Score::class.java)
-                }
+                Storage.init(this)
+                Storage.load(this)
             }
             .run()
     }
@@ -39,10 +37,15 @@ data class Leaderboard(val name: String) {
     /**
      * Asynchronously saves the leaderboard.
      */
-    fun write() {
+    fun save(urgent: Boolean = false) {
+        if (urgent) {
+            Storage.save(this)
+            return
+        }
+
         Task.create(IEP.instance)
             .async()
-            .execute { file.writer().use { IEP.GSON.toJson(data, it) } }
+            .execute { Storage.save(this) }
             .run()
     }
 
