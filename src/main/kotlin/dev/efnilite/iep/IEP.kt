@@ -28,6 +28,7 @@ class IEP : ViPlugin() {
 
     override fun enable() {
         instance = this
+        stopping = false
 
         registerListener(Events())
         registerCommand("iep", Command())
@@ -96,9 +97,13 @@ class IEP : ViPlugin() {
     }
 
     override fun disable() {
-        Divider.generators.forEach { generator -> generator.players.forEach { it.leave(urgent = true) } }
+        stopping = true
 
-        getModes().forEach { it.leaderboard.save(urgent = true) }
+        for (generator in Divider.generators.toSet()) {
+            generator.players.forEach { it.leave() }
+        }
+
+        getModes().forEach { it.leaderboard.save() }
 
         World.delete()
     }
@@ -106,6 +111,9 @@ class IEP : ViPlugin() {
     override fun getElevator(): GitElevator? = null
 
     companion object {
+        var stopping = false
+            private set
+
         val GSON: Gson = GsonBuilder().disableHtmlEscaping().create()
 
         lateinit var instance: IEP

@@ -57,8 +57,8 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     /**
      * Leaves the current mode.
      */
-    fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
-        getGenerator().remove(this, urgent)
+    fun leave(switchMode: Boolean = false) {
+        getGenerator().remove(this)
 
         data.reset(switchMode)
 
@@ -123,10 +123,10 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * Saves the player's settings.
      * @param settings The settings to save.
      */
-    fun save(settings: Settings, urgent: Boolean = false) {
+    fun save(settings: Settings) {
         IEP.log("Saving settings for ${player.name}")
 
-        if (urgent) {
+        if (IEP.stopping) {
             Storage.save(uuid, settings)
             return
         }

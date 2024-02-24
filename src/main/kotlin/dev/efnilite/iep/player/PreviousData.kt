@@ -77,7 +77,7 @@ data class PreviousData(private val player: Player) {
             resetPlayerTime()
         }
 
-        for ((mode, rewards) in leaveRewards) {
+        for ((mode, rewards) in leaveRewards.toMap()) {
             rewards.forEach { it.execute(player, mode) }
         }
     }

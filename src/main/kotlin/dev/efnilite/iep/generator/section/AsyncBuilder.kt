@@ -24,14 +24,18 @@ class AsyncBuilder(
     val blocks = mutableListOf<Block>()
 
     init {
-        Task.create(IEP.instance)
-            .async()
-            .execute {
-                queue.addAll(map.invoke().entries)
+        if (IEP.stopping) {
+            map.invoke().forEach { (block, material) -> block.type = material }
+        } else {
+            Task.create(IEP.instance)
+                .async()
+                .execute {
+                    queue.addAll(map.invoke().entries)
 
-                initTask()
-            }
-            .run()
+                    initTask()
+                }
+                .run()
+        }
     }
 
     private fun initTask() {

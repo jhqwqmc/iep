@@ -37,8 +37,8 @@ data class Leaderboard(val name: String) {
     /**
      * Asynchronously saves the leaderboard.
      */
-    fun save(urgent: Boolean = false) {
-        if (urgent) {
+    fun save() {
+        if (IEP.stopping) {
             Storage.save(this)
             return
         }

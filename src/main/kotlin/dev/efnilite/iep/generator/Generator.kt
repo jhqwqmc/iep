@@ -123,12 +123,11 @@ open class Generator {
     /**
      * Removes a player from the generator.
      * @param player The player to remove.
-     * @param urgent To save asynchronously or not.
      */
-    fun remove(player: ElytraPlayer, urgent: Boolean = false) {
+    fun remove(player: ElytraPlayer) {
         IEP.log("Removing player from generator ${player.name}")
 
-        player.save(settings, urgent)
+        player.save(settings)
 
         players.remove(player)
 
