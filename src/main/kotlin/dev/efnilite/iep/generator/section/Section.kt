@@ -1,18 +1,14 @@
 package dev.efnilite.iep.generator.section
 
-import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.Settings
 import dev.efnilite.iep.generator.Settings.Companion.asStyle
 import dev.efnilite.iep.generator.section.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
-import dev.efnilite.vilib.util.Task
 import io.papermc.lib.PaperLib
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.bukkit.Chunk
 import org.bukkit.Material
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.random.Random
 
@@ -139,55 +135,23 @@ class Section {
 
     fun awaitChunks(): CompletableFuture<HashMap<String, Chunk>> {
         val future = CompletableFuture<HashMap<String, Chunk>>()
+        val futureChunks = mutableSetOf<CompletableFuture<Chunk>>()
 
-        if (PaperLib.isPaper()) {
-            val futureChunks = mutableSetOf<CompletableFuture<Chunk>>()
-
-            for (point in points)  {
-                futureChunks.add(PaperLib.getChunkAtAsync(point.toLocation(World.world)))
-            }
-
-            CompletableFuture.allOf(*futureChunks.toTypedArray()).thenApply { _ ->
-                val chunks = HashMap<String, Chunk>()
-
-                futureChunks.forEach {
-                    val chunk = it.get()
-
-                    chunks[chunk.getId()] = chunk
-                }
-
-                future.complete(chunks)
-            }
-
-            return future
+        for (point in points)  {
+            futureChunks.add(PaperLib.getChunkAtAsync(point.toLocation(World.world)))
         }
 
-        val queue = LinkedList(points)
-        val chunks = HashMap<String, Chunk>()
+        CompletableFuture.allOf(*futureChunks.toTypedArray()).thenApply { _ ->
+            val chunks = HashMap<String, Chunk>()
 
-        Task.create(IEP.instance)
-            .repeat(1)
-            .execute(
-                object : BukkitRunnable() {
-                    override fun run() {
-                        repeat(POSSIBLE_CHUNKS_PER_TICK) {
-                            if (queue.isEmpty()) {
-                                cancel()
+            futureChunks.forEach {
+                val chunk = it.get()
 
-                                future.complete(chunks)
-                                return@run
-                            }
+                chunks[chunk.getId()] = chunk
+            }
 
-                            val next = queue.poll()
-                            val chunk = next.toLocation(World.world).chunk
-
-                            chunks[chunk.getId()] = chunk
-
-                            chunk.addPluginChunkTicket(IEP.instance)
-                        }
-                    }
-                })
-            .run()
+            future.complete(chunks)
+        }
 
         return future
     }
@@ -196,7 +160,6 @@ class Section {
         private const val KNOTS = 5
         private const val EXTRA_POINTS_OFFSET = 1
         private const val BLOCKS_PER_TICK = 70
-        private const val POSSIBLE_CHUNKS_PER_TICK = 3
 
         fun Chunk.getId() = "$x,$z"
     }
