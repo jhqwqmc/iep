@@ -84,9 +84,9 @@ data class Leaderboard(val name: String) {
     fun getRank(rank: Int): Score {
         val scores = data.values.sortedWith(compareBy({ it.score }, { -it.time }))
 
-        if (rank >= scores.size) return EMPTY_SCORE
+        if (rank > scores.size) return EMPTY_SCORE
 
-        return scores[rank]
+        return scores[rank - 1]
     }
 
     fun getAllScores() = data
