@@ -1,5 +1,5 @@
 todo
 
-- sql
-- test on spigot
-- move packages to dev.efnilite
+- fix error on /stop
+- test vaulthook
+- write spigot page

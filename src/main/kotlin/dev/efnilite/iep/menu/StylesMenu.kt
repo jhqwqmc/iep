@@ -35,14 +35,14 @@ object StylesMenu {
                             generator.reset(ResetReason.RESET)
                         }
 
-                        player.player.inventory.close()
+                        player.player.closeInventory()
                     }))
         }
 
         menu.item(21, Locales.getItem(player, "styles.random").material(styles.random().next())
                 .click({
                     generator.set { settings -> Settings(settings, style = styles.random().name()) }
-                    player.player.inventory.close()
+                    player.player.closeInventory()
                 }))
             .item(23, Locales.getItem(player, "go back").click({ SettingsMenu.open(player) }))
             .open(player.player)

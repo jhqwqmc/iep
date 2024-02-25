@@ -17,10 +17,12 @@ import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Logging
 import dev.efnilite.vilib.util.Task
 import dev.efnilite.vilib.util.elevator.GitElevator
+import io.papermc.lib.PaperLib
 import org.bukkit.Material
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.logging.Level
 
 class IEP : ViPlugin() {
 
@@ -56,11 +58,14 @@ class IEP : ViPlugin() {
 
         if (server.pluginManager.isPluginEnabled("PlaceholderAPI")) {
             log("Registered Papi Hook")
+            papiHook = PapiHook
             PapiHook.register()
         }
         if (server.pluginManager.isPluginEnabled("Vault")) {
             log("Registered Vault Hook")
         }
+        
+        PaperLib.suggestPaper(this, Level.WARNING)
 
         Task.create(this)
             .async()
@@ -113,6 +118,7 @@ class IEP : ViPlugin() {
     companion object {
         var stopping = false
             private set
+        var papiHook: PapiHook? = null
 
         val GSON: Gson = GsonBuilder().disableHtmlEscaping().create()
 

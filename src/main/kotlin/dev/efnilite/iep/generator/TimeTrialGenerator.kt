@@ -1,6 +1,7 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.config.Config
+import dev.efnilite.iep.leaderboard.Score.Companion.pretty
 import kotlin.math.min
 
 class TimeTrialGenerator : Generator() {
@@ -18,7 +19,7 @@ class TimeTrialGenerator : Generator() {
             return
         }
 
-        player.sendActionBar("${getProgressBar(score)} <reset><dark_gray>| <gray>${"%.1f".format(score)}/${"%.1f".format(SCORE)}")
+        player.sendActionBar("${getProgressBar(score)} <reset><dark_gray>| <gray>${score.pretty()}/${SCORE.pretty()}")
     }
 
     private fun getProgressBar(t: Double): String {

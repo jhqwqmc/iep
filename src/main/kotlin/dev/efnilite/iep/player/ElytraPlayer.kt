@@ -5,6 +5,7 @@ import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.Settings
+import dev.efnilite.iep.leaderboard.Score.Companion.pretty
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward
 import dev.efnilite.iep.storage.Storage
@@ -13,6 +14,9 @@ import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.fastboard.FastBoard
 import dev.efnilite.vilib.util.Strings
 import dev.efnilite.vilib.util.Task
+import io.papermc.lib.PaperLib
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
@@ -49,9 +53,9 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
         val at = Divider.add(generator)
 
-        data.setup(at).thenRun {
-            generator.start(mode, at, mode.pointType)
-        }
+        data.setup(at)
+
+        generator.start(mode, at, mode.pointType)
     }
 
     /**
@@ -72,7 +76,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * @param vector The vector to teleport to.
      */
     fun teleport(vector: Vector) {
-        player.teleportAsync(vector.toLocation(World.world))
+        PaperLib.teleportAsync(player, vector.toLocation(World.world))
     }
 
     /**
@@ -80,7 +84,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * @param location The location to teleport to.
      */
     fun teleport(location: Location) {
-        player.teleportAsync(location)
+        PaperLib.teleportAsync(player, location)
     }
 
     /**
@@ -96,7 +100,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * @param message The message to send.
      */
     fun sendActionBar(message: String) {
-        player.sendActionBar(Strings.colour(message))
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(Strings.colour(message)))
     }
 
     /**
@@ -113,10 +117,16 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     }
 
     private fun updateLine(line: String, score: Double, time: String, seed: Int): String {
-        return line.replace("%score%", "%.1f".format(score))
-            .replace("%high-score%", "%.1f".format(getGenerator().getHighScore().score))
+        val local = line.replace("%score%", score.pretty())
+            .replace("%high-score%", getGenerator().getHighScore().score.pretty())
             .replace("%time%", time)
             .replace("%seed%", seed.toString())
+
+        return if (IEP.papiHook != null) {
+            IEP.papiHook!!.replace(player, local)
+        } else {
+            local
+        }
     }
 
     /**

@@ -15,4 +15,10 @@ data class Score(val name: String, val score: Double, val time: Long, val seed: 
             .withZone(ZoneOffset.UTC)
             .format(Instant.ofEpochMilli(time))
     }
+
+    companion object {
+
+        fun Double.pretty(digits: Int = 1) = "%.${digits}f".format(this)
+
+    }
 }

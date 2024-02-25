@@ -6,6 +6,7 @@ import dev.efnilite.iep.generator.Settings.Companion.asStyle
 import dev.efnilite.iep.generator.section.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.util.Task
+import io.papermc.lib.PaperLib
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.bukkit.Chunk
 import org.bukkit.Material
@@ -137,8 +138,31 @@ class Section {
     }
 
     fun awaitChunks(): CompletableFuture<HashMap<String, Chunk>> {
-        val queue = LinkedList(points)
         val future = CompletableFuture<HashMap<String, Chunk>>()
+
+        if (PaperLib.isPaper()) {
+            val futureChunks = mutableSetOf<CompletableFuture<Chunk>>()
+
+            for (point in points)  {
+                futureChunks.add(PaperLib.getChunkAtAsync(point.toLocation(World.world)))
+            }
+
+            CompletableFuture.allOf(*futureChunks.toTypedArray()).thenApply { _ ->
+                val chunks = HashMap<String, Chunk>()
+
+                futureChunks.forEach {
+                    val chunk = it.get()
+
+                    chunks[chunk.getId()] = chunk
+                }
+
+                future.complete(chunks)
+            }
+
+            return future
+        }
+
+        val queue = LinkedList(points)
         val chunks = HashMap<String, Chunk>()
 
         Task.create(IEP.instance)

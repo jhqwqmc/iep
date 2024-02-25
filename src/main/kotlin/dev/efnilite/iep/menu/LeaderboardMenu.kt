@@ -19,7 +19,7 @@ object LeaderboardMenu {
     fun open(player: Player) {
         val menu = Menu(3, "Leaderboards")
             .distributeRowsEvenly()
-            .item(23, Locales.getItem(player, "go back").click({ player.inventory.close() }))
+            .item(23, Locales.getItem(player, "go back").click({ player.closeInventory() }))
 
         for (mode in IEP.getModes()) {
             if (Config.CONFIG.getBoolean("permissions") && !player.hasPermission("iep.leaderboard.${mode.name}")) {

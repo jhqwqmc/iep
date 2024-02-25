@@ -6,13 +6,14 @@ import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.util.Cooldowns
+import io.papermc.lib.PaperLib
 import org.bukkit.entity.Player
 
 object PlayMenu {
 
     fun open(player: Player) {
         val menu = Menu(3, "Play")
-            .item(23, Locales.getItem(player, "go back").click({ player.inventory.close() }))
+            .item(23, Locales.getItem(player, "go back").click({ player.closeInventory() }))
             .distributeRowsEvenly()
 
         for (mode in IEP.getModes()) {

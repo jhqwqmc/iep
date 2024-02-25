@@ -5,6 +5,7 @@ import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.inventory.item.Item
+import io.papermc.lib.PaperLib
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -32,9 +33,9 @@ data class PreviousData(private val player: Player) {
         val future = CompletableFuture<Boolean>()
 
         with(player) {
-            teleportAsync(vector.toLocation(World.world)).thenRun {
+            PaperLib.teleportAsync(this, vector.toLocation(World.world)).thenRun {
                 resetPlayerTime()
-                clearActivePotionEffects()
+                activePotionEffects.forEach { removePotionEffect(it.type) }
 
                 gameMode = GameMode.ADVENTURE
                 isInvulnerable = true
@@ -61,7 +62,7 @@ data class PreviousData(private val player: Player) {
         if (switchMode) {
             reset()
         } else {
-            player.teleportAsync(position).thenRun { reset() }
+            PaperLib.teleportAsync(player, position).thenRun { reset() }
         }
     }
 
@@ -71,7 +72,7 @@ data class PreviousData(private val player: Player) {
             gameMode = gamemode
             inventory.contents = inventoryContents
 
-            clearActivePotionEffects()
+            activePotionEffects.forEach { removePotionEffect(it.type) }
             addPotionEffects(effects)
 
             resetPlayerTime()

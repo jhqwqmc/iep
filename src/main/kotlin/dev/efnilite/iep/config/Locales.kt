@@ -26,7 +26,7 @@ import java.util.regex.Pattern
 object Locales {
 
     // a list of all nodes, used to check against missing nodes
-    private var resourceNodes: List<String>? = null
+    private var resourceNodes = emptyList<String>()
 
     /**
      * A map of all locales with their respective yml trees
@@ -95,7 +95,7 @@ object Locales {
     private fun validate(provided: FileConfiguration, user: FileConfiguration, localPath: File) {
         val userNodes: List<String> = getChildren(user)
 
-        for (node in resourceNodes!!) {
+        for (node in resourceNodes) {
             if (userNodes.contains(node)) {
                 continue
             }

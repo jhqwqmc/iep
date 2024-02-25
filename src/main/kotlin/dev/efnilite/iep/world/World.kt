@@ -1,16 +1,13 @@
 package dev.efnilite.iep.world
 
 import dev.efnilite.iep.IEP
-import net.kyori.adventure.util.TriState
 import org.bukkit.*
 import org.bukkit.World
 import org.bukkit.block.Biome
 import org.bukkit.generator.BiomeProvider
 import org.bukkit.generator.ChunkGenerator
 import org.bukkit.generator.WorldInfo
-import org.codehaus.plexus.util.FileUtils
 import java.io.File
-import java.io.IOException
 
 private class EmptyChunkGenerator : ChunkGenerator() {
 
@@ -49,8 +46,8 @@ object World {
             .generator(EmptyChunkGenerator())
             .generateStructures(false)
             .biomeProvider(EmptyBiomeGenerator())
+            .keepSpawnInMemory(false)
             .type(WorldType.NORMAL)
-            .keepSpawnLoaded(TriState.FALSE)
             .createWorld()!!
 
         setup()
@@ -97,8 +94,8 @@ object World {
         Bukkit.unloadWorld(NAME, false)
 
         try {
-            FileUtils.deleteDirectory(file)
-        } catch (ex: IOException) {
+            file.deleteRecursively()
+        } catch (ex: Exception) {
             IEP.instance.logging.stack("Error while trying to reset iep world", ex)
         }
     }

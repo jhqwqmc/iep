@@ -26,6 +26,7 @@ interval:
   100:
     - "now||all||player command||me hello :)"
     - "leave||time trial||send||<green>Good job!"
+    - "now||all||vault||10"
 
 # -= One-time rewards =-
 # Rewards which will be given only once.

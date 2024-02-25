@@ -155,7 +155,7 @@ object SettingsMenu {
                     }))
         }
 
-        menu.item(32, Locales.getItem(player, "go back").click({ player.player.inventory.close() }))
+        menu.item(32, Locales.getItem(player, "go back").click({ player.player.closeInventory() }))
             .open(player.player)
     }
 

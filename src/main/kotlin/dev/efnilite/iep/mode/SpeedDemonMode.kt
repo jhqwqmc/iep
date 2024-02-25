@@ -3,6 +3,7 @@ package dev.efnilite.iep.mode
 import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.generator.SpeedDemonGenerator
 import dev.efnilite.iep.leaderboard.Leaderboard
+import dev.efnilite.iep.leaderboard.Score.Companion.pretty
 
 object SpeedDemonMode : Mode {
 
@@ -13,10 +14,10 @@ object SpeedDemonMode : Mode {
     override fun getGenerator() = SpeedDemonGenerator()
 
     override fun formatDisplayScore(score: Double): String {
-        return if (Config.CONFIG.getString("metric") == "metric") {
-            "%.1f km/h".format(score * 3.6)
+        return if (Config.CONFIG.getBoolean("metric")) {
+            "${(score * 3.6).pretty()} km/h"
         } else {
-            "%.1f mph".format(score * 2.23694)
+            "${(score * 2.23694).pretty()} mph"
         }
     }
 }

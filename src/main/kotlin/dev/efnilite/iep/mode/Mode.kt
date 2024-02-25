@@ -4,6 +4,7 @@ import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.generator.section.PointType
 import dev.efnilite.iep.leaderboard.Leaderboard
+import dev.efnilite.iep.leaderboard.Score.Companion.pretty
 import dev.efnilite.iep.menu.LeaderboardMenu
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.Contract
@@ -52,6 +53,6 @@ interface Mode {
      * @param score The score to format.
      * @return The formatted score.
      */
-    fun formatDisplayScore(score: Double): String = "%.1f".format(score)
+    fun formatDisplayScore(score: Double): String = score.pretty()
 
 }

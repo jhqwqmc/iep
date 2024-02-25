@@ -7,6 +7,7 @@ import dev.efnilite.iep.generator.section.PointType
 import dev.efnilite.iep.generator.section.Section
 import dev.efnilite.iep.leaderboard.Leaderboard
 import dev.efnilite.iep.leaderboard.Score
+import dev.efnilite.iep.leaderboard.Score.Companion.pretty
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.reward.Rewards
@@ -271,9 +272,9 @@ open class Generator {
 
     private fun convertSpeed(speed: Double): String {
         return if (settings.metric) {
-            "%.1f km/h".format(speed * 3.6)
+            "${(speed * 3.6).pretty()} km/h"
         } else {
-            "%.1f mph".format(speed * 2.236936)
+            "${(speed * 2.236936).pretty()} mph"
         }
     }
 
@@ -355,7 +356,7 @@ open class Generator {
 
         clear(minIdx, minSection)
 
-        player.player.teleportAsync(to)
+        player.player.teleport(to)
 
         Task.create(IEP.instance)
             .delay(5)
@@ -435,8 +436,8 @@ open class Generator {
     }
 
     private fun updateLine(line: String, score: Score, resetReason: ResetReason): String {
-        return line.replace("%score%", "%.1f".format(score.score))
-            .replace("%high-score%", "%.1f".format(getHighScore().score))
+        return line.replace("%score%", score.score.pretty())
+            .replace("%high-score%", getHighScore().score.pretty())
             .replace("%time%", score.getFormattedTime())
             .replace("%seed%", score.seed.toString())
             .replace("%reason%", Locales.getString(settings.locale, "reset.reasons.${resetReason.name.lowercase()}"))

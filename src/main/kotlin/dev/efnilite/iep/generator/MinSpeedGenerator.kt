@@ -1,6 +1,7 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.config.Config
+import dev.efnilite.iep.leaderboard.Score.Companion.pretty
 import org.bukkit.util.Vector
 import kotlin.math.ceil
 import kotlin.math.max
@@ -43,9 +44,9 @@ class MinSpeedGenerator : Generator() {
 
     private fun convertSpeed(a: Double, b: Double): String {
         return if (settings.metric) {
-            "%.1f/%.1f km/h".format(a * 3.6, b * 3.6)
+            "${a.pretty()}/${b.pretty()} km/h"
         } else {
-            "%.1f/%.1f mph".format(a * 2.236936, b * 2.236936)
+            "${(a * 2.236936).pretty()}/${(b * 2.236936).pretty()} mph"
         }
     }
 
