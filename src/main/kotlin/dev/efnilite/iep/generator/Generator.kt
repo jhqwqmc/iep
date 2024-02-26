@@ -377,7 +377,7 @@ open class Generator {
     /**
      * Resets the players and knots.
      */
-    open fun reset(resetReason: ResetReason, regenerate: Boolean = true, s: Int = 0, overrideSeedSettings: Boolean = false) {
+    open fun reset(resetReason: ResetReason, regenerate: Boolean = true, s: Int = settings.seed, overrideSeedSettings: Boolean = false) {
         IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
 
         players.forEach {

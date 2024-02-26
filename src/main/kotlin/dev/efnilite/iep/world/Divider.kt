@@ -14,10 +14,9 @@ import kotlin.math.sqrt
  */
 object Divider {
 
-    val SIZE = Vector(20000, 250, 20000)
-
     private val sections = mutableMapOf<Generator, Int>()
 
+    val size = Vector(20000, 250, 20000)
     val generators: Set<Generator>
         get() = sections.keys
 
@@ -32,7 +31,7 @@ object Divider {
 
         sections[generator] = missing
 
-        IEP.log("Added generator to divider at ${toLocation(generator)}")
+//        IEP.log("Added generator to divider at ${toLocation(generator)}")
 
         return toLocation(generator)
     }
@@ -47,7 +46,7 @@ object Divider {
 
         val (x, z) = spiralAt(idx)
 
-        return Vector(x * SIZE.x, SIZE.y, z * SIZE.z)
+        return Vector(x * size.x, size.y, z * size.z)
     }
 
     /**
@@ -55,7 +54,7 @@ object Divider {
      * @param generator The generator to remove.
      */
     fun remove(generator: Generator) {
-        IEP.log("Removed generator from divider at ${toLocation(generator)}")
+//        IEP.log("Removed generator from divider at ${toLocation(generator)}")
 
         sections.remove(generator)
     }

@@ -82,7 +82,7 @@ data class Leaderboard(val name: String) {
      * @return The score instance at this rank, else an empty score
      */
     fun getRank(rank: Int): Score {
-        val scores = data.values.sortedWith(compareBy({ it.score }, { -it.time }))
+        val scores = data.values.sortedByDescending { it.score }
 
         if (rank < 1 || rank > scores.size) return EMPTY_SCORE
 

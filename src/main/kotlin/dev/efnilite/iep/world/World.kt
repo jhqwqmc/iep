@@ -94,9 +94,19 @@ object World {
         Bukkit.unloadWorld(NAME, false)
 
         try {
-            file.deleteRecursively()
+            deleteRecursive(file)
         } catch (ex: Exception) {
             IEP.instance.logging.stack("Error while trying to reset iep world", ex)
         }
+    }
+
+    private fun deleteRecursive(fileOrDirectory: File) {
+        if (fileOrDirectory.isDirectory) {
+            for (child in fileOrDirectory.listFiles()!!) {
+                deleteRecursive(child)
+            }
+        }
+
+        fileOrDirectory.delete()
     }
 }

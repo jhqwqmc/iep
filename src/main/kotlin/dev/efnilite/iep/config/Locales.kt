@@ -65,6 +65,7 @@ object Locales {
             // create non-existent files
             if (files != null && files.isEmpty()) {
                 plugin.saveResource("locales/en.yml", false)
+                plugin.saveResource("locales/nl.yml", false)
             }
 
             // get all files in locales folder
