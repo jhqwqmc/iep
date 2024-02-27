@@ -19,7 +19,7 @@ class Command : ViCommand() {
         if (player !is Player) return false
 
         if (args.isEmpty()) {
-
+            // TODO
 
             return true
         }
@@ -65,7 +65,7 @@ class Command : ViCommand() {
         }
 
         if (args.size > 1) {
-            when (args[0]) {
+            when (args[0].lowercase()) {
                 "seed" -> {
                     if (!Cooldowns.canPerform(player, "ep set seed", 1000)) {
                         return true
