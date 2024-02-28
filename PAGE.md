@@ -75,6 +75,8 @@ https://youtu.be/jnDb0ypdotM
 
 ### ![Settings](https://i.imgur.com/WlmM5UW.png)
 
+This is an overview of all settings players can pick.
+
 https://youtu.be/esCFAGNQhqs
 
 **Style** 
@@ -167,20 +169,20 @@ one-time:
 For these permissions to apply, you need to enable permissions in the config.
 
 ```
-- iep.play
-- iep.leave
-- iep.setting
-- iep.setting.style: Style menu
-- iep.setting.style.<style>: Specific style
-- iep.setting.radius
-- iep.setting.seed
-- iep.setting.info
-- iep.setting.time
-- iep.setting.metric
-- iep.setting.locale
-- iep.setting.fall
-- iep.leaderboard: Leaderboards menu
-- iep.leaderboard.<mode>: Specific mode leaderboard
+iep.play
+iep.leave
+iep.setting
+iep.setting.style: Style menu
+iep.setting.style.<style>: Specific style
+iep.setting.radius
+iep.setting.seed
+iep.setting.info
+iep.setting.time
+iep.setting.metric
+iep.setting.locale
+iep.setting.fall
+iep.leaderboard: Leaderboards menu
+iep.leaderboard.<mode>: Specific mode leaderboard
 ```
 
 **Placeholders and leaderboards**
