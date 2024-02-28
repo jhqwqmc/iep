@@ -71,12 +71,15 @@ mode-settings:
     actionbar-length: 30
 
 # -= Styles =-
+# Styles should have some see-through materials, like slabs or fences.
+# This avoids dark areas.
 styles:
   random:
-    cherry: [ "cherry_wood", "stripped_cherry_wood", "cherry_planks", "cherry_slab", "cherry_stairs", "cherry_fence" ]
-    spruce: [ "spruce_wood", "stripped_spruce_wood", "spruce_planks", "spruce_slab", "spruce_stairs", "spruce_fence" ]
-    crimson: [ "crimson_hyphae", "stripped_crimson_hyphae", "crimson_planks", "crimson_slab", "crimson_stairs", "crimson_fence" ]
-    bamboo: [ "bamboo_block", "stripped_bamboo_block", "bamboo_planks", "bamboo_mosaic", "bamboo_stairs", "bamboo_mosaic_stairs", "bamboo_slab", "bamboo_mosaic_slab", "bamboo_fence" ]
-    glass: [ "white_stained_glass" ]
+    cherry: [ cherry_wood, stripped_cherry_wood, cherry_planks, cherry_slab, cherry_stairs, cherry_fence ]
+    spruce: [ spruce_wood, stripped_spruce_wood, spruce_planks, spruce_slab, spruce_stairs, spruce_fence ]
+    crimson: [ crimson_hyphae, stripped_crimson_hyphae, crimson_planks, crimson_slab, crimson_stairs, crimson_fence ]
+    bamboo: [ bamboo_block, stripped_bamboo_block, bamboo_planks, bamboo_mosaic, bamboo_stairs, bamboo_mosaic_stairs, bamboo_slab, bamboo_mosaic_slab, bamboo_fence ]
+    nether: [ netherrack, nether_bricks, red_nether_bricks, chiseled_nether_bricks, nether_gold_ore, netherite_block, basalt, nether_brick_fence, red_nether_brick_wall, nether_brick_stairs, nether_brick_slab, red_nether_brick_stairs, red_nether_brick_slab ]
+    glass: [ white_stained_glass ]
   incremental:
-    spiral: [ "barrier", "barrier", "barrier", "barrier", "red_concrete" ]
+    spiral: [ barrier, barrier, barrier, barrier, red_concrete ]

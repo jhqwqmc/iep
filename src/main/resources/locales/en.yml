@@ -152,13 +152,13 @@ reset:
     - "<gray>%reason%"
 
 scoreboard:
-  title: "<gradient:#ff0000:#800000><bold>IEP</gradient>"
+  title: "<gradient:#4800FF:#B200FF><bold>IEP</gradient>"
 
   lines:
     - ""
-    - "<#b30000><bold>Score</bold> <gray>%score%"
-    - "<#b30000><bold>High-score</bold> <gray>%high-score%"
-    - "<#b30000><bold>Time</bold> <gray>%time%"
-    - "<#b30000><bold>Seed</bold> <gray>%seed%"
+    - "<#7700FF><bold>Score</bold> <gray>%score%"
+    - "<#7700FF><bold>High-score</bold> <gray>%high-score%"
+    - "<#7700FF><bold>Time</bold> <gray>%time%"
+    - "<#7700FF><bold>Seed</bold> <gray>%seed%"
     - ""
     - "<#505050>server.ip"

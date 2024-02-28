@@ -20,13 +20,14 @@ object Command : ViCommand() {
         if (player !is Player) return false
 
         if (args.isEmpty()) {
-            player.send("<dark_gray>= <#800000><bold>IEP</bold> <dark_gray>=")
             player.send("")
-            player.send("<#ff0000>/iep play <dark_gray>- <gray>Opens the play menu")
-            player.send("<#ff0000>/iep leaderboards <dark_gray>- <gray>Opens the leaderboards menu")
-            player.send("<#ff0000>/iep settings <dark_gray>- <gray>Opens the settings menu")
-            player.send("<#ff0000>/iep leave <dark_gray>- <gray>Leaves the game")
-            player.send("<#ff0000>/iep seed <seed> <dark_gray>- <gray>Set the current seed")
+            player.send("<dark_gray>= <gradient:#4800FF:#B200FF><bold>Infinite Elytra Parkour</bold></gradient> <dark_gray>=")
+            player.send("")
+            player.send("<#7700FF>/iep play <dark_gray>- <gray>Opens the play menu")
+            player.send("<#7700FF>/iep leaderboards <dark_gray>- <gray>Opens the leaderboards menu")
+            player.send("<#7700FF>/iep settings <dark_gray>- <gray>Opens the settings menu")
+            player.send("<#7700FF>/iep leave <dark_gray>- <gray>Leaves the game")
+            player.send("<#7700FF>/iep seed <seed> <dark_gray>- <gray>Set the current seed")
             player.send("")
 
             return true
@@ -74,7 +75,7 @@ object Command : ViCommand() {
         if (args.size > 1) {
             when (args[0].lowercase()) {
                 "seed" -> {
-                    if (!Cooldowns.canPerform(player, "ep set seed", 1000)) {
+                    if (!Cooldowns.canPerform(player, "iep set seed", 1000)) {
                         return true
                     }
 

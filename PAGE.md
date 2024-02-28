@@ -75,7 +75,7 @@ https://youtu.be/jnDb0ypdotM
 
 ### ![Settings](https://i.imgur.com/WlmM5UW.png)
 
-_TODO video_
+https://youtu.be/esCFAGNQhqs
 
 **Style** 
 
@@ -166,6 +166,7 @@ one-time:
 
 For these permissions to apply, you need to enable permissions in the config.
 
+```
 - iep.play
 - iep.leave
 - iep.setting
@@ -180,6 +181,7 @@ For these permissions to apply, you need to enable permissions in the config.
 - iep.setting.fall
 - iep.leaderboard: Leaderboards menu
 - iep.leaderboard.<mode>: Specific mode leaderboard
+```
 
 **Placeholders and leaderboards**
 
@@ -239,5 +241,5 @@ since these have a high chance of containing malware or other unwanted things.
 ### ![Reviewing](https://i.imgur.com/RkWYLQ3.png)
 
 Don't leave reviews about bugs or suggestions. 
-The only way to properly report bugs or suggestions is through **[Discord](https://efnilite.dev/discord)**.
+The only way to properly report bugs or suggestions is through **[Discord](https://efnilite.dev/discord)** or **[email](https://efnilite.dev/#contact)**.
 Support usually takes less than a few hours!

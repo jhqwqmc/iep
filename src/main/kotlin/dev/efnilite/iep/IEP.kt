@@ -49,7 +49,7 @@ class IEP : ViPlugin() {
         registerStyle("styles.random") { name, data -> RandomStyle(name, data) }
         registerStyle("styles.incremental") { name, data -> IncrementalStyle(name, data) }
 
-        registerMode(DefaultMode)
+        registerMode(DefaultMode, false)
         registerMode(SpeedDemonMode)
         registerMode(MinSpeedMode)
         registerMode(TimeTrialMode)
@@ -104,13 +104,17 @@ class IEP : ViPlugin() {
     override fun disable() {
         stopping = true
 
-        for (generator in Divider.generators.toSet()) {
-            generator.players.forEach { it.leave() }
+        try {
+            for (generator in HashSet(Divider.generators)) {
+                generator.players.forEach { it.leave() }
+            }
+
+            getModes().forEach { it.leaderboard.save() }
+
+            World.delete()
+        } catch (_: Exception) {
+            // weird errors that don't seem to matter... too bad!
         }
-
-        getModes().forEach { it.leaderboard.save() }
-
-        World.delete()
     }
 
     override fun getElevator(): GitElevator? = null
@@ -133,8 +137,8 @@ class IEP : ViPlugin() {
 
         private val modes: MutableList<Mode> = mutableListOf()
 
-        fun registerMode(mode: Mode) {
-            if (!Config.CONFIG.getBoolean("mode-settings.${mode.name.replace(" ", "-")}.enabled")) {
+        fun registerMode(mode: Mode, checkExists: Boolean = true) {
+            if (!Config.CONFIG.getBoolean("mode-settings.${mode.name.replace(" ", "-")}.enabled") && checkExists) {
                 return
             }
 

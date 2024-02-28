@@ -113,9 +113,11 @@ object SettingsMenu {
                 ) { _ ->
                     generator.set { settings -> Settings(settings, locale = locale) }
 
-                    if (settings.locale != locale) {
-                        open(player)
-                    }
+                    Task.create(IEP.instance).delay(1).execute {
+                        if (settings.locale != locale) {
+                            open(player)
+                        }
+                    }.run()
 
                     return@add true
                 }

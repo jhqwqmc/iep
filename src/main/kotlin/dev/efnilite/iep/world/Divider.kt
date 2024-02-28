@@ -1,13 +1,11 @@
 package dev.efnilite.iep.world
 
-import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.Generator
 import org.bukkit.util.Vector
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.TestOnly
 import kotlin.math.ceil
 import kotlin.math.sqrt
-
 
 /**
  * Divides the world into sections.
