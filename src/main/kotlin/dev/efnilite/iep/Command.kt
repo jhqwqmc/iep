@@ -10,16 +10,24 @@ import dev.efnilite.iep.menu.SettingsMenu
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.command.ViCommand
 import dev.efnilite.vilib.util.Cooldowns
+import dev.efnilite.vilib.util.Strings
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class Command : ViCommand() {
+object Command : ViCommand() {
 
     override fun execute(player: CommandSender, args: Array<out String>): Boolean {
         if (player !is Player) return false
 
         if (args.isEmpty()) {
-            // TODO
+            player.send("<dark_gray>= <#800000><bold>IEP</bold> <dark_gray>=")
+            player.send("")
+            player.send("<#ff0000>/iep play <dark_gray>- <gray>Opens the play menu")
+            player.send("<#ff0000>/iep leaderboards <dark_gray>- <gray>Opens the leaderboards menu")
+            player.send("<#ff0000>/iep settings <dark_gray>- <gray>Opens the settings menu")
+            player.send("<#ff0000>/iep leave <dark_gray>- <gray>Leaves the game")
+            player.send("<#ff0000>/iep seed <seed> <dark_gray>- <gray>Set the current seed")
+            player.send("")
 
             return true
         }
@@ -61,7 +69,6 @@ class Command : ViCommand() {
 
                 ep.leave()
             }
-            "reset" -> player.isInvulnerable = false
         }
 
         if (args.size > 1) {
@@ -95,4 +102,6 @@ class Command : ViCommand() {
     override fun tabComplete(sender: CommandSender, args: Array<out String>): List<String> {
         return emptyList()
     }
+
+    private fun Player.send(message: String) = sendMessage(Strings.colour(message))
 }

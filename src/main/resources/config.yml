@@ -36,7 +36,12 @@ mysql:
 
 # -= Mode settings =-
 mode-settings:
+  close:
+    enabled: true
+
   min-speed:
+    enabled: true
+
     # -= The min speed =-
     # The min speed in m/s
     min-speed: 35.0
@@ -45,7 +50,14 @@ mode-settings:
     # The length of the actionbar
     actionbar-length: 30
 
+  obstacle:
+    enabled: true
+
+  speed-demon:
+    enabled: true
+
   time-trial:
+    enabled: true
 
     # -= Seed =-
     seed: 0

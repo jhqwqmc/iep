@@ -22,9 +22,9 @@ Scroll down for the full list of features!
 ### ![Modes](https://i.imgur.com/AB9qcic.png)
 
 With these modes, players can spend a lot of time engaging in competitive and fun modes. 
-They work great as a way to pass the time. 
+These work great as a way to pass the time. 
 You can enable or disable any of these modes in the config. 
-Every mode has their own leaderboard.
+Every mode has its own leaderboard.
 
 **Default**
 
@@ -35,7 +35,8 @@ https://youtu.be/z05W-72XrIc
 
 **Obstacle**
 
-In this mode, obstacles are randomly generated. To avoid being reset, the player has to pass these obstacles.
+In this mode, obstacles are randomly generated. 
+To avoid being reset, the player has to pass these obstacles.
 
 https://youtu.be/K43cBPN4IK0
 

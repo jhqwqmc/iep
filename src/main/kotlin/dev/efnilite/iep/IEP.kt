@@ -33,7 +33,7 @@ class IEP : ViPlugin() {
         stopping = false
 
         registerListener(Events())
-        registerCommand("iep", Command())
+        registerCommand("iep", Command)
 
         saveFile("schematics/spawn-island")
 
@@ -134,6 +134,10 @@ class IEP : ViPlugin() {
         private val modes: MutableList<Mode> = mutableListOf()
 
         fun registerMode(mode: Mode) {
+            if (!Config.CONFIG.getBoolean("mode-settings.${mode.name.replace(" ", "-")}.enabled")) {
+                return
+            }
+
             log("Registered mode ${mode.name}")
 
             modes.add(mode)
