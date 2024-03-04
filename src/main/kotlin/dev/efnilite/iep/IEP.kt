@@ -32,7 +32,7 @@ class IEP : ViPlugin() {
         instance = this
         stopping = false
 
-        registerListener(Events())
+        registerListener(Events)
         registerCommand("iep", Command)
 
         saveFile("schematics/spawn-island")

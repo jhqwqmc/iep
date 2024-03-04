@@ -129,6 +129,11 @@ settings:
     lore: "<gray>Geselecteerd <white>%a||<gray>Klik om de taal te veranderen."
 
 leaderboards:
+  head:
+    material: "player_head"
+    name: "<white><bold>#%s - %s"
+    lore: "<gray>Score <white>%s||<gray>Tijd <white>%s||<gray>Seed <white>%s"
+
   sort:
     material: "bookshelf"
     name: "<#DEA11F><bold>Gesorteerd op %s"

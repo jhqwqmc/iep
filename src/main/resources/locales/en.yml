@@ -129,6 +129,11 @@ settings:
     lore: "<gray>Currently <white>%a||<gray>Click to change the language."
 
 leaderboards:
+  head:
+    material: "player_head"
+    name: "<white><bold>#%s - %s"
+    lore: "<gray>Score <white>%s||<gray>Time <white>%s||<gray>Seed <white>%s"
+
   sort:
     material: "bookshelf"
     name: "<#DEA11F><bold>Sorted by %s"

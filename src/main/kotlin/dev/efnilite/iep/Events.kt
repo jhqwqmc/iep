@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.EquipmentSlot
 
-class Events : EventWatcher {
+object Events : EventWatcher {
 
     @EventHandler
     fun drop(event: PlayerDropItemEvent) {

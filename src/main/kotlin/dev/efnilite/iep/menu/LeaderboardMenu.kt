@@ -63,10 +63,8 @@ private object SingleLeaderboardMenu {
         for ((idx, entry) in sort.sort(leaderboard.getAllScores()).withIndex()) {
             val (uuid, score) = entry
 
-            val item = Item(Material.PLAYER_HEAD, "<white><bold>#${idx + 1} - ${score.name}")
-                .lore("<gray>Score <white>${mode.formatDisplayScore(score.score)}",
-                    "<gray>Time <white>${score.getFormattedTime()}",
-                    "<gray>Seed <white>${score.seed}")
+            val item = Locales.getItem(player, "leaderboards.head", (idx + 1).toString(), score.name,
+                mode.formatDisplayScore(score.score), score.getFormattedTime(), score.seed.toString())
 
             // prevent crashes from fetching all the skulls at once
             if (idx <= 36) {
