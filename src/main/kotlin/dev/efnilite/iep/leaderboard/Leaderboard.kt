@@ -3,7 +3,6 @@ package dev.efnilite.iep.leaderboard
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.storage.Storage
 import dev.efnilite.vilib.util.Task
-import java.io.File
 import java.util.*
 
 /**
@@ -12,12 +11,8 @@ import java.util.*
 data class Leaderboard(val name: String) {
 
     val data = mutableMapOf<UUID, Score>()
-    private val file = File(IEP.instance.dataFolder, "leaderboards/$name.json")
 
     init {
-        file.parentFile.mkdirs()
-        file.createNewFile()
-
         load()
     }
 

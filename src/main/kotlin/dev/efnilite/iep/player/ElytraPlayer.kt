@@ -27,18 +27,12 @@ import java.util.concurrent.ThreadLocalRandom
  */
 class ElytraPlayer(val player: Player, private val data: PreviousData = PreviousData(player)) {
 
-    /**
-     * The player's position.
-     */
     val position
         get() = player.location.toVector()
 
     val name = player.name
     val uuid = player.uniqueId
 
-    /**
-     * The player's previous position.
-     */
     private val board = FastBoard(player)
 
     /**
@@ -159,6 +153,9 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
         return Storage.load(uuid) ?: DEFAULT_SETTINGS
     }
 
+    /**
+     * Adds a reward to the player's settings.
+     */
     fun addReward(mode: Mode, reward: Reward) {
         val set = data.leaveRewards[mode] ?: mutableSetOf()
 

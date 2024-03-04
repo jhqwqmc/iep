@@ -6,7 +6,6 @@ import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.util.Cooldowns
-import io.papermc.lib.PaperLib
 import org.bukkit.entity.Player
 
 object PlayMenu {

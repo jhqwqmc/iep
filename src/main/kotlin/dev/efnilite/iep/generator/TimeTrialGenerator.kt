@@ -23,7 +23,7 @@ class TimeTrialGenerator : Generator() {
     }
 
     private fun getProgressBar(t: Double): String {
-        return (0 until ACTIONBAR_LENGTH)
+        return (0..<ACTIONBAR_LENGTH)
             .map { if (it * INCREMENTS < t) return@map "<green><bold>|" else return@map "<reset><dark_gray>|" }
             .joinToString("") { it }
     }

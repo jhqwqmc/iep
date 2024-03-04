@@ -16,44 +16,44 @@ import org.bukkit.entity.Player
 
 object Command : ViCommand() {
 
-    override fun execute(player: CommandSender, args: Array<out String>): Boolean {
-        if (player !is Player) return false
-
-        if (args.isEmpty()) {
-            player.send("")
-            player.send("<dark_gray>= <gradient:#4800FF:#B200FF><bold>Infinite Elytra Parkour</bold></gradient> <dark_gray>=")
-            player.send("")
-            player.send("<#7700FF>/iep play <dark_gray>- <gray>Opens the play menu")
-            player.send("<#7700FF>/iep leaderboards <dark_gray>- <gray>Opens the leaderboards menu")
-            player.send("<#7700FF>/iep settings <dark_gray>- <gray>Opens the settings menu")
-            player.send("<#7700FF>/iep leave <dark_gray>- <gray>Leaves the game")
-            player.send("<#7700FF>/iep seed <seed> <dark_gray>- <gray>Set the current seed")
-            player.send("")
+    override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        if (sender !is Player || args.isEmpty()) {
+            with(sender) {
+                send("")
+                send("<dark_gray>= <gradient:#4800FF:#B200FF><bold>Infinite Elytra Parkour</bold></gradient> <dark_gray>=")
+                send("")
+                send("<#7700FF>/iep play <dark_gray>- <gray>Opens the play menu")
+                send("<#7700FF>/iep leaderboards <dark_gray>- <gray>Opens the leaderboards menu")
+                send("<#7700FF>/iep settings <dark_gray>- <gray>Opens the settings menu")
+                send("<#7700FF>/iep leave <dark_gray>- <gray>Leaves the game")
+                send("<#7700FF>/iep seed <seed> <dark_gray>- <gray>Set the current seed")
+                send("")
+            }
 
             return true
         }
 
         when (args[0]) {
             "play" -> {
-                if (Config.CONFIG.getBoolean("permissions") && !player.hasPermission("iep.play")) {
+                if (Config.CONFIG.getBoolean("permissions") && !sender.hasPermission("iep.play")) {
                     return true
                 }
 
-                PlayMenu.open(player)
+                PlayMenu.open(sender)
 
                 return true
             }
             "leaderboards" -> {
-                if (Config.CONFIG.getBoolean("permissions") && !player.hasPermission("iep.leaderboard")) {
+                if (Config.CONFIG.getBoolean("permissions") && !sender.hasPermission("iep.leaderboard")) {
                     return true
                 }
 
-                LeaderboardMenu.open(player)
+                LeaderboardMenu.open(sender)
 
                 return true
             }
             "settings" -> {
-                val ep = player.asElytraPlayer() ?: return true
+                val ep = sender.asElytraPlayer() ?: return true
 
                 if (ep.hasPermission("iep.setting")) {
                     return true
@@ -62,9 +62,9 @@ object Command : ViCommand() {
                 SettingsMenu.open(ep)
             }
             "leave" -> {
-                val ep = player.asElytraPlayer() ?: return true
+                val ep = sender.asElytraPlayer() ?: return true
 
-                if (player.hasPermission("iep.leave")) {
+                if (sender.hasPermission("iep.leave")) {
                     return true
                 }
 
@@ -75,11 +75,11 @@ object Command : ViCommand() {
         if (args.size > 1) {
             when (args[0].lowercase()) {
                 "seed" -> {
-                    if (!Cooldowns.canPerform(player, "iep set seed", 1000)) {
+                    if (!Cooldowns.canPerform(sender, "iep set seed", 1000)) {
                         return true
                     }
 
-                    val iep = player.asElytraPlayer() ?: return true
+                    val iep = sender.asElytraPlayer() ?: return true
 
                     try {
                         val seed = args[1].toInt()
@@ -89,9 +89,9 @@ object Command : ViCommand() {
                         iep.getGenerator().set { settings -> Settings(settings, seed = seed) }
                         iep.getGenerator().reset(ResetReason.RESET, s = seed)
 
-                        iep.send(Locales.getString(player, "settings.seed.set").replace("%a", args[1]))
+                        iep.send(Locales.getString(sender, "settings.seed.set").replace("%a", args[1]))
                     } catch (ex: NumberFormatException) {
-                        iep.send(Locales.getString(player, "settings.seed.invalid").replace("%a", args[1]))
+                        iep.send(Locales.getString(sender, "settings.seed.invalid").replace("%a", args[1]))
                     }
                 }
             }
@@ -104,5 +104,5 @@ object Command : ViCommand() {
         return emptyList()
     }
 
-    private fun Player.send(message: String) = sendMessage(Strings.colour(message))
+    private fun CommandSender.send(message: String) = sendMessage(Strings.colour(message))
 }

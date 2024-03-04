@@ -34,11 +34,12 @@ data class PreviousData(private val player: Player) {
 
         with(player) {
             PaperLib.teleportAsync(this, vector.toLocation(World.world)).thenRun {
-                resetPlayerTime()
-                activePotionEffects.forEach { removePotionEffect(it.type) }
-
                 gameMode = GameMode.ADVENTURE
                 isInvulnerable = true
+                fallDistance = 0F
+
+                resetPlayerTime()
+                activePotionEffects.forEach { removePotionEffect(it.type) }
 
                 inventory.clear()
 
@@ -69,6 +70,8 @@ data class PreviousData(private val player: Player) {
     private fun reset() {
         with(player) {
             isInvulnerable = false
+            fallDistance = 0F
+
             gameMode = gamemode
             inventory.contents = inventoryContents
 

@@ -53,11 +53,11 @@ class MinSpeedGenerator : Generator() {
     private fun getAboveBar(speed: Double): String {
         val barAmount = ceil((speed - MIN_SPEED) / INCREMENTS).toInt()
 
-        return (0 until barAmount).joinToString("") { "<green><bold>|" }
+        return (0..<barAmount).joinToString("") { "<green><bold>|" }
     }
 
     private fun getProgressBar(t: Double): String {
-        return (0 until ACTIONBAR_LENGTH)
+        return (0..<ACTIONBAR_LENGTH)
             .map { if (it * INCREMENTS < t) return@map "<red>|" else return@map "<reset><dark_gray>|" }
             .joinToString("") { it }
     }
