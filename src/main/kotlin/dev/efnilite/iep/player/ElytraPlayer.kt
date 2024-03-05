@@ -39,7 +39,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * Joins a [Mode].
      */
     fun join(mode: Mode) {
-        IEP.log("Creating generator for ${player.name}, mode = ${mode.name}")
+        IEP.log("Creating generator for ${player.name} with mode ${mode.name}")
 
         val generator = mode.getGenerator()
 
@@ -47,9 +47,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
         val at = Divider.add(generator)
 
-        data.setup(at)
-
-        generator.start(mode, at, mode.pointType)
+        data.setup(at).thenRun { generator.start(mode, at, mode.pointType) }
     }
 
     /**

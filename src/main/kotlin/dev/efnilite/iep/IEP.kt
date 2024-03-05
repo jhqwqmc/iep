@@ -12,6 +12,7 @@ import dev.efnilite.iep.style.Style
 import dev.efnilite.iep.world.Divider
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.ViPlugin
+import dev.efnilite.vilib.bstats.bukkit.Metrics
 import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Logging
@@ -66,6 +67,8 @@ class IEP : ViPlugin() {
         }
         
         PaperLib.suggestPaper(this, Level.WARNING)
+
+        Metrics(this, 21243)
 
         Task.create(this)
             .async()
