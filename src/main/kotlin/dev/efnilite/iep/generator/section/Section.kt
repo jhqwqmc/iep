@@ -79,11 +79,11 @@ class Section {
     /**
      * Generates the section's points.
      */
-    fun generate(settings: Settings, pointType: PointType, blocksPerTick: Int = BLOCKS_PER_TICK) {
+    fun generate(settings: Settings, pointType: PointType, blocksPerTick: Int = BLOCKS_PER_TICK, delay: Int = 0) {
         val world = World.world
         val style = settings.style.asStyle()
 
-        builder = AsyncBuilder(blocksPerTick) {
+        builder = AsyncBuilder(blocksPerTick, delay) {
             points.flatMap { pointType.getPoints(it, settings.radius) }
                 .map { it.toLocation(world).block }
                 .associateWith { style.next() }
@@ -93,7 +93,7 @@ class Section {
     fun clear() {
         builder.cancel()
 
-        AsyncBuilder(BLOCKS_PER_TICK) { builder.blocks.associateWith { Material.AIR } }
+        AsyncBuilder(BLOCKS_PER_TICK, 0) { builder.blocks.associateWith { Material.AIR } }
     }
 
     private fun generatePoints(): List<Vector> {

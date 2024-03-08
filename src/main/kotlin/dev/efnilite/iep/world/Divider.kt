@@ -14,7 +14,7 @@ object Divider {
 
     private val sections = mutableMapOf<Generator, Int>()
 
-    val size = Vector(20000, 250, 20000)
+    val size = Vector(100_000, 250, 100_000)
     val generators: Set<Generator>
         get() = sections.keys
 
