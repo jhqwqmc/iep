@@ -14,7 +14,7 @@ object SpeedDemonMode : Mode {
     override fun getGenerator() = SpeedDemonGenerator()
 
     override fun formatDisplayScore(score: Double): String {
-        return if (Config.CONFIG.getBoolean("metric")) {
+        return if (Config.CONFIG.getBoolean("settings.metric.default")) {
             "${(score * 3.6).pretty()} km/h"
         } else {
             "${(score * 2.23694).pretty()} mph"

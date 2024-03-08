@@ -109,18 +109,26 @@ object Command : ViCommand() {
                 "schematic" -> {
                     if (!sender.isOp) return true
 
-                    val pos1Nums = args[1].split(",").map { it.toInt() }
-                    val pos2Nums = args[2].split(",").map { it.toInt() }
+                    try {
+                        val pos1Nums = args[1].split(",").map { it.toInt() }
+                        val pos2Nums = args[2].split(",").map { it.toInt() }
 
-                    val pos1 = Vector(pos1Nums[0], pos1Nums[1], pos1Nums[2]).toLocation(sender.world)
-                    val pos2 = Vector(pos2Nums[0], pos2Nums[1], pos2Nums[2]).toLocation(sender.world)
+                        val pos1 = Vector(pos1Nums[0], pos1Nums[1], pos1Nums[2]).toLocation(sender.world)
+                        val pos2 = Vector(pos2Nums[0], pos2Nums[1], pos2Nums[2]).toLocation(sender.world)
 
-                    val uuid = UUID.randomUUID()
-                    val file = File(IEP.instance.dataFolder, "schematics/$uuid")
+                        val uuid = UUID.randomUUID()
+                        val file = File(IEP.instance.dataFolder, "schematics/$uuid")
 
-                    sender.send("<gray>Saving your schematic as $uuid...")
+                        sender.send("<gray>Saving your schematic as $uuid")
 
-                    Schematic.create().save(file, pos1, pos2, IEP.instance)
+                        Schematic.create().save(file, pos1, pos2, IEP.instance)
+                    } catch (ex: NumberFormatException) {
+                        sender.send("<red>Invalid position format.")
+                        return true
+                    } catch (ex: IndexOutOfBoundsException) {
+                        sender.send("<red>You need two positions to save the schematic.")
+                        return true
+                    }
                 }
             }
         }

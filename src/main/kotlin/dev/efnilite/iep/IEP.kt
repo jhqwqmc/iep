@@ -107,11 +107,11 @@ class IEP : ViPlugin() {
     override fun disable() {
         stopping = true
 
-        try {
-            for (generator in HashSet(Divider.generators)) {
-                generator.players.forEach { it.leave() }
-            }
+        for (generator in HashSet(Divider.generators)) {
+            generator.players.forEach { it.leave() }
+        }
 
+        try {
             getModes().forEach { it.leaderboard.save() }
 
             World.delete()

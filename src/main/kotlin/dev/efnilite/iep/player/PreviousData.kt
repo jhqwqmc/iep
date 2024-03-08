@@ -1,5 +1,6 @@
 package dev.efnilite.iep.player
 
+import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward
@@ -60,7 +61,7 @@ data class PreviousData(private val player: Player) {
      * Resets the player's data.
      */
     fun reset(switchMode: Boolean) {
-        if (switchMode) {
+        if (switchMode || IEP.stopping) {
             reset()
         } else {
             PaperLib.teleportAsync(player, position).thenRun { reset() }
