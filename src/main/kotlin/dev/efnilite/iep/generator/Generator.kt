@@ -251,8 +251,8 @@ open class Generator {
         }
 
         if (section.isNearKnot(pos, 0) && section.end.y < 25) {
-            val toStart = island.blockSpawn.clone().subtract(section.beginning)
-            val cloned = section.clone(toStart)
+            val offset = Vector(0, 200, 0)
+            val cloned = section.clone(offset)
 
             sections[idx + 1] = cloned
 
@@ -260,7 +260,7 @@ open class Generator {
 
             cloned.generate(settings, pointType, 100)
 
-            resetTo = toStart
+            resetTo = offset
 
             return
         }
@@ -356,7 +356,7 @@ open class Generator {
 
             Task.create(IEP.instance).delay(1).execute { section.generate(settings, pointType) }.run()
 
-            section.awaitChunks().thenApply { chunks.putAll(it) }
+//            section.awaitChunks().thenApply { chunks.putAll(it) }
 
             return
         }
@@ -368,7 +368,7 @@ open class Generator {
 
         val section = Section(end, random)
 
-        section.awaitChunks().thenApply { chunks.putAll(it) }
+//        section.awaitChunks().thenApply { chunks.putAll(it) }
 
         sections[idx + 1] = section
 
