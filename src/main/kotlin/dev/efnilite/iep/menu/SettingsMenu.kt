@@ -1,6 +1,7 @@
 package dev.efnilite.iep.menu
 
 import dev.efnilite.iep.IEP
+import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.generator.ResetReason
 import dev.efnilite.iep.generator.Settings
@@ -19,7 +20,7 @@ object SettingsMenu {
         val generator = player.getGenerator()
         val settings = generator.settings
 
-        if (player.hasPermission("iep.setting.style")) {
+        if (canSee(player, "style")) {
             val style = settings.style.asStyle()
 
             menu.item(
@@ -30,7 +31,7 @@ object SettingsMenu {
             )
         }
 
-        if (player.hasPermission("iep.setting.radius")) {
+        if (canSee(player, "radius")) {
             val item = Locales.getItem(player, "settings.radius", settings.radius.toString())
                 .amount(generator.settings.radius)
 
@@ -60,7 +61,7 @@ object SettingsMenu {
             )
         }
 
-        if (player.hasPermission("iep.setting.time")) {
+        if (canSee(player, "time")) {
             val item = Locales.getItem(player, "settings.time", settings.time.toString())
 
             menu.item(
@@ -89,7 +90,7 @@ object SettingsMenu {
             )
         }
 
-        if (player.hasPermission("iep.setting.seed")) {
+        if (canSee(player, "seed")) {
             val seed = if (settings.seed == -1) Locales.getString(player, "settings.seed.random") else generator.seed.toString()
 
             menu.item(12, Locales.getItem(player, "settings.seed", seed)
@@ -100,7 +101,7 @@ object SettingsMenu {
                 }))
         }
 
-        if (player.hasPermission("iep.setting.locale")) {
+        if (canSee(player, "locale")) {
             val locales = Locales.getLocales().toList()
             val item = SliderItem()
                 .initial(locales.indexOf(settings.locale))
@@ -126,7 +127,7 @@ object SettingsMenu {
             menu.item(13, item)
         }
 
-        if (player.hasPermission("iep.setting.fall")) {
+        if (canSee(player, "fall")) {
             menu.item(
                 19,
                 getBooleanItem(player, "settings.fall", settings.fall)
@@ -136,7 +137,7 @@ object SettingsMenu {
                     }))
         }
 
-        if (player.hasPermission("iep.setting.info")) {
+        if (canSee(player, "info")) {
             menu.item(
                 20,
                 getBooleanItem(player, "settings.info", settings.info)
@@ -147,7 +148,7 @@ object SettingsMenu {
         }
 
 
-        if (player.hasPermission("iep.setting.metric")) {
+        if (canSee(player, "metric")) {
             menu.item(
                 21,
                 getBooleanItem(player, "settings.metric", settings.metric)
@@ -159,6 +160,11 @@ object SettingsMenu {
 
         menu.item(32, Locales.getItem(player, "go back").click({ player.player.closeInventory() }))
             .open(player.player)
+    }
+
+    private fun canSee(player: ElytraPlayer, setting: String): Boolean {
+        return Config.CONFIG.getBoolean("settings.$setting.enabled") &&
+            player.hasPermission("iep.setting.$setting")
     }
 
     private fun getBooleanItem(player: ElytraPlayer, path: String, boolean: Boolean): Item {

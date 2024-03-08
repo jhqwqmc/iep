@@ -183,13 +183,13 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
         val DEFAULT_SETTINGS
             get() = Settings(locale = Locales.getLocales().first(),
-                metric = true,
+                metric = Config.CONFIG.getBoolean("settings.metric.default"),
                 style = IEP.getStyles().first().name(),
-                radius = 5,
-                time = 0,
-                seed = ThreadLocalRandom.current().nextInt(0, Generator.SEED_BOUND),
-                info = false,
-                fall = true,
+                radius = Config.CONFIG.getInt("settings.radius.default") { it in 3..6 },
+                time = Config.CONFIG.getInt("settings.time.default") { it in 0..<24000 },
+                seed = Config.CONFIG.getInt("settings.seed.default") { it in -1..1_000_000 },
+                info = Config.CONFIG.getBoolean("settings.info.default"),
+                fall = Config.CONFIG.getBoolean("settings.fall.default"),
                 rewards = mutableSetOf())
 
         fun Player.asElytraPlayer(): ElytraPlayer? {

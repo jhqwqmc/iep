@@ -58,7 +58,7 @@ class IEP : ViPlugin() {
         registerMode(ObstacleMode)
 
         if (server.pluginManager.isPluginEnabled("PlaceholderAPI")) {
-            log("Registered Papi Hook")
+            log("Registered PlaceholderAPI Hook")
             papiHook = PapiHook
             PapiHook.register()
         }
