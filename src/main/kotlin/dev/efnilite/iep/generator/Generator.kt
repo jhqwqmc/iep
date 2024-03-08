@@ -354,7 +354,7 @@ open class Generator {
 
             IEP.log("Generating section at 0")
 
-            Task.create(IEP.instance).delay(1).execute { section.generate(settings, pointType) }.run()
+            section.generate(settings, pointType, delay = 1)
 
 //            section.awaitChunks().thenApply { chunks.putAll(it) }
 

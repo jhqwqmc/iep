@@ -15,6 +15,7 @@ import java.util.*
  */
 class AsyncBuilder(
     private val blocksPerTick: Int,
+    private val delay: Int,
     map: () -> Map<Block, Material>
 ) {
 
@@ -43,6 +44,7 @@ class AsyncBuilder(
 
         task = Task.create(IEP.instance)
             .repeat(1)
+            .delay(delay)
             .execute(
                 object : BukkitRunnable() {
                     override fun run() {
