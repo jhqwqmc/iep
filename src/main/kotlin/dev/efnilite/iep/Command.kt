@@ -71,7 +71,7 @@ object Command : ViCommand() {
             "settings" -> {
                 val ep = sender.asElytraPlayer() ?: return true
 
-                if (ep.hasPermission("iep.setting")) {
+                if (!ep.hasPermission("iep.setting")) {
                     return true
                 }
 
@@ -80,7 +80,7 @@ object Command : ViCommand() {
             "leave" -> {
                 val ep = sender.asElytraPlayer() ?: return true
 
-                if (sender.hasPermission("iep.leave")) {
+                if (!ep.hasPermission("iep.leave")) {
                     return true
                 }
 
@@ -179,6 +179,10 @@ object Command : ViCommand() {
     private fun CommandSender.send(message: String) = sendMessage(Strings.colour(message))
 
     private fun CommandSender.hasTPermission(permission: String): Boolean {
-        return Config.CONFIG.getBoolean("permissions") && !hasPermission(permission)
+        if (Config.CONFIG.getBoolean("permissions")) {
+            return hasPermission(permission)
+        }
+
+        return true
     }
 }

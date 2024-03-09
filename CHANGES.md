@@ -1,2 +1,3 @@
 - Fixed error on disable if nobody joined while the server was enabled
-- 
+- Fixed default settings for locale and style not applying
+- Fixed permissions handling for all commands
