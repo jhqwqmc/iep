@@ -1,0 +1,2 @@
+- Fixed error on disable if nobody joined while the server was enabled
+- 

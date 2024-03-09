@@ -107,16 +107,16 @@ class IEP : ViPlugin() {
     override fun disable() {
         stopping = true
 
-        for (generator in HashSet(Divider.generators)) {
-            generator.players.forEach { it.leave() }
-        }
-
         try {
+            for (generator in HashSet(Divider.generators)) {
+                generator.players.forEach { it.leave() }
+            }
+
             getModes().forEach { it.leaderboard.save() }
 
             World.delete()
         } catch (_: Exception) {
-            // weird errors that don't seem to matter... too bad!
+            // for no class found errors if nobody has joined yet
         }
     }
 
