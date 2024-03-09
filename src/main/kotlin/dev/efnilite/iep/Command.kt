@@ -137,8 +137,7 @@ object Command : ViCommand() {
     }
 
     override fun tabComplete(sender: CommandSender, args: Array<out String>): List<String> {
-
-        if (sender !is Player || args.isEmpty()) {
+        if (args.size == 1) {
             val list = mutableListOf<String>()
 
             if (sender.hasTPermission("iep.play")) list.add("play")
@@ -152,17 +151,17 @@ object Command : ViCommand() {
 
         return when (args[0].lowercase()) {
             "schematic" -> {
-                if (!sender.isOp) return emptyList()
+                if (!sender.isOp || sender !is Player) return emptyList()
 
                 return when (args.size) {
-                    1 -> {
+                    2 -> {
                         val x = sender.location.blockX
                         val y = sender.location.blockY
                         val z = sender.location.blockZ
 
                         return listOf("$x,$y,$z")
                     }
-                    2 -> {
+                    3 -> {
                         val x = sender.location.blockX
                         val y = sender.location.blockY
                         val z = sender.location.blockZ
