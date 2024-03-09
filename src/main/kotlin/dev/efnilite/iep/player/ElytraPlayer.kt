@@ -182,9 +182,9 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     companion object {
 
         val DEFAULT_SETTINGS
-            get() = Settings(locale = Locales.getLocales().first(),
+            get() = Settings(locale = Config.CONFIG.getString("settings.locale.default"),
                 metric = Config.CONFIG.getBoolean("settings.metric.default"),
-                style = IEP.getStyles().first().name(),
+                style = Config.CONFIG.getString("settings.style.default"),
                 radius = Config.CONFIG.getInt("settings.radius.default") { it in 3..6 },
                 time = Config.CONFIG.getInt("settings.time.default") { it in 0..<24000 },
                 seed = Config.CONFIG.getInt("settings.seed.default") { it in -1..1_000_000 },
