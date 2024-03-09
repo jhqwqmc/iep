@@ -428,7 +428,8 @@ open class Generator {
             leaderboard.update(it.uuid, score)
 
             if (settings.fall) {
-                Locales.getStringList(it, "reset.lines").map { line -> updateLine(line, score, resetReason) }
+                Locales.getStringList(it, "reset.lines")
+                    .map { line -> updateLine(it, line, score, resetReason) }
                     .forEach { line -> it.send(line) }
             }
         }
@@ -468,12 +469,12 @@ open class Generator {
         chunks.clear()
     }
 
-    private fun updateLine(line: String, score: Score, resetReason: ResetReason): String {
+    private fun updateLine(player: ElytraPlayer, line: String, score: Score, resetReason: ResetReason): String {
         return line.replace("%score%", score.score.pretty())
             .replace("%high-score%", getHighScore().score.pretty())
             .replace("%time%", score.getFormattedTime())
             .replace("%seed%", score.seed.toString())
-            .replace("%reason%", Locales.getString(settings.locale, "reset.reasons.${resetReason.name.lowercase()}"))
+            .replace("%reason%", Locales.getString(player, "reset.reasons.${resetReason.name.lowercase()}"))
     }
 
     /**

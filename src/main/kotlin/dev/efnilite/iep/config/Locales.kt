@@ -118,7 +118,10 @@ object Locales {
         }
     }
 
-    private fun getLocale(player: Player) = player.asElytraPlayer()?.getGenerator()?.settings?.locale ?: locales.keys.first()
+    private fun getLocale(player: Player): String {
+        return player.asElytraPlayer()?.getGenerator()?.settings?.locale
+            ?: Config.CONFIG.getString("settings.locale.default")
+    }
 
     fun getString(player: Player, path: String): String {
         return getString(getLocale(player), path)
@@ -128,7 +131,7 @@ object Locales {
         return getString(player.getGenerator().settings.locale, path)
     }
 
-    fun getString(locale: String, path: String): String {
+    private fun getString(locale: String, path: String): String {
         return Strings.colour(getValue(
             locale,
             Function<FileConfiguration, String> { config: FileConfiguration -> config.getString(path) },
@@ -165,9 +168,7 @@ object Locales {
     }
 
     fun getItem(player: Player, path: String, vararg replace: String): Item {
-        val locale = player.asElytraPlayer()?.getGenerator()?.settings?.locale ?: locales.keys.first()
-
-        return getItem(locale, path, *replace)
+        return getItem(getLocale(player), path, *replace)
     }
 
     private val pattern: Pattern = Pattern.compile("%[a-z]")

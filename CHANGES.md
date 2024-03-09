@@ -1,5 +1,2 @@
-- Fixed players getting stuck in the parkour world when they disconnect or server stopped
-- Fixed error on disable if nobody joined while the server was enabled
-- Fixed default settings for locale and style not applying
-- Fixed permissions handling for all commands
-- Fixed command completions
+- Fixed default language being incorrect for play and leaderboards menu
+- Fixed buggy settings in settings menu
