@@ -60,12 +60,20 @@ data class PreviousData(private val player: Player) {
     /**
      * Resets the player's data.
      */
-    fun reset(switchMode: Boolean) {
-        if (switchMode || IEP.stopping) {
+    fun reset(switchMode: Boolean, urgent: Boolean) {
+        if (switchMode) {
             reset()
-        } else {
-            PaperLib.teleportAsync(player, position).thenRun { reset() }
+
+            return
         }
+        if (urgent) {
+            player.teleport(position)
+            reset()
+
+            return
+        }
+
+        PaperLib.teleportAsync(player, position).thenRun { reset() }
     }
 
     private fun reset() {

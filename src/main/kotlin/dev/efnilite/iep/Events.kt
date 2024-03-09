@@ -29,7 +29,7 @@ object Events : EventWatcher {
     fun quit(event: PlayerQuitEvent) {
         val player = event.player.asElytraPlayer() ?: return
 
-        player.leave()
+        player.leave(urgent = true)
     }
 
     @EventHandler

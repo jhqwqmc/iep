@@ -53,10 +53,10 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     /**
      * Leaves the current mode.
      */
-    fun leave(switchMode: Boolean = false) {
+    fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
         getGenerator().remove(this)
 
-        data.reset(switchMode)
+        data.reset(switchMode, urgent)
 
         if (switchMode) return
 
