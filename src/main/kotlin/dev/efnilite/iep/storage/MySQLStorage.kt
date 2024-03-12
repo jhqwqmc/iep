@@ -100,15 +100,15 @@ object MySQLStorage {
             null
         } else {
             Settings(
-                locale = settings!!.locale,
-                style = settings!!.style,
-                radius = settings!!.radius,
-                time = settings!!.time,
-                seed = settings!!.seed,
-                fall = settings!!.fall,
-                metric = settings!!.metric,
-                info = settings!!.info,
-                rewards = settings!!.rewards.let {
+                locale = settings?.locale!!,
+                style = settings?.style!!,
+                radius = settings?.radius!!,
+                time = settings?.time!!,
+                seed = settings?.seed!!,
+                fall = settings?.fall!!,
+                metric = settings?.metric!!,
+                info = settings?.info!!,
+                rewards = settings?.rewards!!.let {
                     return@let if (it.isNotEmpty()) {
                         it.split(",").map { n -> n.toInt() }.toMutableSet()
                     } else {
@@ -145,15 +145,26 @@ object MySQLStorage {
                 .executeAndFetch(SqlScore::class.java)
 
             for (score in scores) {
-                leaderboard.data[UUID.fromString(score.uuid)] = Score(score.name, score.score, score.time, score.seed)
+                leaderboard.data[UUID.fromString(score.uuid)] = Score(score.name!!, score.score!!, score.time!!, score.seed!!)
             }
 
             transaction.commit()
         }
     }
 
-    private class SqlSettings(val uuid: UUID, val locale: String, val style: String, val radius: Int,
-                              val time: Int, val seed: Int, val fall: Boolean, val metric: Boolean,
-                              val info: Boolean, val rewards: String)
-    private class SqlScore(val uuid: String, val name: String, val score: Double, val time: Long, val seed: Int)
+    private class SqlSettings(val uuid: UUID?, val locale: String?, val style: String?, val radius: Int?,
+                              val time: Int?, val seed: Int?, val fall: Boolean?, val metric: Boolean?,
+                              val info: Boolean?, val rewards: String?) {
+
+        @Suppress("unused")
+        constructor() : this(null, null, null, null, null, null, null, null, null, null)
+
+    }
+
+    private class SqlScore(val uuid: String?, val name: String?, val score: Double?, val time: Long?, val seed: Int?) {
+
+        @Suppress("unused")
+        constructor() : this(null, null, null, null, null)
+
+    }
 }

@@ -92,7 +92,7 @@ settings:
   radius:
     material: "blaze_powder"
     name: "<#ff9900><bold>Radius"
-    lore: "<gray>Geselecteerd <white>%a||<gray>Klik om de (circel)radius te veranderen."
+    lore: "<gray>Geselecteerd <white>%a||<gray>Klik om de (cirkel)radius te veranderen."
 
   time:
     material: "clock"

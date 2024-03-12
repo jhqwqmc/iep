@@ -33,25 +33,28 @@ object SettingsMenu {
 
         if (canSee(player, "radius")) {
             val item = Locales.getItem(player, "settings.radius", settings.radius.toString())
-                .amount(generator.settings.radius)
 
             menu.item(
                 10, SliderItem()
                     .initial(generator.settings.radius - 3)
                     .add(0, item) {
                         generator.set { settings -> Settings(settings, radius = 3) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(1, item) {
                         generator.set { settings -> Settings(settings, radius = 4) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(2, item) {
                         generator.set { settings -> Settings(settings, radius = 5) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(3, item) {
                         generator.set { settings -> Settings(settings, radius = 6) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
             )
@@ -65,18 +68,22 @@ object SettingsMenu {
                     .initial(settings.time / 6000)
                     .add(0, item) {
                         generator.set { settings -> Settings(settings, time = 0) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(1, item) {
                         generator.set { settings -> Settings(settings, time = 6000) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(2, item) {
                         generator.set { settings -> Settings(settings, time = 12000) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
                     .add(3, item) {
                         generator.set { settings -> Settings(settings, time = 18000) }
+                        Task.create(IEP.instance).delay(1).execute { open(player) }.run()
                         return@add true
                     }
             )

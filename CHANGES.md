@@ -1,2 +1,3 @@
 - Fixed default language being incorrect for play and leaderboards menu
-- Fixed buggy settings in settings menu
+- Fixed Dutch translation typo
+- Fixed MySQL error
