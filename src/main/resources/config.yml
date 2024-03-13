@@ -29,6 +29,7 @@ mysql:
   url: "localhost:3306/iep"
   username: "username"
   password: "password"
+  prefix: ""
 
 # -= Mode settings =-
 mode-settings:

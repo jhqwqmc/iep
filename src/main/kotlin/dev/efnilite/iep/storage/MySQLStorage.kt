@@ -9,6 +9,7 @@ import java.util.*
 
 object MySQLStorage {
 
+    private val prefix = Config.CONFIG.getString("mysql.prefix")
     private lateinit var sql2o: Sql2o
 
     init {
@@ -21,7 +22,7 @@ object MySQLStorage {
         }
 
         sql2o.beginTransaction().use { it.createQuery("""
-            CREATE TABLE IF NOT EXISTS settings (
+            CREATE TABLE IF NOT EXISTS `${prefix}settings` (
                 uuid CHAR(36) PRIMARY KEY,
                 locale VARCHAR(5),
                 style VARCHAR(32),
@@ -39,7 +40,7 @@ object MySQLStorage {
 
     fun init(leaderboard: Leaderboard) {
         sql2o.beginTransaction().use { it.createQuery("""
-            CREATE TABLE IF NOT EXISTS `${leaderboard.name}` (
+            CREATE TABLE IF NOT EXISTS `$prefix${leaderboard.name}` (
                 uuid CHAR(36) PRIMARY KEY,
                 name VARCHAR(32),
                 score DOUBLE,
@@ -56,7 +57,7 @@ object MySQLStorage {
     fun save(uuid: UUID, settings: Settings) {
         sql2o.beginTransaction().use {
             it.createQuery("""
-                INSERT INTO settings (uuid, locale, style, radius, time, seed, fall, metric, info, rewards) 
+                INSERT INTO `${prefix}settings` (uuid, locale, style, radius, time, seed, fall, metric, info, rewards) 
                 VALUES (:uuid, :locale, :style, :radius, :time, :seed, :fall, :metric, :info, :rewards)
                 ON DUPLICATE KEY UPDATE
                 locale = VALUES(locale),
@@ -89,7 +90,7 @@ object MySQLStorage {
         var settings: SqlSettings?
 
         sql2o.beginTransaction().use {
-            settings = it.createQuery("SELECT * FROM settings WHERE uuid = :uuid")
+            settings = it.createQuery("SELECT * FROM `${prefix}settings` WHERE uuid = :uuid")
                 .addParameter("uuid", uuid.toString())
                 .executeAndFetch(SqlSettings::class.java).getOrNull(0)
 
@@ -123,7 +124,7 @@ object MySQLStorage {
         sql2o.beginTransaction().use {
             for ((uuid, score) in leaderboard.data) {
                 it.createQuery("""
-                    INSERT INTO `${leaderboard.name}` (uuid, name, score, time, seed) 
+                    INSERT INTO `${prefix}${leaderboard.name}` (uuid, name, score, time, seed) 
                     VALUES (:uuid, :name, :score, :time, :seed)
                     ON DUPLICATE KEY UPDATE
                     name = VALUES(name),
@@ -141,7 +142,7 @@ object MySQLStorage {
 
     fun load(leaderboard: Leaderboard) {
         sql2o.beginTransaction().use { transaction ->
-            val scores = transaction.createQuery("SELECT * FROM `${leaderboard.name}`")
+            val scores = transaction.createQuery("SELECT * FROM `${prefix}${leaderboard.name}`")
                 .executeAndFetch(SqlScore::class.java)
 
             for (score in scores) {

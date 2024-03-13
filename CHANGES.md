@@ -1,3 +1,2 @@
-- Fixed default language being incorrect for play and leaderboards menu
-- Fixed Dutch translation typo
-- Fixed MySQL error
+- Added config option for MySQL prefix
+- Fixed some titles not being translatable
