@@ -27,36 +27,51 @@ hotbar:
     name: "<#b32400><bold>Verlaten"
     lore: ""
 
+play:
+  title: "Play"
+
 modes:
   default:
     material: "barrel"
     name: "<white><bold>Standaard"
     lore: ""
 
+    title: "Standaard"
+
   close:
     material: "pink_petals"
     name: "<#fa9abc><bold>Close"
     lore: "<gray>Blijf dicht bij de blokken."
+
+    title: "Close"
 
   min speed:
     material: "feather"
     name: "<white><bold>Minimale snelheid"
     lore: "<gray>Nadat je de minimale snelheid hebt gehaald,||<gray>zorgt langzamer gaan voor een reset."
 
+    title: "Minimale snelheid"
+
   obstacle:
     material: "oak_fence"
     name: "<#c49402><bold>Obstakel"
     lore: "<gray>Sommige obstakels."
+
+    title: "Obstakel"
 
   speed demon:
     material: "splash_potion"
     name: "<#cc3399><bold>Speed Demon"
     lore: "<gray>Ga zo snel mogelijk."
 
+    title: "Speed Demon"
+
   time trial:
     material: "clock"
     name: "<#ddd200><bold>Time Trial"
     lore: "<gray>Haal een bepaalde score||<gray>zo snel mogelijk."
+
+    title: "Time Trial"
 
 styles:
   title: "Stijlen"
@@ -129,6 +144,8 @@ settings:
     lore: "<gray>Geselecteerd <white>%a||<gray>Klik om de taal te veranderen."
 
 leaderboards:
+  title: "Leaderboards"
+
   head:
     material: "player_head"
     name: "<white><bold>#%s - %s"

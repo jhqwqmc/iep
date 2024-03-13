@@ -17,13 +17,13 @@ import java.util.*
 object LeaderboardMenu {
 
     fun open(player: Player) {
-        val menu = Menu(3, "Leaderboards")
+        val menu = Menu(3, Locales.getString(player, "leaderboards.title"))
             .distributeRowsEvenly()
             .item(23, Locales.getItem(player, "go back").click({ player.closeInventory() }))
 
         for (mode in IEP.getModes()) {
             if (Config.CONFIG.getBoolean("permissions") && !player.hasPermission("iep.leaderboard.${mode.name}")) {
-            continue
+                continue
             }
 
             menu.item(menu.items.size + 9, mode.getItem(player)
@@ -57,7 +57,7 @@ private object SingleLeaderboardMenu {
 
     fun open(player: Player, mode: Mode, sort: LeaderboardMenu.Sort) {
         val leaderboard = mode.leaderboard
-        val menu = PagedMenu(3, leaderboard.name.toTitleCase())
+        val menu = PagedMenu(3, Locales.getString(player, "modes.${mode.name}.title"))
             .displayRows(0, 1)
 
         for ((idx, entry) in sort.sort(leaderboard.getAllScores()).withIndex()) {
@@ -95,9 +95,5 @@ private object SingleLeaderboardMenu {
             .item(24, Locales.getItem(player, "go back").click({ LeaderboardMenu.open(player) }))
             .distributeRowEvenly(2)
             .open(player.player)
-    }
-
-    private fun String.toTitleCase(): String {
-        return this.split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
     }
 }

@@ -27,36 +27,51 @@ hotbar:
     name: "<#b32400><bold>Leave"
     lore: ""
 
+play:
+  title: "Play"
+
 modes:
   default:
     material: "barrel"
     name: "<white><bold>Default"
     lore: ""
 
+    title: "Default"
+
   close:
     material: "pink_petals"
     name: "<#fa9abc><bold>Close"
     lore: "<gray>Stay close to the blocks."
+
+    title: "Close"
 
   min speed:
     material: "feather"
     name: "<white><bold>Min Speed"
     lore: "<gray>Once you've reached the minimum speed,||<gray>going slower will reset you."
 
+    title: "Min Speed"
+
   obstacle:
     material: "oak_fence"
     name: "<#c49402><bold>Obstacle"
     lore: "<gray>Occasional obstacles."
+
+    title: "Obstacle"
 
   speed demon:
     material: "splash_potion"
     name: "<#cc3399><bold>Speed Demon"
     lore: "<gray>Go as fast as you can."
 
+    title: "Speed Demon"
+
   time trial:
     material: "clock"
     name: "<#ddd200><bold>Time Trial"
     lore: "<gray>Reach a specific score||<gray>as soon as possible."
+
+    title: "Time Trial"
 
 styles:
   title: "Styles"
@@ -129,6 +144,8 @@ settings:
     lore: "<gray>Currently <white>%a||<gray>Click to change the language."
 
 leaderboards:
+  title: "Leaderboards"
+
   head:
     material: "player_head"
     name: "<white><bold>#%s - %s"

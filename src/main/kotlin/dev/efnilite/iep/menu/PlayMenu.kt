@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 object PlayMenu {
 
     fun open(player: Player) {
-        val menu = Menu(3, "Play")
+        val menu = Menu(3, Locales.getString(player, "play.title"))
             .item(23, Locales.getItem(player, "go back").click({ player.closeInventory() }))
             .distributeRowsEvenly()
 
