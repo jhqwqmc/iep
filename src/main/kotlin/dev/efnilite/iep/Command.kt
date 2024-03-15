@@ -121,7 +121,7 @@ object Command : ViCommand() {
 
                     sender.send("<gray>Saving your schematic as $uuid")
 
-                    Schematic.create().save(file, pos1, pos2, IEP.instance)
+                    Schematic.save(file, pos1, pos2, IEP.instance)
                 } catch (ex: NumberFormatException) {
                     sender.send("<red>Invalid position format.")
                 } catch (ex: IndexOutOfBoundsException) {

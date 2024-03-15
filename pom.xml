@@ -187,7 +187,7 @@
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>vilib</artifactId>
-            <version>eb3ac91e14</version>
+            <version>ed66743ad8</version>
             <scope>compile</scope>
         </dependency>
 

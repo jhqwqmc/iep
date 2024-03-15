@@ -1,31 +1,10 @@
 package dev.efnilite.iep.world
 
 import dev.efnilite.iep.IEP
+import dev.efnilite.vilib.util.VoidGenerator
 import org.bukkit.*
 import org.bukkit.World
-import org.bukkit.block.Biome
-import org.bukkit.generator.BiomeProvider
-import org.bukkit.generator.ChunkGenerator
-import org.bukkit.generator.WorldInfo
 import java.io.File
-
-private class EmptyChunkGenerator : ChunkGenerator() {
-
-    override fun shouldGenerateCaves() = false
-    override fun shouldGenerateDecorations() = false
-    override fun shouldGenerateMobs() = false
-    override fun shouldGenerateStructures() = false
-    override fun shouldGenerateSurface() = false
-    override fun shouldGenerateNoise() = false
-
-}
-
-private class EmptyBiomeGenerator : BiomeProvider() {
-
-    override fun getBiome(p0: WorldInfo, p1: Int, p2: Int, p3: Int): Biome = Biome.PLAINS
-    override fun getBiomes(p0: WorldInfo): MutableList<Biome> = mutableListOf(Biome.PLAINS)
-
-}
 
 /**
  * Class for handling Parkour world generation/deletion, etc.
@@ -43,9 +22,8 @@ object World {
         IEP.log("Creating world $NAME")
 
         world = WorldCreator(NAME)
-            .generator(EmptyChunkGenerator())
+            .generator(VoidGenerator.getGenerator())
             .generateStructures(false)
-            .biomeProvider(EmptyBiomeGenerator())
             .keepSpawnInMemory(false)
             .type(WorldType.NORMAL)
             .createWorld()!!

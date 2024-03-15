@@ -219,9 +219,7 @@ object Locales {
         return item
     }
 
-    private fun getChildren(file: FileConfiguration): MutableList<String> {
-        val section = file.getConfigurationSection("")
-
-        return if (section != null) ArrayList(section.getKeys(true)) else mutableListOf()
+    private fun getChildren(file: FileConfiguration): List<String> {
+        return file.getConfigurationSection("")?.getKeys(true)?.toList() ?: mutableListOf()
     }
 }
