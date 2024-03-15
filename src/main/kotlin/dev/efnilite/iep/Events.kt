@@ -57,10 +57,10 @@ object Events : EventWatcher {
 
     @EventHandler
     fun rightSettings(event: PlayerInteractEvent) {
-        val player = event.player.asElytraPlayer() ?: return
-
         if ((event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK) ||
             event.hand != EquipmentSlot.HAND) return
+
+        val player = event.player.asElytraPlayer() ?: return
 
         val play = Locales.getString(player, "hotbar.play.material").lowercase()
         val settings = Locales.getString(player, "hotbar.settings.material").lowercase()
