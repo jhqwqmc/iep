@@ -1,8 +1,9 @@
 package dev.efnilite.iep.generator
 
 import dev.efnilite.iep.IEP
-import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
+import dev.efnilite.iep.generator.Settings.Companion.asStyle
+import dev.efnilite.iep.generator.section.ClientBlockChanger
 import dev.efnilite.iep.generator.section.PointType
 import dev.efnilite.iep.generator.section.Section
 import dev.efnilite.iep.leaderboard.Leaderboard
@@ -16,15 +17,12 @@ import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.schematic.Schematic
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Task
-import org.bukkit.Chunk
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
 import kotlin.random.Random
@@ -123,14 +121,10 @@ private class Island(vector: Vector, schematic: Schematic) {
 
 open class Generator {
 
-    lateinit var settings: Settings
-        private set
+    private val blockChanger = ClientBlockChanger()
     val players = mutableListOf<ElytraPlayer>()
 
-    private val chunks = mutableMapOf<String, Chunk>()
     protected val sections = mutableMapOf<Int, Section>()
-    var seed = 0
-        protected set
 
     private lateinit var rewardHandler: RewardHandler
     private lateinit var island: Island
@@ -142,6 +136,11 @@ open class Generator {
     private var movementScore = 0.0
     private var resetTo: Vector? = null
 
+    lateinit var settings: Settings
+        private set
+    var seed = 0
+        protected set
+
     /**
      * Adds a player to the generator.
      * @param player The player to add.
@@ -152,6 +151,8 @@ open class Generator {
         players.add(player)
 
         settings = player.load()
+
+        player.player.setPlayerTime(settings.time.toLong(), false)
     }
 
     /**
@@ -195,15 +196,10 @@ open class Generator {
         reset(ResetReason.RESET)
 
         task = Task.create(IEP.instance)
+            .delay(5)
             .repeat(1)
             .execute(::tick)
             .run()
-    }
-
-    fun shouldScore(): Boolean {
-        val player = players[0]
-
-        return player.player.isGliding && player.position.x - island.blockSpawn.x > 0
     }
 
     open fun getScore() = max(0.0, movementScore)
@@ -226,10 +222,11 @@ open class Generator {
             this.movementScore += player.player.velocity.x
         }
 
-        player.player.setPlayerTime(settings.time.toLong(), false)
         if (Rewards.enabled) {
             rewardHandler.checkScores(score.toInt(), this)
         }
+
+        blockChanger.check(player.player, settings.style.asStyle())
 
         updateBoard(score, getTime())
         updateInfo()
@@ -258,7 +255,7 @@ open class Generator {
 
             IEP.log("Generating cloned section for low y at ${idx + 1}")
 
-            cloned.generate(settings, pointType, 100)
+            cloned.generate(settings, pointType).thenApply { blockChanger.queue(it) }
 
             resetTo = offset
 
@@ -286,12 +283,14 @@ open class Generator {
         }
     }
 
-    private fun updateBoard(score: Double, time: Instant) {
-        val formattedTime = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
-            .withZone(ZoneOffset.UTC)
-            .format(time)
+    protected fun shouldScore(): Boolean {
+        val player = players[0]
 
-        players.forEach { it.updateBoard(score, formattedTime, seed) }
+        return player.player.isGliding && player.position.x - island.blockSpawn.x > 0
+    }
+
+    private fun updateBoard(score: Double, time: Instant) {
+        players.forEach { it.updateBoard(score, Score.timeFormatter.format(time), seed) }
     }
 
     private fun updateInfo() {
@@ -354,9 +353,7 @@ open class Generator {
 
             IEP.log("Generating section at 0")
 
-            section.generate(settings, pointType, delay = 1)
-
-//            section.awaitChunks().thenApply { chunks.putAll(it) }
+            section.generate(settings, pointType).thenApply { blockChanger.queue(it) }
 
             return
         }
@@ -368,13 +365,11 @@ open class Generator {
 
         val section = Section(end, random)
 
-//        section.awaitChunks().thenApply { chunks.putAll(it) }
-
         sections[idx + 1] = section
 
         IEP.log("Generating section at ${idx + 1}")
 
-        section.generate(settings, pointType)
+        section.generate(settings, pointType).thenApply { blockChanger.queue(it) }
     }
 
     protected open fun resetPlayerHeight(toStart: Vector) {
@@ -389,20 +384,23 @@ open class Generator {
 
         clear(minIdx, minSection)
 
-        player.player.teleport(to)
-
-        Task.create(IEP.instance)
-            .delay(5)
-            .execute {
-                IEP.log("Restoring pre-teleport velocity, velocity = $velocity")
-                player.player.velocity = velocity }
-            .run()
+        player.teleport(to).thenRun {
+            Task.create(IEP.instance)
+                .delay(2)
+                .execute {
+                    IEP.log("Restoring pre-teleport velocity, velocity = $velocity")
+                    player.player.velocity = velocity
+                }
+                .run()
+        }
     }
 
     protected open fun clear(idx: Int, section: Section) {
         IEP.log("Clearing section at $idx")
 
-        section.clear()
+        if (players.isNotEmpty()) {
+            section.clear(players[0].player)
+        }
 
         sections.remove(idx)
     }
@@ -446,27 +444,26 @@ open class Generator {
         }
 
         sections.toMap().forEach { clear(it.key, it.value) }
-
         sections.clear()
 
+        blockChanger.clear()
+
         rewardHandler.clear()
+
+        if (!regenerate) {
+            return
+        }
 
         val spawn = island.playerSpawn.toLocation(World.world)
         spawn.yaw = -90f
 
-        players.forEach { it.teleport(spawn) }
-
-        if (regenerate) {
-            generate()
-            return
+        players.forEach {
+            it.player.velocity = Vector(0, 0, 0)
+            it.player.fallDistance = 0f
+            it.teleport(spawn)
         }
 
-        chunks.values.forEach {
-            it.removePluginChunkTicket(IEP.instance)
-            it.unload()
-        }
-
-        chunks.clear()
+        generate()
     }
 
     private fun updateLine(player: ElytraPlayer, line: String, score: Score, resetReason: ResetReason): String {

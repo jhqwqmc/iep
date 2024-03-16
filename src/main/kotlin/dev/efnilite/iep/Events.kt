@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.*
+import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.inventory.EquipmentSlot
 
 object Events : EventWatcher {
