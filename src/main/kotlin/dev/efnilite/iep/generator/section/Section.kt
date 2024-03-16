@@ -23,7 +23,7 @@ class Section {
     private val interpolator: SplineInterpolator
     private val knots: List<Vector>
     private val points: List<Vector>
-    private val blocks = CompletableFuture<MutableMap<Int, MutableSet<List<Block>>>>()
+    private val blocks = CompletableFuture<MutableMap<Int, MutableSet<Block>>>()
 
     // TODO yikes!
     private lateinit var builder: BukkitTask
@@ -84,13 +84,13 @@ class Section {
      */
     fun generate(
         settings: Settings, pointType: PointType
-    ): CompletableFuture<MutableMap<Int, MutableSet<List<Block>>>> {
+    ): CompletableFuture<MutableMap<Int, MutableSet<Block>>> {
         val world = World.world
 
         builder = Task.create(IEP.instance)
             .async()
             .execute {
-                val currentBlocks: MutableMap<Int, MutableSet<List<Block>>> = mutableMapOf()
+                val currentBlocks: MutableMap<Int, MutableSet<Block>> = mutableMapOf()
 
                 for (point in points) {
                     val byChunk = pointType.getPoints(point, settings.radius)
@@ -98,7 +98,7 @@ class Section {
                         .groupBy { it.chunk }
 
                     for ((chunk, b) in byChunk) {
-                        currentBlocks.getOrPut(chunk.x) { mutableSetOf() }.add(b)
+                        currentBlocks.getOrPut(chunk.x) { mutableSetOf() }.addAll(b)
                     }
                 }
 
@@ -112,14 +112,12 @@ class Section {
         builder.cancel()
 
         blocks.thenApply { b ->
-            b.values.forEach { set ->
-                set.forEach { bs ->
-                    player.sendBlockChanges(bs.map {
-                        val state = it.state
-                        state.type = Material.AIR
-                        return@map state
-                    })
-                }
+            b.values.forEach { blocks ->
+                player.sendBlockChanges(blocks.map {
+                    val state = it.state
+                    state.type = Material.AIR
+                    return@map state
+                })
             }
         }
     }

@@ -11,32 +11,30 @@ import org.bukkit.entity.Player
  */
 class ClientBlockChanger {
 
-    private val toChange: MutableMap<Int, MutableSet<List<Block>>> = mutableMapOf()
+    private val toChange: MutableMap<Int, MutableSet<Block>> = mutableMapOf()
 
     fun check(player: Player, style: Style) {
         val chunk = player.location.chunk
         val xs = (chunk.x..chunk.x + RENDER_DISTANCE)
 
         for (x in xs) {
-            val chunks = toChange[x] ?: continue
+            val blocks = toChange[x] ?: continue
 
-            IEP.log("Displaying ${chunks.size} chunks at $x")
+            IEP.log("Displaying ${blocks.size} blocks at $x")
 
-            for (blocks in chunks) {
-                player.sendBlockChanges(blocks.map {
-                    val state = it.state
+            player.sendBlockChanges(blocks.map {
+                val state = it.state
 
-                    state.type = style.next()
+                state.type = style.next()
 
-                    return@map state
-                })
-            }
+                return@map state
+            })
 
             toChange.remove(x)
         }
     }
 
-    fun queue(new: MutableMap<Int, MutableSet<List<Block>>>) {
+    fun queue(new: MutableMap<Int, MutableSet<Block>>) {
         IEP.log("Queued chunks ${new.keys.toTypedArray().contentToString()}")
 
         new.forEach { (x, blocks) ->
@@ -49,7 +47,7 @@ class ClientBlockChanger {
     }
 
     companion object {
-        private const val RENDER_DISTANCE = 4
+        private const val RENDER_DISTANCE = 5
     }
 
 }
