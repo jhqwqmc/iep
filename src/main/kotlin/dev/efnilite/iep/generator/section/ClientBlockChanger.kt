@@ -20,7 +20,7 @@ class ClientBlockChanger {
         for (x in xs) {
             val blocks = toChange[x] ?: continue
 
-            IEP.log("Displaying ${blocks.size} blocks at $x")
+            IEP.log("Displaying blocks at $x")
 
             player.sendBlockChanges(blocks.map {
                 val state = it.state
@@ -47,7 +47,7 @@ class ClientBlockChanger {
     }
 
     companion object {
-        private const val RENDER_DISTANCE = 5
+        private const val RENDER_DISTANCE = 4
     }
 
 }

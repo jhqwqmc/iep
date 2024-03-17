@@ -23,6 +23,7 @@ import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.time.Instant
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
 import kotlin.random.Random
@@ -277,7 +278,7 @@ open class Generator {
         }
 
         if (section.isNearKnot(pos, 2)) {
-            generate()
+            generate(CompletableFuture.completedFuture(null))
 
             return
         }
@@ -299,7 +300,8 @@ open class Generator {
         players.forEach {
             val speed = getSpeed(it)
 
-            it.sendActionBar("<gray>${convertSpeed(speed)}") }
+            it.sendActionBar("<gray>${convertSpeed(speed)}")
+        }
     }
 
     private fun convertSpeed(speed: Double): String {
@@ -345,7 +347,7 @@ open class Generator {
     /**
      * Generates the next section.
      */
-    protected open fun generate() {
+    protected open fun generate(waitForDisplay: CompletableFuture<Void>) {
         if (sections.isEmpty()) {
             val section = Section(island.blockSpawn.clone().add(Vector(0, pointType.heightOffset, 0)), random)
 
@@ -353,7 +355,14 @@ open class Generator {
 
             IEP.log("Generating section at 0")
 
-            section.generate(settings, pointType).thenApply { blockChanger.queue(it) }
+            section.generate(settings, pointType).thenApply {
+                waitForDisplay.thenRun {
+                    Task.create(IEP.instance)
+                        .delay(15)
+                        .execute { blockChanger.queue(it) }
+                        .run()
+                }
+            }
 
             return
         }
@@ -408,7 +417,12 @@ open class Generator {
     /**
      * Resets the players and knots.
      */
-    open fun reset(resetReason: ResetReason, regenerate: Boolean = true, s: Int = settings.seed, overrideSeedSettings: Boolean = false) {
+    open fun reset(
+        resetReason: ResetReason,
+        regenerate: Boolean = true,
+        s: Int = settings.seed,
+        overrideSeedSettings: Boolean = false
+    ) {
         IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
 
         players.forEach {
@@ -457,13 +471,13 @@ open class Generator {
         val spawn = island.playerSpawn.toLocation(World.world)
         spawn.yaw = -90f
 
-        players.forEach {
-            it.player.velocity = Vector(0, 0, 0)
-            it.player.fallDistance = 0f
-            it.teleport(spawn)
-        }
-
-        generate()
+        generate(CompletableFuture.allOf(
+            *players.map {
+                it.player.velocity = Vector(0, 0, 0)
+                it.player.fallDistance = 0f
+                it.teleport(spawn)
+            }.toTypedArray()
+        ))
     }
 
     private fun updateLine(player: ElytraPlayer, line: String, score: Score, resetReason: ResetReason): String {

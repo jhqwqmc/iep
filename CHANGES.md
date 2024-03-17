@@ -1,2 +1,4 @@
-- Added config option for MySQL prefix
-- Fixed some titles not being translatable
+- Reworked tunnel display to be rendered on the client
+  - Fixed massive performance issues
+  - Fixed multiple tunnels sometimes appearing
+  - Fixed multiple players causing the server to crash
