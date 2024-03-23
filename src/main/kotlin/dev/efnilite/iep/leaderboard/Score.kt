@@ -11,12 +11,13 @@ data class Score(val name: String, val score: Double, val time: Long, val seed: 
      * @return The time in a formatted manner.
      */
     fun getFormattedTime(): String {
-        return DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
-            .withZone(ZoneOffset.UTC)
-            .format(Instant.ofEpochMilli(time))
+        return timeFormatter.format(Instant.ofEpochMilli(time))
     }
 
     companion object {
+
+        val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(Config.CONFIG.getString("time-format"))
+            .withZone(ZoneOffset.UTC)
 
         fun Double.pretty(digits: Int = 1) = "%.${digits}f".format(this)
 

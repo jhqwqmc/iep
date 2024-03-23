@@ -6,6 +6,7 @@ import dev.efnilite.iep.world.World
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.util.Vector
+import java.util.concurrent.CompletableFuture
 
 private enum class Obstacle {
 
@@ -108,8 +109,8 @@ class ObstacleGenerator : Generator() {
 
     private val obstacles = mutableMapOf<Int, MutableList<Block>>()
 
-    override fun generate() {
-        super.generate()
+    override fun generate(waitForDisplay: CompletableFuture<Void>) {
+        super.generate(waitForDisplay)
 
         val (idx, section) = sections.maxBy { it.key }
 

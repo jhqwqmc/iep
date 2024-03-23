@@ -1,6 +1,5 @@
 package dev.efnilite.iep.player
 
-import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward

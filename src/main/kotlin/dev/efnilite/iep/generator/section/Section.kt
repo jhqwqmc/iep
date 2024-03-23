@@ -1,13 +1,15 @@
 package dev.efnilite.iep.generator.section
 
+import dev.efnilite.iep.IEP
 import dev.efnilite.iep.generator.Settings
-import dev.efnilite.iep.generator.Settings.Companion.asStyle
 import dev.efnilite.iep.generator.section.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
-import io.papermc.lib.PaperLib
+import dev.efnilite.vilib.util.Task
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
-import org.bukkit.Chunk
 import org.bukkit.Material
+import org.bukkit.block.Block
+import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.util.concurrent.CompletableFuture
 import kotlin.random.Random
@@ -21,9 +23,10 @@ class Section {
     private val interpolator: SplineInterpolator
     private val knots: List<Vector>
     private val points: List<Vector>
+    private val blocks = CompletableFuture<MutableMap<Int, MutableSet<Block>>>()
 
     // TODO yikes!
-    private lateinit var builder: AsyncBuilder
+    private lateinit var builder: BukkitTask
 
     /**
      * The beginning position of the section.
@@ -79,21 +82,44 @@ class Section {
     /**
      * Generates the section's points.
      */
-    fun generate(settings: Settings, pointType: PointType, blocksPerTick: Int = BLOCKS_PER_TICK, delay: Int = 0) {
+    fun generate(
+        settings: Settings, pointType: PointType
+    ): CompletableFuture<MutableMap<Int, MutableSet<Block>>> {
         val world = World.world
-        val style = settings.style.asStyle()
 
-        builder = AsyncBuilder(blocksPerTick, delay) {
-            points.flatMap { pointType.getPoints(it, settings.radius) }
-                .map { it.toLocation(world).block }
-                .associateWith { style.next() }
-        }
+        builder = Task.create(IEP.instance)
+            .async()
+            .execute {
+                val currentBlocks: MutableMap<Int, MutableSet<Block>> = mutableMapOf()
+
+                for (point in points) {
+                    val byChunk = pointType.getPoints(point, settings.radius)
+                        .map { it.toLocation(world).block }
+                        .groupBy { it.chunk }
+
+                    for ((chunk, b) in byChunk) {
+                        currentBlocks.getOrPut(chunk.x) { mutableSetOf() }.addAll(b)
+                    }
+                }
+
+                blocks.complete(currentBlocks)
+            }.run()
+
+        return blocks
     }
 
-    fun clear() {
+    fun clear(player: Player) {
         builder.cancel()
 
-        AsyncBuilder(BLOCKS_PER_TICK, 0) { builder.blocks.associateWith { Material.AIR } }
+        blocks.thenApply { b ->
+            b.values.forEach { blocks ->
+                player.sendBlockChanges(blocks.map {
+                    val state = it.state
+                    state.type = Material.AIR
+                    return@map state
+                })
+            }
+        }
     }
 
     private fun generatePoints(): List<Vector> {
@@ -133,34 +159,8 @@ class Section {
         return knots
     }
 
-    fun awaitChunks(): CompletableFuture<HashMap<String, Chunk>> {
-        val future = CompletableFuture<HashMap<String, Chunk>>()
-        val futureChunks = mutableSetOf<CompletableFuture<Chunk>>()
-
-        for (point in points)  {
-            futureChunks.add(PaperLib.getChunkAtAsync(point.toLocation(World.world)))
-        }
-
-        CompletableFuture.allOf(*futureChunks.toTypedArray()).thenApply { _ ->
-            val chunks = HashMap<String, Chunk>()
-
-            futureChunks.forEach {
-                val chunk = it.get()
-
-                chunks[chunk.getId()] = chunk
-            }
-
-            future.complete(chunks)
-        }
-
-        return future
-    }
-
     companion object {
         private const val KNOTS = 5
         private const val EXTRA_POINTS_OFFSET = 1
-        private const val BLOCKS_PER_TICK = 70
-
-        fun Chunk.getId() = "$x,$z"
     }
 }
