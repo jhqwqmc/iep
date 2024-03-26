@@ -1,4 +1,1 @@
-- Reworked tunnel display to be rendered on the client
-  - Fixed massive performance issues
-  - Fixed multiple tunnels sometimes appearing
-  - Fixed multiple players causing the server to crash
+- Fixed error on world creation on earlier 1.20 versions

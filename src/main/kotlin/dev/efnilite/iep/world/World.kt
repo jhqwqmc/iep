@@ -24,7 +24,6 @@ object World {
         world = WorldCreator(NAME)
             .generator(VoidGenerator.getGenerator())
             .generateStructures(false)
-            .keepSpawnInMemory(false)
             .type(WorldType.NORMAL)
             .createWorld()!!
 
@@ -53,6 +52,7 @@ object World {
         world.clearWeatherDuration = 1000000
         world.time = 10000
         world.isAutoSave = false
+        world.keepSpawnInMemory = false
     }
 
     /**
