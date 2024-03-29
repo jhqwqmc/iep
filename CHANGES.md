@@ -1,1 +1,2 @@
-- Fixed error on world creation on earlier 1.20 versions
+- Fixed error when opening leaderboard with >14 players
+- Fixed scores not being sorted correctly

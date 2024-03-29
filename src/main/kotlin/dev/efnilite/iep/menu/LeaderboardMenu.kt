@@ -39,7 +39,7 @@ object LeaderboardMenu {
 
         SCORE {
             override fun sort(scores: Map<UUID, Score>): List<Map.Entry<UUID, Score>> {
-                return scores.entries.sortedWith(compareBy({ it.value.score }, { -it.value.time }))
+                return scores.entries.sortedWith(compareBy({ -it.value.score }, { -it.value.time }))
             }
         },
         TIME {
@@ -89,7 +89,7 @@ private object SingleLeaderboardMenu {
 
         menu
             .prevPage(19, Item(Material.RED_DYE, "<#DE1F1F><bold>«").click({ menu.page(-1) }))
-            .nextPage(27, Item(Material.GREEN_DYE, "<#0DCB07><bold>»").click({ menu.page(1) }))
+            .nextPage(26, Item(Material.GREEN_DYE, "<#0DCB07><bold>»").click({ menu.page(1) }))
             .item(22, Locales.getItem(player, "leaderboards.sort", current[sort.ordinal])
                 .click({ open(player, mode, next) }))
             .item(24, Locales.getItem(player, "go back").click({ LeaderboardMenu.open(player) }))
