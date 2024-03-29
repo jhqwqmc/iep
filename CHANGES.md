@@ -1,2 +1,1 @@
-- Fixed error when opening leaderboard with >14 players
-- Fixed scores not being sorted correctly
+- Fixed block changes not working for lower render distances

@@ -15,7 +15,7 @@ class ClientBlockChanger {
 
     fun check(player: Player, style: Style) {
         val chunk = player.location.chunk
-        val xs = (chunk.x..chunk.x + RENDER_DISTANCE)
+        val xs = (chunk.x..chunk.x + player.clientViewDistance)
 
         for (x in xs) {
             val blocks = toChange[x] ?: continue
@@ -45,9 +45,4 @@ class ClientBlockChanger {
     fun clear() {
         toChange.clear()
     }
-
-    companion object {
-        private const val RENDER_DISTANCE = 4
-    }
-
 }
