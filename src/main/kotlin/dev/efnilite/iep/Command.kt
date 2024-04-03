@@ -128,6 +128,10 @@ object Command : ViCommand() {
                     sender.send("<red>You need two positions to save the schematic.")
                 }
             }
+            "debug-reset-invulnerability" -> {
+                sender.isInvulnerable = false
+                sender.send("<gray>Invulnerability reset.")
+            }
             else -> {
                 sender.send("<red>Invalid command.")
             }

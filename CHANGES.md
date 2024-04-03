@@ -1,1 +1,7 @@
-- Fixed block changes not working for lower render distances
+- Fixed players not resetting in the void
+- Fixed players sometimes being invulnerable
+- Fixed players being able to get items from other inventories
+- Fixed low render distance not showing
+- Performance improvements
+  - Reduced chance of empty chunks
+  - Reduced lead chunks from 6 to 4

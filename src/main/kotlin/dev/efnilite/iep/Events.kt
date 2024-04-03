@@ -2,6 +2,7 @@ package dev.efnilite.iep
 
 import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
+import dev.efnilite.iep.generator.ResetReason
 import dev.efnilite.iep.menu.LeaderboardMenu
 import dev.efnilite.iep.menu.PlayMenu
 import dev.efnilite.iep.menu.SettingsMenu
@@ -10,11 +11,14 @@ import dev.efnilite.iep.player.ElytraPlayer
 import dev.efnilite.iep.player.ElytraPlayer.Companion.asElytraPlayer
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.event.EventWatcher
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.*
-import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.inventory.EquipmentSlot
 
 object Events : EventWatcher {
@@ -54,6 +58,28 @@ object Events : EventWatcher {
         val player = event.player.asElytraPlayer() ?: return
 
         event.isCancelled = true
+    }
+
+    @EventHandler
+    fun inventoryClick(event: InventoryClickEvent) {
+        if (event.whoClicked !is Player) return
+        if (event.whoClicked.openInventory.type == InventoryType.CRAFTING) return
+        val player = (event.whoClicked as Player).asElytraPlayer() ?: return
+
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    fun damage(event: EntityDamageEvent) {
+        if (event.entity !is Player) return
+
+        val player = (event.entity as Player).asElytraPlayer() ?: return
+
+        event.isCancelled = true
+
+        if (event.cause == EntityDamageEvent.DamageCause.VOID) {
+            player.getGenerator().reset(ResetReason.BOUNDS)
+        }
     }
 
     @EventHandler

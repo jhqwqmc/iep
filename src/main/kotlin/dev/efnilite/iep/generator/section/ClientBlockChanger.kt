@@ -4,6 +4,8 @@ import dev.efnilite.iep.IEP
 import dev.efnilite.iep.style.Style
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Class for changing blocks on the client side.
@@ -15,7 +17,7 @@ class ClientBlockChanger {
 
     fun check(player: Player, style: Style) {
         val chunk = player.location.chunk
-        val xs = (chunk.x..chunk.x + player.clientViewDistance)
+        val xs = (chunk.x..chunk.x + min(4, player.clientViewDistance))
 
         for (x in xs) {
             val blocks = toChange[x] ?: continue

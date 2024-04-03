@@ -44,9 +44,9 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
         val generator = mode.getGenerator()
 
-        generator.add(this)
-
         val at = Divider.add(generator)
+
+        generator.add(this)
 
         data.setup(at).thenRun { generator.start(mode, at, mode.pointType) }
     }

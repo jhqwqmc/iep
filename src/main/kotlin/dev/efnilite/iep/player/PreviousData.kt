@@ -35,7 +35,6 @@ data class PreviousData(private val player: Player) {
         with(player) {
             PaperLib.teleportAsync(this, vector.toLocation(World.world)).thenRun {
                 gameMode = GameMode.ADVENTURE
-                isInvulnerable = true
                 fallDistance = 0F
 
                 resetPlayerTime()
@@ -77,7 +76,6 @@ data class PreviousData(private val player: Player) {
 
     private fun reset() {
         with(player) {
-            isInvulnerable = false
             fallDistance = 0F
 
             gameMode = gamemode
