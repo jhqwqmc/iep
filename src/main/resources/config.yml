@@ -107,6 +107,10 @@ settings:
     enabled: true
     default: true
 
+  performance:
+    enabled: true
+    default: false
+
 # -= Styles =-
 # Styles should have some see-through materials, like slabs or fences.
 # This avoids dark areas.

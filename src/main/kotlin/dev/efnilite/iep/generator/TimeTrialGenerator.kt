@@ -12,7 +12,6 @@ class TimeTrialGenerator : Generator() {
         super.tick()
 
         val score = getScore()
-        val player = players[0]
 
         if (score >= SCORE) {
             reset(ResetReason.RESET)
@@ -28,10 +27,16 @@ class TimeTrialGenerator : Generator() {
             .joinToString("") { it }
     }
 
-    override fun reset(resetReason: ResetReason, regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
+    override fun reset(
+        resetReason: ResetReason,
+        regenerate: Boolean,
+        s: Int,
+        overrideSeedSettings: Boolean,
+        setPerformanceMode: Boolean?
+    ) {
         // todo dont register scores < 2500
 
-        super.reset(resetReason, regenerate, SEED, true)
+        super.reset(resetReason, regenerate, SEED, true, setPerformanceMode)
     }
 
     companion object {

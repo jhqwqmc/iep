@@ -36,6 +36,14 @@ object MySQLStorage {
             )
             """.trimIndent())
             .executeUpdate() }
+
+        // 1.2.0
+        sql2o.beginTransaction().use { it.createQuery("""
+            ALTER TABLE `${prefix}settings`
+                ADD COLUMN IF NOT EXISTS performance BOOLEAN DEFAULT FALSE
+            """.trimIndent())
+            .executeUpdate()
+        }
     }
 
     fun init(leaderboard: Leaderboard) {
@@ -109,6 +117,7 @@ object MySQLStorage {
                 fall = settings?.fall!!,
                 metric = settings?.metric!!,
                 info = settings?.info!!,
+                performance = settings?.performance!!,
                 rewards = settings?.rewards!!.let {
                     return@let if (it.isNotEmpty()) {
                         it.split(",").map { n -> n.toInt() }.toMutableSet()
@@ -155,10 +164,10 @@ object MySQLStorage {
 
     private class SqlSettings(val uuid: UUID?, val locale: String?, val style: String?, val radius: Int?,
                               val time: Int?, val seed: Int?, val fall: Boolean?, val metric: Boolean?,
-                              val info: Boolean?, val rewards: String?) {
+                              val info: Boolean?, val rewards: String?, val performance: Boolean?) {
 
         @Suppress("unused")
-        constructor() : this(null, null, null, null, null, null, null, null, null, null)
+        constructor() : this(null, null, null, null, null, null, null, null, null, null, null)
 
     }
 

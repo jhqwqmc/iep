@@ -138,6 +138,11 @@ settings:
     name: "<bold>Use Metric"
     lore: "<gray>Currently <white>%a||<gray>Click to change the extra info measurement system."
 
+  performance:
+    material: ""
+    name: "<bold>Performance Mode"
+    lore: "<gray>Currently <white>%a||<gray>If you're experiencing performance problems, enable this."
+
   locale:
     material: "paper"
     name: "<white><bold>Locale"

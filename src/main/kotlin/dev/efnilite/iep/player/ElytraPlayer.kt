@@ -190,7 +190,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     /**
      * Returns the generator the player is in.
      */
-    fun getGenerator() = Divider.generators.first { it.players.contains(this) }
+    fun getGenerator() = Divider.generators.first { it.player == this }
 
     companion object {
 
@@ -203,10 +203,11 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
                 seed = Config.CONFIG.getInt("settings.seed.default") { it in -1..1_000_000 },
                 info = Config.CONFIG.getBoolean("settings.info.default"),
                 fall = Config.CONFIG.getBoolean("settings.fall.default"),
+                performance = Config.CONFIG.getBoolean("settings.performance.default"),
                 rewards = mutableSetOf())
 
         fun Player.asElytraPlayer(): ElytraPlayer? {
-            return Divider.generators.flatMap { it.players }.firstOrNull { it.player.uniqueId == uniqueId }
+            return Divider.generators.map { it.player }.firstOrNull { it.player.uniqueId == uniqueId }
         }
     }
 }

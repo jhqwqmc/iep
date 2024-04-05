@@ -109,8 +109,8 @@ class ObstacleGenerator : Generator() {
 
     private val obstacles = mutableMapOf<Int, MutableList<Block>>()
 
-    override fun generate(waitForDisplay: CompletableFuture<Void>) {
-        super.generate(waitForDisplay)
+    override fun generate() {
+        super.generate()
 
         val (idx, section) = sections.maxBy { it.key }
 

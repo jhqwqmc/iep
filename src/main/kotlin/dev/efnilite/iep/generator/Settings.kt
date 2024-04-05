@@ -14,6 +14,7 @@ data class Settings(val locale: String,
                     val fall: Boolean,
                     val metric: Boolean,
                     val info: Boolean,
+                    val performance: Boolean,
                     val rewards: MutableSet<Int>) {
 
     constructor(settings: Settings,
@@ -25,6 +26,7 @@ data class Settings(val locale: String,
                 fall: Boolean = settings.fall,
                 metric: Boolean = settings.metric,
                 info: Boolean = settings.info,
+                performance: Boolean = settings.performance,
                 rewards: MutableSet<Int> = settings.rewards) :
 
             this(locale = locale,
@@ -35,6 +37,7 @@ data class Settings(val locale: String,
                 fall = fall,
                 metric = metric,
                 info = info,
+                performance = performance,
                 rewards = rewards)
 
     companion object {

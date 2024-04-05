@@ -157,6 +157,17 @@ object SettingsMenu {
                     }))
         }
 
+        if (canSee(player, "performance")) {
+            menu.item(
+                22,
+                getBooleanItem(player, "settings.performance", settings.performance)
+                    .click({
+                        generator.reset(ResetReason.RESET, setPerformanceMode = !settings.performance)
+
+                        player.player.closeInventory()
+                    }))
+        }
+
         menu.item(32, Locales.getItem(player, "go back").click({ player.player.closeInventory() }))
             .open(player.player)
     }

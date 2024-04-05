@@ -6,9 +6,7 @@ import dev.efnilite.iep.generator.section.Section.Companion.KNOTS
 import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.util.Task
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
-import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.util.concurrent.CompletableFuture
@@ -108,18 +106,10 @@ class Section {
         return blocks
     }
 
-    fun clear(player: Player) {
+    fun clear(): CompletableFuture<MutableMap<Int, MutableSet<Block>>> {
         builder.cancel()
 
-        blocks.thenApply { b ->
-            b.values.forEach { blocks ->
-                player.sendBlockChanges(blocks.map {
-                    val state = it.state
-                    state.type = Material.AIR
-                    return@map state
-                })
-            }
-        }
+        return blocks
     }
 
     private fun generatePoints(): List<Vector> {

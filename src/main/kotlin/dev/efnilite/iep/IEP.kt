@@ -109,7 +109,7 @@ class IEP : ViPlugin() {
 
         try {
             for (generator in HashSet(Divider.generators)) {
-                generator.players.forEach { it.leave(urgent = true) }
+                generator.player.leave(urgent = true)
             }
 
             getModes().forEach { it.leaderboard.save() }

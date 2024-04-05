@@ -10,14 +10,20 @@ class SpeedDemonGenerator : Generator() {
         super.tick()
 
         if (shouldScore()) {
-            val speed = getSpeed(players[0])
+            val speed = getSpeed(player)
 
             maxSpeedSoFar = maxOf(maxSpeedSoFar, speed)
         }
     }
 
-    override fun reset(resetReason: ResetReason, regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
-        super.reset(resetReason, regenerate, s, overrideSeedSettings)
+    override fun reset(
+        resetReason: ResetReason,
+        regenerate: Boolean,
+        s: Int,
+        overrideSeedSettings: Boolean,
+        setPerformanceMode: Boolean?
+    ) {
+        super.reset(resetReason, regenerate, s, overrideSeedSettings, setPerformanceMode)
 
         maxSpeedSoFar = 0.0
     }

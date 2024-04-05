@@ -15,13 +15,12 @@ class MinSpeedGenerator : Generator() {
     override fun getScore(): Double {
         if (startX == 0) return 0.0
 
-        return max(0.0, players[0].position.x - startX)
+        return max(0.0, player.position.x - startX)
     }
 
     override fun tick() {
         super.tick()
 
-        val player = players[0]
         val speed = getSpeed(player)
 
         maxSpeed = maxOf(maxSpeed, speed)
@@ -62,8 +61,14 @@ class MinSpeedGenerator : Generator() {
             .joinToString("") { it }
     }
 
-    override fun reset(resetReason: ResetReason, regenerate: Boolean, s: Int, overrideSeedSettings: Boolean) {
-        super.reset(resetReason, regenerate, s, overrideSeedSettings)
+    override fun reset(
+        resetReason: ResetReason,
+        regenerate: Boolean,
+        s: Int,
+        overrideSeedSettings: Boolean,
+        setPerformanceMode: Boolean?
+    ) {
+        super.reset(resetReason, regenerate, s, overrideSeedSettings, setPerformanceMode)
 
         maxSpeed = 0.0
         ticksTooSlow = 0
