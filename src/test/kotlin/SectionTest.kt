@@ -18,9 +18,6 @@ class SectionTest {
         val start = section.beginning
         val end = section.end
 
-        println("end $end")
-
-        // todo stuff here
         assert(start == Vector(0, 0, 0))
     }
 
@@ -30,7 +27,6 @@ class SectionTest {
         val end = section.end
 
         assert(start == section.getPoint(0))
-        // todo stuff here
         assert(end == section.getPoint((end.x - start.x).toInt()))
     }
 
