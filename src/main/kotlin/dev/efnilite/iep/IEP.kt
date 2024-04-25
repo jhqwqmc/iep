@@ -120,8 +120,6 @@ class IEP : ViPlugin() {
         }
     }
 
-    override fun getElevator(): GitElevator? = null
-
     companion object {
         var stopping = false
             private set
