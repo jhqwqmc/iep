@@ -12,7 +12,6 @@ class TimeTrialGenerator : Generator() {
         super.tick()
 
         val score = getScore()
-        val player = players[0]
 
         if (score >= SCORE) {
             reset(ResetReason.RESET)

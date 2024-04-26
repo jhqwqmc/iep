@@ -112,7 +112,9 @@ class Section {
         builder.cancel()
 
         blocks.thenApply { b ->
-            b.values.forEach { blocks ->
+            b.forEach { (chunk, blocks) ->
+                IEP.log("Clearing chunk $chunk")
+
                 player.sendBlockChanges(blocks.map {
                     val state = it.state
                     state.type = Material.AIR

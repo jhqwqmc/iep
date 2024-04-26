@@ -10,7 +10,7 @@ class SpeedDemonGenerator : Generator() {
         super.tick()
 
         if (shouldScore()) {
-            val speed = getSpeed(players[0])
+            val speed = getSpeed(player)
 
             maxSpeedSoFar = maxOf(maxSpeedSoFar, speed)
         }

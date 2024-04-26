@@ -18,7 +18,7 @@ object PlayMenu {
         for (mode in IEP.getModes()) {
             menu.item(9 + menu.items.size, mode.getItem(player)
                 .click({
-                    if (!Cooldowns.canPerform(player, "iep join", 2500)) {
+                    if (!Cooldowns.canPerform(player, "ep join", 1000)) {
                         return@click
                     }
 
