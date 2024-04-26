@@ -46,11 +46,9 @@ private class RewardHandler(val mode: Mode) {
     private val oneTimeRewards = mutableListOf<Int>()
 
     fun checkScores(score: Int, generator: Generator) {
-        for (player in generator.players) {
-            ((score - 4)..score)
-                .filter { it > 0 }
-                .forEach { check(it, player.player, generator) }
-        }
+        ((score - 4)..score)
+            .filter { it > 0 }
+            .forEach { check(it, generator.player.player, generator) }
     }
 
     private fun check(score: Int, player: Player, generator: Generator) {
@@ -123,7 +121,6 @@ private class Island(vector: Vector, schematic: Schematic) {
 open class Generator {
 
     private val blockChanger = ClientBlockChanger()
-    val players = mutableListOf<ElytraPlayer>()
 
     protected val sections = mutableMapOf<Int, Section>()
 
@@ -137,6 +134,8 @@ open class Generator {
     private var movementScore = 0.0
     private var resetTo: Vector? = null
 
+    lateinit var player: ElytraPlayer
+        private set
     lateinit var settings: Settings
         private set
     var seed = 0
@@ -149,7 +148,7 @@ open class Generator {
     fun add(player: ElytraPlayer) {
         IEP.log("Adding player to generator ${player.name}")
 
-        players.add(player)
+        this.player = player
 
         settings = player.load()
 
@@ -165,19 +164,13 @@ open class Generator {
 
         player.save(settings)
 
-        players.remove(player)
+        task.cancel()
 
-        if (players.isEmpty()) {
-            IEP.log("Players is empty, clearing generator")
+        reset(ResetReason.RESET, false)
 
-            task.cancel()
+        island.clear()
 
-            reset(ResetReason.RESET, false)
-
-            island.clear()
-
-            Divider.remove(this)
-        }
+        Divider.remove(this)
     }
 
     /**
@@ -207,7 +200,7 @@ open class Generator {
 
     fun getTime(): Instant = Instant.now().minusMillis(start?.toEpochMilli() ?: Instant.now().toEpochMilli())
 
-    fun getHighScore() = leaderboard.getScore(players.first().uuid)
+    fun getHighScore() = leaderboard.getScore(player.uuid)
 
     /**
      * Ticks the generator.
@@ -215,7 +208,6 @@ open class Generator {
     protected open fun tick() {
         val (idx, section) = sections.maxBy { it.key }
 
-        val player = players[0]
         val pos = player.position
         val score = getScore()
 
@@ -285,23 +277,19 @@ open class Generator {
     }
 
     protected fun shouldScore(): Boolean {
-        val player = players[0]
-
         return player.player.isGliding && player.position.x - island.blockSpawn.x > 0
     }
 
     private fun updateBoard(score: Double, time: Instant) {
-        players.forEach { it.updateBoard(score, Score.timeFormatter.format(time), seed) }
+        player.updateBoard(score, Score.timeFormatter.format(time), seed)
     }
 
     private fun updateInfo() {
         if (!settings.info) return
 
-        players.forEach {
-            val speed = getSpeed(it)
+        val speed = getSpeed(player)
 
-            it.sendActionBar("<gray>${convertSpeed(speed)}")
-        }
+        player.sendActionBar("<gray>${convertSpeed(speed)}")
     }
 
     private fun convertSpeed(speed: Double): String {
@@ -382,7 +370,6 @@ open class Generator {
     }
 
     protected open fun resetPlayerHeight(toStart: Vector) {
-        val player = players[0]
         val velocity = player.player.velocity
 
         IEP.log("Resetting player height, velocity = $velocity")
@@ -405,11 +392,9 @@ open class Generator {
     }
 
     protected open fun clear(idx: Int, section: Section) {
-        IEP.log("Clearing section at $idx")
+        IEP.log("Clearing section $idx")
 
-        if (players.isNotEmpty()) {
-            section.clear(players[0].player)
-        }
+        section.clear(player.player)
 
         sections.remove(idx)
     }
@@ -425,24 +410,20 @@ open class Generator {
     ) {
         IEP.log("Resetting generator, regenerate = $regenerate, seed = $s")
 
-        players.forEach {
-            if (getScore() == 0.0) {
-                return@forEach
-            }
-
+        if (getScore() > 0.0) {
             val score = Score(
-                name = it.name,
+                name = player.name,
                 score = getScore(),
                 time = getTime().toEpochMilli(),
                 seed = seed
             )
 
-            leaderboard.update(it.uuid, score)
+            leaderboard.update(player.uuid, score)
 
             if (settings.fall) {
-                Locales.getStringList(it, "reset.lines")
-                    .map { line -> updateLine(it, line, score, resetReason) }
-                    .forEach { line -> it.send(line) }
+                Locales.getStringList(player, "reset.lines")
+                    .map { line -> updateLine(player, line, score, resetReason) }
+                    .forEach { line -> player.send(line) }
             }
         }
 
@@ -471,13 +452,10 @@ open class Generator {
         val spawn = island.playerSpawn.toLocation(World.world)
         spawn.yaw = -90f
 
-        generate(CompletableFuture.allOf(
-            *players.map {
-                it.player.velocity = Vector(0, 0, 0)
-                it.player.fallDistance = 0f
-                it.teleport(spawn)
-            }.toTypedArray()
-        ))
+        player.player.velocity = Vector(0, 0, 0)
+        player.player.fallDistance = 0f
+
+        generate(CompletableFuture.allOf(player.teleport(spawn)))
     }
 
     private fun updateLine(player: ElytraPlayer, line: String, score: Score, resetReason: ResetReason): String {
@@ -503,7 +481,7 @@ open class Generator {
 
         settings = mapper.invoke(settings)
 
-        players.forEach { it.save(settings) }
+        player.save(settings)
     }
 
     companion object {
