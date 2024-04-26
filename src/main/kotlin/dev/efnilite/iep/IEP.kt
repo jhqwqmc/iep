@@ -17,7 +17,6 @@ import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Logging
 import dev.efnilite.vilib.util.Task
-import dev.efnilite.vilib.util.elevator.GitElevator
 import io.papermc.lib.PaperLib
 import org.bukkit.Material
 import java.io.File
@@ -64,6 +63,10 @@ class IEP : ViPlugin() {
         }
         if (server.pluginManager.isPluginEnabled("Vault")) {
             log("Registered Vault Hook")
+        }
+        if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
+            log("Registered BungeeCord Hook")
+            server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         }
         
         PaperLib.suggestPaper(this, Level.WARNING)

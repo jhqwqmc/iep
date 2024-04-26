@@ -1,5 +1,6 @@
 package dev.efnilite.iep.player
 
+import com.google.common.io.ByteStreams
 import dev.efnilite.iep.IEP
 import dev.efnilite.iep.config.Config
 import dev.efnilite.iep.config.Locales
@@ -18,6 +19,7 @@ import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.messaging.ChannelNotRegisteredException
 import org.bukkit.util.Vector
 import java.util.concurrent.CompletableFuture
 
@@ -57,11 +59,30 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
         getGenerator().remove(this)
 
+        if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
+            sendToServer(Config.CONFIG.getString("bungeecord.return-server"))
+
+            return
+        }
+
         data.reset(switchMode, urgent)
 
         if (switchMode) return
 
         board.delete()
+    }
+
+    private fun sendToServer(server: String) {
+        val out = ByteStreams.newDataOutput()
+        out.writeUTF("Connect")
+        out.writeUTF(server)
+
+        try {
+            player.sendPluginMessage(IEP.instance, "BungeeCord", out.toByteArray())
+        } catch (ex: ChannelNotRegisteredException) {
+            IEP.instance.logging.stack("$server is not registered with BungeeCord", ex)
+            player.kickPlayer("$server is not registered with BungeeCord")
+        }
     }
 
     /**

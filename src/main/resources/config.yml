@@ -20,6 +20,16 @@ permissions: false
 # H = hours, m = minutes, s = seconds, S = milliseconds
 time-format: "mm:ss:SSS"
 
+# -= BungeeCord =-
+bungeecord:
+
+  # -= BungeeCord enabled? =-
+  enabled: false
+
+  # -= Return server =-
+  # If enabled, the server players will be sent to on leave.
+  return-server: "lobby"
+
 # -= MySQL =-
 mysql:
 
