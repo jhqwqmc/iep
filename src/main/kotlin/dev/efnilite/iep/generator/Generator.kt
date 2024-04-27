@@ -151,8 +151,6 @@ open class Generator {
         this.player = player
 
         settings = player.load()
-
-        player.player.setPlayerTime(settings.time.toLong(), false)
     }
 
     /**
@@ -186,6 +184,8 @@ open class Generator {
         leaderboard = mode.leaderboard
         island = Island(start, Schematics.getSchematic(IEP.instance, "spawn-island"))
         pointType = point
+
+        player.player.setPlayerTime(settings.time.toLong(), false)
 
         reset(ResetReason.RESET)
 

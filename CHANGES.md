@@ -1,7 +1,3 @@
-- Fixed players not resetting in the void
-- Fixed players sometimes being invulnerable
-- Fixed players being able to get items from other inventories
-- Fixed low render distance not showing
-- Performance improvements
-  - Reduced chance of empty chunks
-  - Reduced lead chunks from 6 to 4
+- Renamed "bungeecord" option to "proxy"
+- Fixed locale and leaderboard menus not working on <1.20.5
+- Fixed time not updating correctly on join
