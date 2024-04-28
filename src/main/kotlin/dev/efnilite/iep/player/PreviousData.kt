@@ -4,6 +4,7 @@ import dev.efnilite.iep.config.Locales
 import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward
 import dev.efnilite.iep.world.World
+import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.inventory.item.Item
 import io.papermc.lib.PaperLib
 import org.bukkit.GameMode
@@ -43,10 +44,17 @@ data class PreviousData(private val player: Player) {
                 inventory.clear()
 
                 inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
-                inventory.addItem(Locales.getItem(this, "hotbar.play").build())
-                inventory.addItem(Locales.getItem(this, "hotbar.settings").build())
-                inventory.addItem(Locales.getItem(this, "hotbar.leaderboards").build())
-                inventory.addItem(Locales.getItem(this, "hotbar.leave").build())
+
+                val items = mutableListOf<ItemStack>()
+
+                items.add(Locales.getItem(this, "hotbar.play").build())
+                items.add(Locales.getItem(this, "hotbar.settings").build())
+                items.add(Locales.getItem(this, "hotbar.leaderboards").build())
+                items.add(Locales.getItem(this, "hotbar.leave").build())
+
+                Menu.getEvenlyDistributedSlots(items.size).forEachIndexed { index, slot ->
+                    inventory.setItem(slot, items[index])
+                }
 
                 future.complete(true)
             }

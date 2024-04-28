@@ -1,3 +1,2 @@
-- Renamed "bungeecord" option to "proxy"
-- Fixed locale and leaderboard menus not working on <1.20.5
-- Fixed time not updating correctly on join
+- Fixed proxy support
+- Fixed inventory not being formatted
