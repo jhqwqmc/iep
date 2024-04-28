@@ -64,7 +64,7 @@ class IEP : ViPlugin() {
         if (server.pluginManager.isPluginEnabled("Vault")) {
             log("Registered Vault Hook")
         }
-        if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
+        if (Config.CONFIG.getBoolean("proxy.enabled")) {
             log("Registered BungeeCord Hook")
             server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         }

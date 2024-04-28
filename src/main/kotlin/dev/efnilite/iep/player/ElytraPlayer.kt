@@ -59,8 +59,8 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
         getGenerator().remove(this)
 
-        if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
-            sendToServer(Config.CONFIG.getString("bungeecord.return-server"))
+        if (Config.CONFIG.getBoolean("proxy.enabled")) {
+            sendToServer(Config.CONFIG.getString("proxy.return-server"))
 
             return
         }
@@ -73,12 +73,16 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     }
 
     private fun sendToServer(server: String) {
+        IEP.log("Sending ${player.name} to proxy server $server")
+
         val out = ByteStreams.newDataOutput()
         out.writeUTF("Connect")
         out.writeUTF(server)
 
         try {
             player.sendPluginMessage(IEP.instance, "BungeeCord", out.toByteArray())
+
+            IEP.log("Sent ${player.name} to proxy server $server")
         } catch (ex: ChannelNotRegisteredException) {
             IEP.instance.logging.stack("$server is not registered with BungeeCord", ex)
             player.kickPlayer("$server is not registered with BungeeCord")
