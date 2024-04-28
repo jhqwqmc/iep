@@ -1,1 +1,2 @@
+- Fixed proxy support
 - Fixed inventory not being formatted
