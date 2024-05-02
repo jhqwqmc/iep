@@ -195,7 +195,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     fun addReward(mode: Mode, reward: Reward) {
         val set = data.leaveRewards[mode] ?: mutableSetOf()
 
-        set.add(reward)
+        set += reward
 
         data.leaveRewards[mode] = set
     }

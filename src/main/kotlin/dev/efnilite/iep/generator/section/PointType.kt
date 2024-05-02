@@ -22,14 +22,14 @@ enum class PointType(val heightOffset: Int) {
             var d = 3 - 2 * radius
 
             while (z <= y) {
-                blocks.add(Vector(centerX, centerY + y, centerZ + z))
-                blocks.add(Vector(centerX, centerY + y, centerZ - z))
-                blocks.add(Vector(centerX, centerY - y, centerZ + z))
-                blocks.add(Vector(centerX, centerY - y, centerZ - z))
-                blocks.add(Vector(centerX, centerY + z, centerZ + y))
-                blocks.add(Vector(centerX, centerY + z, centerZ - y))
-                blocks.add(Vector(centerX, centerY - z, centerZ + y))
-                blocks.add(Vector(centerX, centerY - z, centerZ - y))
+                blocks += Vector(centerX, centerY + y, centerZ + z)
+                blocks += Vector(centerX, centerY + y, centerZ - z)
+                blocks += Vector(centerX, centerY - y, centerZ + z)
+                blocks += Vector(centerX, centerY - y, centerZ - z)
+                blocks += Vector(centerX, centerY + z, centerZ + y)
+                blocks += Vector(centerX, centerY + z, centerZ - y)
+                blocks += Vector(centerX, centerY - z, centerZ + y)
+                blocks += Vector(centerX, centerY - z, centerZ - y)
 
                 if (d < 0) {
                     d += 4 * z + 6

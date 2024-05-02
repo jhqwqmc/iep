@@ -129,7 +129,7 @@ class Section {
 
         // add points to force spline to have an angle of 0 at the start and end
         knots.add(0, knots.first().clone().subtract(Vector(EXTRA_POINTS_OFFSET, 0, 0)))
-        knots.add(knots.last().clone().add(Vector(EXTRA_POINTS_OFFSET, 0, 0)))
+        knots += knots.last().clone().add(Vector(EXTRA_POINTS_OFFSET, 0, 0))
 
         val xs = knots.map { it.x }.toDoubleArray()
         val ys = knots.map { it.y }.toDoubleArray()
@@ -147,7 +147,7 @@ class Section {
             val y = splineY.value(x.toDouble())
             val z = splineZ.value(x.toDouble())
 
-            points.add(Vector(x, y.toInt(), z.toInt()))
+            points += Vector(x, y.toInt(), z.toInt())
         }
 
         return points
@@ -156,7 +156,7 @@ class Section {
     private fun generateKnots(start: Vector): List<Vector> {
         val knots = mutableListOf(start)
 
-        repeat(KNOTS - 1) { knots.add(knots.last().clone().add(director.nextOffset())) }
+        repeat(KNOTS - 1) { knots += knots.last().clone().add(director.nextOffset()) }
 
         return knots
     }

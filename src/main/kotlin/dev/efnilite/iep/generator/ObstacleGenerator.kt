@@ -20,7 +20,7 @@ private enum class Obstacle {
                     val new = center.clone().add(Vector(0, dy, dz))
 
                     if (new.distance(center) <= radius) {
-                        points.add(new)
+                        points += new
                     }
                 }
             }
@@ -38,7 +38,7 @@ private enum class Obstacle {
                     val new = center.clone().add(Vector(0, dy, dz))
 
                     if (new.distance(center) <= radius) {
-                        points.add(new)
+                        points += new
                     }
                 }
             }
@@ -59,7 +59,7 @@ private enum class Obstacle {
 
                     if (point.distanceSquared(center) <= radius2 &&
                         point.distanceSquared(offset) >= 2) {
-                        points.add(point)
+                        points += point
                     }
                 }
             }
@@ -83,14 +83,14 @@ private enum class Obstacle {
 
             for (dy in range) {
                 if (dy < r) {
-                    points.add(newCenter.clone().add(Vector(0, dy, -dy)))
-                    points.add(newCenter.clone().add(Vector(0, dy, dy)))
+                    points += newCenter.clone().add(Vector(0, dy, -dy))
+                    points += newCenter.clone().add(Vector(0, dy, dy))
                     continue
                 }
 
                 val newDz = 2 * r - dy
-                points.add(newCenter.clone().add(Vector(0, dy, -newDz)))
-                points.add(newCenter.clone().add(Vector(0, dy, newDz)))
+                points += newCenter.clone().add(Vector(0, dy, -newDz))
+                points += newCenter.clone().add(Vector(0, dy, newDz))
             }
 
             return points
@@ -128,11 +128,11 @@ class ObstacleGenerator : Generator() {
 
             block.type = Material.YELLOW_CONCRETE
 
-            blocks.add(block)
+            blocks += block
         }
 
         obstacles.getOrDefault(idx, mutableListOf()).let {
-            it.addAll(blocks)
+            it += blocks
             obstacles[idx] = it
         }
     }

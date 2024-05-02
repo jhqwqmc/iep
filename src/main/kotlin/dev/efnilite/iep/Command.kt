@@ -144,10 +144,10 @@ object Command : ViCommand() {
         if (args.size == 1) {
             val list = mutableListOf<String>()
 
-            if (sender.hasTPermission("iep.play")) list.add("play")
-            if (sender.hasTPermission("iep.leaderboard")) list.add("leaderboards")
-            if (sender.hasTPermission("iep.setting")) list.add("settings")
-            if (sender.hasTPermission("iep.leave")) list.add("leave")
+            if (sender.hasTPermission("iep.play")) list += "play"
+            if (sender.hasTPermission("iep.leaderboard")) list += "leaderboards"
+            if (sender.hasTPermission("iep.setting")) list += "settings"
+            if (sender.hasTPermission("iep.leave")) list += "leave"
             if (sender.isOp) list.add("schematic")
 
             return list

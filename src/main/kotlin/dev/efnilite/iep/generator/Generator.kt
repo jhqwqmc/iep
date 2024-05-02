@@ -55,7 +55,7 @@ private class RewardHandler(val mode: Mode) {
         for ((key, rewards) in Rewards.scoreRewards) {
             if (score < key || key in scoreRewards) continue
 
-            scoreRewards.add(key)
+            scoreRewards += key
 
             rewards.forEach { it.execute(player, mode) }
         }
@@ -63,10 +63,10 @@ private class RewardHandler(val mode: Mode) {
         for ((key, rewards) in Rewards.oneTimeRewards) {
             if (score < key || score in oneTimeRewards || key in generator.settings.rewards) continue
 
-            oneTimeRewards.add(score)
+            oneTimeRewards += score
             generator.set { settings ->
                 val newRewards = settings.rewards
-                newRewards.add(key)
+                newRewards += key
                 return@set Settings(settings, rewards = newRewards)
             }
 
@@ -76,7 +76,7 @@ private class RewardHandler(val mode: Mode) {
         for ((key, rewards) in Rewards.intervalRewards) {
             if (score % key != 0 || score in intervalRewards) continue
 
-            intervalRewards.add(score)
+            intervalRewards += score
 
             rewards.forEach { it.execute(player, mode) }
         }
