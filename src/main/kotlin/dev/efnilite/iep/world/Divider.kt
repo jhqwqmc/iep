@@ -26,7 +26,7 @@ object Divider {
     @Synchronized
     fun add(generator: Generator): Vector {
         val missing = (0..sections.size)
-            .first { !sections.values.contains(it) }
+            .first { it !in sections.values }
 
         sections[generator] = missing
 

@@ -97,7 +97,7 @@ object Locales {
         val userNodes: List<String> = getChildren(user)
 
         for (node in resourceNodes) {
-            if (userNodes.contains(node)) {
+            if (node in userNodes) {
                 continue
             }
 
