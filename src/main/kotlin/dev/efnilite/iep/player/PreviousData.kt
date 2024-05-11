@@ -47,10 +47,10 @@ data class PreviousData(private val player: Player) {
 
                 val items = mutableListOf<ItemStack>()
 
-                items.add(Locales.getItem(this, "hotbar.play").build())
-                items.add(Locales.getItem(this, "hotbar.settings").build())
-                items.add(Locales.getItem(this, "hotbar.leaderboards").build())
-                items.add(Locales.getItem(this, "hotbar.leave").build())
+                items += Locales.getItem(this, "hotbar.play").build()
+                items += Locales.getItem(this, "hotbar.settings").build()
+                items += Locales.getItem(this, "hotbar.leaderboards").build()
+                items += Locales.getItem(this, "hotbar.leave").build()
 
                 Menu.getEvenlyDistributedSlots(items.size).forEachIndexed { index, slot ->
                     inventory.setItem(slot, items[index])

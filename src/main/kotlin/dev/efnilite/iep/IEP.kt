@@ -148,7 +148,7 @@ class IEP : ViPlugin() {
 
             log("Registered mode ${mode.name}")
 
-            modes.add(mode)
+            modes += mode
         }
 
         fun getMode(name: String): Mode? = modes.firstOrNull { it.name == name }
@@ -160,7 +160,7 @@ class IEP : ViPlugin() {
         fun registerStyle(style: Style) {
             log("Registered style ${style.name()}")
 
-            styles.add(style)
+            styles += style
         }
 
         fun getStyle(name: String) = styles.firstOrNull { it.name() == name } ?: styles.first()
