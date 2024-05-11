@@ -1,1 +1,1 @@
-- Added 1.20.5 and 1.20.6 support
+- Fixed players being sent to the lobby server on mode switch

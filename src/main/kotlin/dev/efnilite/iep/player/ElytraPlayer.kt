@@ -59,7 +59,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
         getGenerator().remove(this)
 
-        if (Config.CONFIG.getBoolean("proxy.enabled")) {
+        if (!switchMode && Config.CONFIG.getBoolean("proxy.enabled")) {
             sendToServer(Config.CONFIG.getString("proxy.return-server"))
 
             return
