@@ -84,8 +84,8 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
             IEP.log("Sent ${player.name} to proxy server $server")
         } catch (ex: ChannelNotRegisteredException) {
-            IEP.instance.logging.stack("$server is not registered with BungeeCord", ex)
-            player.kickPlayer("$server is not registered with BungeeCord")
+            IEP.instance.logging.stack("$server is not registered on proxy", ex)
+            player.kickPlayer("$server is not registered on proxy")
         }
     }
 
