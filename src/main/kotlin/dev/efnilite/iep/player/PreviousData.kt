@@ -45,6 +45,11 @@ data class PreviousData(private val player: Player) {
             player.resetPlayerTime()
             player.activePotionEffects.forEach { player.removePotionEffect(it.type) }
 
+            player.foodLevel = 20
+            player.saturation = 20F
+            player.isFlying = false
+            player.allowFlight = false
+
             player.inventory.clear()
 
             player.inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
