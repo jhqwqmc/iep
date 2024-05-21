@@ -10,7 +10,6 @@ import dev.efnilite.iep.mode.Mode
 import dev.efnilite.iep.reward.Reward
 import dev.efnilite.iep.storage.Storage
 import dev.efnilite.iep.world.Divider
-import dev.efnilite.iep.world.World
 import dev.efnilite.vilib.fastboard.FastBoard
 import dev.efnilite.vilib.util.Strings
 import dev.efnilite.vilib.util.Task
@@ -20,19 +19,18 @@ import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException
-import org.bukkit.util.Vector
 import java.util.concurrent.CompletableFuture
 
 /**
  * Class for wrapping players.
  */
-class ElytraPlayer(val player: Player, private val data: PreviousData = PreviousData(player)) {
+class ElytraPlayer(val player: Player, private val data: PreviousData = PreviousData(player)) : IElytraPlayer {
 
-    val position
+    override val position
         get() = player.location.toVector()
 
-    val name = player.name
-    val uuid = player.uniqueId
+    override val name = player.name
+    override val uuid = player.uniqueId
 
     private var boardTitle = ""
     private var boardLines = listOf<String>()
@@ -41,7 +39,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     /**
      * Joins a [Mode].
      */
-    fun join(mode: Mode) {
+    override fun join(mode: Mode) {
         IEP.log("Creating generator for ${player.name} with mode ${mode.name}")
 
         val generator = mode.getGenerator()
@@ -56,7 +54,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     /**
      * Leaves the current mode.
      */
-    fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
+    override fun leave(switchMode: Boolean, urgent: Boolean) {
         getGenerator().remove(this)
 
         if (!switchMode && Config.CONFIG.getBoolean("proxy.enabled")) {
@@ -84,32 +82,49 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
             IEP.log("Sent ${player.name} to proxy server $server")
         } catch (ex: ChannelNotRegisteredException) {
-            IEP.instance.logging.stack("$server is not registered on proxy", ex)
+            IEP.logging.stack("$server is not registered on proxy", ex)
             player.kickPlayer("$server is not registered on proxy")
         }
     }
 
     /**
-     * Teleports the player.
-     * @param vector The vector to teleport to.
+     * Loads the player's settings.
+     * @return The player's settings.
      */
-    fun teleport(vector: Vector): CompletableFuture<Boolean> {
-        return PaperLib.teleportAsync(player, vector.toLocation(World.world))
+    override fun load(): Settings {
+        IEP.log("Loading settings for $name")
+
+        Storage.init(uuid)
+
+        return Storage.load(uuid) ?: DEFAULT_SETTINGS
     }
 
     /**
-     * Teleports the player.
-     * @param location The location to teleport to.
+     * Saves the player's settings.
+     * @param settings The settings to save.
      */
-    fun teleport(location: Location): CompletableFuture<Boolean> {
-        return PaperLib.teleportAsync(player, location)
+    override fun save(settings: Settings) {
+        IEP.log("Saving settings for ${player.name}")
+
+        updateBoardValues()
+        player.setPlayerTime(settings.time.toLong(), false)
+
+        if (IEP.stopping) {
+            Storage.save(uuid, settings)
+            return
+        }
+
+        Task.create(IEP.instance)
+            .async()
+            .execute { Storage.save(uuid, settings) }
+            .run()
     }
 
     /**
      * Sends a message to the player.
      * @param message The message to send.
      */
-    fun send(message: String) {
+    override fun send(message: String) {
         player.sendMessage(message)
     }
 
@@ -117,8 +132,19 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
      * Sends an action bar message to the player.
      * @param message The message to send.
      */
-    fun sendActionBar(message: String) {
+    override fun sendActionBar(message: String) {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(Strings.colour(message)))
+    }
+
+    /**
+     * Adds a reward to the player's settings.
+     */
+    override fun addReward(mode: Mode, reward: Reward) {
+        val set = data.leaveRewards[mode] ?: mutableSetOf()
+
+        set += reward
+
+        data.leaveRewards[mode] = set
     }
 
     /**
@@ -157,47 +183,11 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     }
 
     /**
-     * Saves the player's settings.
-     * @param settings The settings to save.
+     * Teleports the player.
+     * @param location The location to teleport to.
      */
-    fun save(settings: Settings) {
-        IEP.log("Saving settings for ${player.name}")
-
-        updateBoardValues()
-        player.setPlayerTime(settings.time.toLong(), false)
-
-        if (IEP.stopping) {
-            Storage.save(uuid, settings)
-            return
-        }
-
-        Task.create(IEP.instance)
-            .async()
-            .execute { Storage.save(uuid, settings) }
-            .run()
-    }
-
-    /**
-     * Loads the player's settings.
-     * @return The player's settings.
-     */
-    fun load(): Settings {
-        IEP.log("Loading settings for $name")
-
-        Storage.init(uuid)
-
-        return Storage.load(uuid) ?: DEFAULT_SETTINGS
-    }
-
-    /**
-     * Adds a reward to the player's settings.
-     */
-    fun addReward(mode: Mode, reward: Reward) {
-        val set = data.leaveRewards[mode] ?: mutableSetOf()
-
-        set += reward
-
-        data.leaveRewards[mode] = set
+    fun teleport(location: Location): CompletableFuture<Boolean> {
+        return PaperLib.teleportAsync(player, location)
     }
 
     /**

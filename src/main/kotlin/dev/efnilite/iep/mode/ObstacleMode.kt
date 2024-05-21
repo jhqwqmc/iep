@@ -7,7 +7,7 @@ object ObstacleMode : Mode {
 
     override val name = "obstacle"
 
-    override val leaderboard = Leaderboard(name)
+    override val leaderboard = Leaderboard(name).load()
 
     override fun getGenerator() = ObstacleGenerator()
 

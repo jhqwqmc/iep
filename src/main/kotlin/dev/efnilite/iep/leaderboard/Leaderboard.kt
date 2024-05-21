@@ -12,14 +12,10 @@ data class Leaderboard(val name: String) {
 
     val data = mutableMapOf<UUID, Score>()
 
-    init {
-        load()
-    }
-
     /**
      * Asynchronously reads the leaderboard.
      */
-    private fun load() {
+    fun load(): Leaderboard {
         Task.create(IEP.instance)
             .async()
             .execute {
@@ -27,6 +23,8 @@ data class Leaderboard(val name: String) {
                 Storage.load(this)
             }
             .run()
+
+        return this
     }
 
     /**

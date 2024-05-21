@@ -9,7 +9,7 @@ object SpeedDemonMode : Mode {
 
     override val name = "speed demon"
 
-    override val leaderboard = Leaderboard(name)
+    override val leaderboard = Leaderboard(name).load()
 
     override fun getGenerator() = SpeedDemonGenerator()
 

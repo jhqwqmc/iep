@@ -27,20 +27,21 @@ import java.util.logging.Level
 
 class IEP : ViPlugin() {
 
-    val logging = Logging(this)
-
     override fun enable() {
         instance = this
         stopping = false
+
+        logging = LoggingExecutorImpl
 
         registerListener(Events)
         registerCommand("iep", Command)
 
         saveFile("schematics/spawn-island")
 
+        Menu.init(this)
         World.create()
         Locales.init()
-        Menu.init(this)
+        Config.init()
 
         Schematics.addFromFiles(this,
             *Files.list(Path.of(dataFolder.toString(), "schematics"))
@@ -127,6 +128,7 @@ class IEP : ViPlugin() {
     }
 
     companion object {
+        lateinit var logging: LoggingExecutor
         var stopping = false
             private set
         var papiHook: PapiHook? = null
@@ -138,7 +140,7 @@ class IEP : ViPlugin() {
 
         fun log(message: String) {
             if (Config.CONFIG.getBoolean("debug")) {
-                instance.logging.info("[Debug] $message")
+                logging.info("[Debug] $message")
             }
         }
 
@@ -169,5 +171,22 @@ class IEP : ViPlugin() {
         fun getStyle(name: String) = styles.firstOrNull { it.name() == name } ?: styles.first()
 
         fun getStyles() = styles.toList()
+    }
+}
+
+private object LoggingExecutorImpl : LoggingExecutor {
+
+    private val logging = Logging(IEP.instance)
+
+    override fun info(message: String) {
+        logging.info(message)
+    }
+
+    override fun error(message: String) {
+        logging.error(message)
+    }
+
+    override fun stack(message: String, ex: Exception) {
+        logging.stack(message, ex)
     }
 }

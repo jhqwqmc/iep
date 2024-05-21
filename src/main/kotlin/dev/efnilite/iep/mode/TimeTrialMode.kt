@@ -8,7 +8,7 @@ object TimeTrialMode : Mode {
 
     override val name = "time trial"
 
-    override val leaderboard = Leaderboard(name)
+    override val leaderboard = Leaderboard(name).load()
 
     override val sort
         get() = LeaderboardMenu.Sort.TIME

@@ -13,15 +13,21 @@ import org.bukkit.entity.Player
  *
  * Format: <give-time>||<mode>||<command>||<value>
  */
-data class Reward(val string: String) {
+data class Reward(val string: String, private val executor: RewardExecutor = RewardExecutorImpl) {
 
+    /**
+     * Executes the reward. If this is not a leave reward, will execute instantly.
+     *
+     * @param player The player to execute the reward on.
+     * @param currentMode The mode the player is in.
+     */
     fun execute(player: Player, currentMode: Mode) {
         val parts = string.split("||", limit = 4)
 
         val time = parts[0].lowercase()
 
         if (time == "leave") {
-            player.asElytraPlayer()?.addReward(currentMode, Reward("now||${parts[1]}||${parts[2]}||${parts[3]}"))
+            executor.addReward(player, currentMode, Reward("now||${parts[1]}||${parts[2]}||${parts[3]}"))
             return
         }
 
@@ -31,7 +37,7 @@ data class Reward(val string: String) {
             val mode = IEP.getMode(modeName)
 
             if (mode == null) {
-                IEP.instance.logging.error("Invalid mode $currentMode in rewards")
+                IEP.logging.error("Invalid mode ${currentMode.name} in rewards")
                 return
             }
 
@@ -44,18 +50,42 @@ data class Reward(val string: String) {
         val value = parts[3].replace("%player%", player.name)
 
         when (command) {
-            "send" -> player.sendMessage(Strings.colour(value))
-            "player command" -> player.performCommand(value)
-            "console command" -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value)
+            "send" -> executor.send(player, value)
+            "player command" -> executor.playerCommand(player, value)
+            "console command" -> executor.consoleCommand(value)
             "vault" -> {
                 try {
                     val amount = value.toDouble()
-                    VaultHook.give(player, amount)
+                    executor.give(player, amount)
                 } catch (e: NumberFormatException) {
-                    IEP.instance.logging.error("Invalid numerical value $value in rewards")
+                    IEP.logging.error("Invalid numerical value $value in rewards")
                 }
             }
-            else -> IEP.instance.logging.error("Invalid command $command in rewards")
+
+            else -> IEP.logging.error("Invalid command $command in rewards")
         }
+    }
+}
+
+private object RewardExecutorImpl : RewardExecutor {
+
+    override fun addReward(player: Player, mode: Mode, reward: Reward) {
+        player.asElytraPlayer()?.addReward(mode, reward)
+    }
+
+    override fun send(player: Player, message: String) {
+        player.sendMessage(Strings.colour(message))
+    }
+
+    override fun playerCommand(player: Player, command: String) {
+        player.performCommand(command)
+    }
+
+    override fun consoleCommand(command: String) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
+    }
+
+    override fun give(player: Player, amount: Double) {
+        VaultHook.give(player, amount)
     }
 }

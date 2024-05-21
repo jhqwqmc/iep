@@ -1,3 +1,5 @@
+package style
+
 import dev.efnilite.iep.style.IncrementalStyle
 import org.bukkit.Material
 import org.junit.jupiter.api.Test
@@ -13,5 +15,4 @@ class IncrementalStyleTest {
         assert(Material.GRASS_BLOCK == style.next())
         assert(Material.STONE == style.next())
     }
-
 }

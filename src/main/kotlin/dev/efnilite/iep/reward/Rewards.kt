@@ -23,7 +23,7 @@ object Rewards {
                 val parsedScore = score.toInt()
 
                 if (parsedScore < 1) {
-                    IEP.instance.logging.error("Invalid score $score in rewards")
+                    IEP.logging.error("Invalid score $score in rewards")
                     continue
                 }
 
@@ -31,7 +31,7 @@ object Rewards {
                     .map { Reward(it) }
                     .toSet()
             } catch (ex: NumberFormatException) {
-                IEP.instance.logging.error("Invalid score $score in rewards")
+                IEP.logging.error("Invalid score $score in rewards")
             }
         }
 

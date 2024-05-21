@@ -8,7 +8,7 @@ object CloseMode : Mode {
 
     override val name = "close"
 
-    override val leaderboard = Leaderboard(name)
+    override val leaderboard = Leaderboard(name).load()
 
     override val pointType = PointType.FLAT
 

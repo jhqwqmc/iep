@@ -3,21 +3,14 @@ package dev.efnilite.iep.config
 import dev.efnilite.iep.IEP
 import dev.efnilite.vilib.configupdater.ConfigUpdater
 import org.bukkit.configuration.file.YamlConfiguration
+import java.io.Reader
 
-enum class Config(file: String) {
+enum class Config(private val file: String) {
 
     CONFIG("config.yml"),
     REWARDS("rewards.yml");
 
-    private val config: YamlConfiguration
-
-    init {
-        IEP.instance.saveFile(file)
-
-        ConfigUpdater.update(IEP.instance, file, IEP.instance.dataFolder.resolve(file), listOf("styles", "score", "interval", "one-time"))
-
-        config = YamlConfiguration.loadConfiguration(IEP.instance.dataFolder.resolve(file))
-    }
+    private lateinit var config: YamlConfiguration
 
     /**
      * Returns a boolean from the file.
@@ -31,7 +24,7 @@ enum class Config(file: String) {
         val value = config.getInt(path)
 
         if (!bounds.invoke(value)) {
-            IEP.instance.logging.error("Value $value at path $path is invalid")
+            IEP.logging.error("Value $value at path $path is invalid")
         }
 
         return value
@@ -44,7 +37,7 @@ enum class Config(file: String) {
         val value = config.getString(path)!!
 
         if (!bounds.invoke(value)) {
-            IEP.instance.logging.error("Value $value at path $path is invalid")
+            IEP.logging.error("Value $value at path $path is invalid")
         }
 
         return value
@@ -57,7 +50,7 @@ enum class Config(file: String) {
         val value = config.getStringList(path)
 
         if (!bounds.invoke(value)) {
-            IEP.instance.logging.error("Value $value at path $path is invalid")
+            IEP.logging.error("Value $value at path $path is invalid")
         }
 
         return value
@@ -70,11 +63,36 @@ enum class Config(file: String) {
         val value = config.getDouble(path)
 
         if (!bounds.invoke(value)) {
-            IEP.instance.logging.error("Value $value at path $path is invalid")
+            IEP.logging.error("Value $value at path $path is invalid")
         }
 
         return value
     }
 
     fun getPaths(path: String): Set<String> = config.getConfigurationSection(path)!!.getKeys(false)
+
+    companion object {
+        var saver: ConfigSaver = ConfigSaverImpl
+
+        fun init() {
+            for (config in entries) {
+                saver.save(config.file)
+
+                config.config = YamlConfiguration.loadConfiguration(saver.read(config.file))
+            }
+        }
+    }
+}
+
+private object ConfigSaverImpl : ConfigSaver {
+
+    override fun save(file: String) {
+        IEP.instance.saveFile(file)
+
+        ConfigUpdater.update(IEP.instance, file, IEP.instance.dataFolder.resolve(file), listOf("styles", "score", "interval", "one-time"))
+    }
+
+    override fun read(file: String): Reader {
+        return IEP.instance.dataFolder.resolve(file).reader()
+    }
 }

@@ -1,3 +1,5 @@
+package world
+
 import dev.efnilite.iep.generator.Generator
 import dev.efnilite.iep.world.Divider
 import org.bukkit.util.Vector

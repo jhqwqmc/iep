@@ -1,3 +1,5 @@
+package style
+
 import dev.efnilite.iep.style.RandomStyle
 import org.bukkit.Material
 import org.junit.jupiter.api.Test

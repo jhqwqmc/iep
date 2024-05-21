@@ -73,7 +73,7 @@ object World {
         try {
             deleteRecursive(file)
         } catch (ex: Exception) {
-            IEP.instance.logging.stack("Error while trying to reset iep world", ex)
+            IEP.logging.stack("Error while trying to reset iep world", ex)
         }
     }
 

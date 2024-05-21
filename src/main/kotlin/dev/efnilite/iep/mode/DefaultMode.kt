@@ -7,7 +7,7 @@ object DefaultMode : Mode {
 
     override val name = "default"
 
-    override val leaderboard = Leaderboard(name)
+    override val leaderboard = Leaderboard(name).load()
 
     override fun getGenerator() = Generator()
 }

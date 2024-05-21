@@ -86,7 +86,7 @@ object Locales {
                     }
                 }
             } catch (ex: Exception) {
-                IEP.instance.logging.stack("Error while trying to read locale files", "restart/reload your server", ex)
+                IEP.logging.stack("Error while trying to read locale files", ex)
             }
         }.run()
     }
@@ -111,10 +111,7 @@ object Locales {
 
             IEP.log("Validated locale file ${localPath.name}")
         } catch (ex: IOException) {
-            IEP.instance.logging.stack(
-                "Error while trying to save fixed config file $localPath",
-                "delete this file and restart your server", ex
-            )
+            IEP.logging.stack("Error while trying to save fixed config file $localPath", ex)
         }
     }
 
@@ -178,7 +175,7 @@ object Locales {
             return Item(Material.STONE, "")
         }
         if (locales[locale] == null) {
-            IEP.instance.logging.error("Invalid locale $locale")
+            IEP.logging.error("Invalid locale $locale")
             return Item(Material.STONE, "")
         }
 
