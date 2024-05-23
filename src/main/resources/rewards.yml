@@ -5,6 +5,7 @@ enabled: false
 # <time of execution>||<mode>||<command>||<value>
 # - <time of execution> is when the reward will be given. It can be "now" or "leave", which will apply rewards on leave.
 # - <mode> is the mode the reward will be given in. It can be "all" or a specific mode.
+#   List of modes: default, close, min speed, obstacle, speed demon, time trial.
 # - <command> is the command that will be executed. It can be "vault" for Vault rewards,
 #  "console command" (without /), "player command" (without /) or "send".
 # - <value> is the value of the command. It can be a message, a command or the amount of money to give.

@@ -17,6 +17,7 @@ import dev.efnilite.vilib.inventory.Menu
 import dev.efnilite.vilib.schematic.Schematics
 import dev.efnilite.vilib.util.Logging
 import dev.efnilite.vilib.util.Task
+import dev.efnilite.vilib.util.UpdateChecker
 import io.papermc.lib.PaperLib
 import org.bukkit.Material
 import java.io.File
@@ -81,6 +82,8 @@ class IEP : ViPlugin() {
                 modes.forEach { it.leaderboard.save() }
             }
             .run()
+
+        UpdateChecker.check(this, 115322)
     }
 
     fun saveFile(path: String) {

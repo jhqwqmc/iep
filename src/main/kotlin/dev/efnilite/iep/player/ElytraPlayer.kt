@@ -59,7 +59,7 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
     fun leave(switchMode: Boolean = false, urgent: Boolean = false) {
         getGenerator().remove(this)
 
-        if (Config.CONFIG.getBoolean("proxy.enabled")) {
+        if (!switchMode && Config.CONFIG.getBoolean("proxy.enabled")) {
             sendToServer(Config.CONFIG.getString("proxy.return-server"))
 
             return
@@ -84,8 +84,8 @@ class ElytraPlayer(val player: Player, private val data: PreviousData = Previous
 
             IEP.log("Sent ${player.name} to proxy server $server")
         } catch (ex: ChannelNotRegisteredException) {
-            IEP.instance.logging.stack("$server is not registered with BungeeCord", ex)
-            player.kickPlayer("$server is not registered with BungeeCord")
+            IEP.instance.logging.stack("$server is not registered on proxy", ex)
+            player.kickPlayer("$server is not registered on proxy")
         }
     }
 

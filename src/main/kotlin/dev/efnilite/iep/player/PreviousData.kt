@@ -22,6 +22,11 @@ data class PreviousData(private val player: Player) {
 
     val leaveRewards: MutableMap<Mode, MutableSet<Reward>> = mutableMapOf()
 
+    private val foodLevel = player.foodLevel
+    private val saturation = player.saturation
+    private val flying = player.isFlying
+    private val allowFlight = player.allowFlight
+
     private val gamemode = player.gameMode
     private val position = player.location
     private val inventoryContents: Array<ItemStack?> = player.inventory.contents
@@ -33,31 +38,34 @@ data class PreviousData(private val player: Player) {
     fun setup(vector: Vector): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
 
-        with(player) {
-            PaperLib.teleportAsync(this, vector.toLocation(World.world)).thenRun {
-                gameMode = GameMode.ADVENTURE
-                fallDistance = 0F
+        PaperLib.teleportAsync(player, vector.toLocation(World.world)).thenRun {
+            player.gameMode = GameMode.ADVENTURE
+            player.fallDistance = 0F
 
-                resetPlayerTime()
-                activePotionEffects.forEach { removePotionEffect(it.type) }
+            player.resetPlayerTime()
+            player.activePotionEffects.forEach { player.removePotionEffect(it.type) }
 
-                inventory.clear()
+            player.foodLevel = 20
+            player.saturation = 20F
+            player.isFlying = false
+            player.allowFlight = false
 
-                inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
+            player.inventory.clear()
 
-                val items = mutableListOf<ItemStack>()
+            player.inventory.chestplate = Item(Material.ELYTRA, "").unbreakable().build()
 
-                items += Locales.getItem(this, "hotbar.play").build()
-                items += Locales.getItem(this, "hotbar.settings").build()
-                items += Locales.getItem(this, "hotbar.leaderboards").build()
-                items += Locales.getItem(this, "hotbar.leave").build()
+            val items = mutableListOf<ItemStack>()
 
-                Menu.getEvenlyDistributedSlots(items.size).forEachIndexed { index, slot ->
-                    inventory.setItem(slot, items[index])
-                }
+            items += Locales.getItem(player, "hotbar.play").build()
+            items += Locales.getItem(player, "hotbar.settings").build()
+            items += Locales.getItem(player, "hotbar.leaderboards").build()
+            items += Locales.getItem(player, "hotbar.leave").build()
 
-                future.complete(true)
+            Menu.getEvenlyDistributedSlots(items.size).forEachIndexed { index, slot ->
+                player.inventory.setItem(slot, items[index])
             }
+
+            future.complete(true)
         }
 
         return future
@@ -83,19 +91,22 @@ data class PreviousData(private val player: Player) {
     }
 
     private fun reset() {
-        with(player) {
-            fallDistance = 0F
+        player.fallDistance = 0F
 
-            gameMode = gamemode
-            inventory.contents = inventoryContents
+        player.gameMode = gamemode
+        player.inventory.contents = inventoryContents
 
-            activePotionEffects.forEach { removePotionEffect(it.type) }
-            addPotionEffects(effects)
+        player.activePotionEffects.forEach { player.removePotionEffect(it.type) }
+        player.addPotionEffects(effects)
 
-            resetPlayerTime()
-        }
+        player.foodLevel = foodLevel
+        player.saturation = saturation
+        player.isFlying = flying
+        player.allowFlight = allowFlight
 
-        for ((mode, rewards) in leaveRewards.toMap()) {
+        player.resetPlayerTime()
+
+        for ((mode, rewards) in leaveRewards) {
             rewards.forEach { it.execute(player, mode) }
         }
     }
